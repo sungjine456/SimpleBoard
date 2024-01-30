@@ -1,3 +1,2 @@
-#할거
-init commit 하기
-typescript + spring boot + h2
+# Simple Board Project
+### `Spring Boot` + `Hibernate` + `H2`
