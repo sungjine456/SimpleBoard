@@ -1,15 +1,29 @@
 import axios from "axios";
+import LoginRequest from "../models/requests/LoginRequest";
 import MemberRequest from "../models/requests/MemberRequest";
 import MemberRespons from "../models/responses/MemberRespons";
 
 class MemberService {
+  async login(member: LoginRequest): Promise<Boolean> {
+    try {
+      const response = await axios.post<Boolean>(
+        "http://localhost:8080/login",
+        member
+      );
+
+      return response.data;
+    } catch (e) {
+      return false;
+    }
+  }
+
   async addMember(member: MemberRequest) {
     console.log(member);
 
     try {
       await axios.post("http://localhost:8080/mem", member);
-    } catch (err) {
-      console.error(err);
+    } catch (e) {
+      console.error(e);
     }
   }
 
@@ -26,8 +40,8 @@ class MemberService {
       );
 
       member = response.data;
-    } catch (err) {
-      console.error(err);
+    } catch (e) {
+      console.error(e);
     }
 
     return member;

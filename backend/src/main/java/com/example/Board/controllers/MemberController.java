@@ -9,28 +9,35 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.Board.domains.Member;
 import com.example.Board.modal.requests.MemberAddRequest;
+import com.example.Board.modal.requests.MemberRequest;
 import com.example.Board.modal.responses.MemberRespons;
-import com.example.Board.repositories.MemberRepository;
+import com.example.Board.services.MemberService;
 
 @RestController
 public class MemberController {
 	private static Logger log = LoggerFactory.getLogger(MemberController.class);
+
+	@Autowired private MemberService memberService;
 	
-	@Autowired private MemberRepository memberRepository;
+	@PostMapping("/login")
+	public boolean login(@RequestBody MemberRequest req) {
+		log.info("login request : " + req);
+		
+		return memberService.loginCheck(req.getEmail(), req.getPassword());
+	}
 	
 	@GetMapping("/mem/{id}")
     public MemberRespons findMember(@PathVariable("id") Long id) {
 		log.info("받은 아이디 : " + id);
 		
-        return memberRepository.getReferenceById(id).getMemberRespons();
+        return memberService.getMemberById(id).getMemberRespons();
     }
 	
 	@PostMapping("/mem")
 	public void addMember(@RequestBody MemberAddRequest req) {
-		log.info("Member data : " + req);
+		log.info("member data : " + req);
 		
-		memberRepository.save(req.getMember());
+		memberService.signin(req.getMember());
 	}
 }
