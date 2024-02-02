@@ -4,23 +4,26 @@ spring:
     url: jdbc:h2:~/test
     username: sa
     password:
-  
+
   h2:
     console:
       enabled: true
       path: /h2-console
-  
+
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
-        
+
 logging:
   level:
     org:
       hibernate:
         SQL: debug
         type: trace
+
+jwt:
+  secret: n4r43f01e1a4506d3538bdf4fg801cef91hgfg2199fdsdff45404c8e345asdfb

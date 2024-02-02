@@ -1,72 +1,109 @@
 package com.example.Board.domains;
 
-import com.example.Board.modal.responses.MemberRespons;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import com.example.Board.modal.responses.MemberResponse;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
 @Table
-public class Member {
+public class Member implements UserDetails {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
-    @Column(nullable = false, length = 20)
-    private String name;
-    
-    @Column(nullable = false, length = 50)
-    private String email;
-    
-    @Column(nullable = false, length = 50)
-    private String password;
+  @Column(nullable = false, length = 20)
+  private String name;
 
-	public Member() { }
-	
-	public Member(String name, String email) {
-    	this.name = name;
-    	this.email = email;
-    }
-    
-    public Member(String name, String email, String password) {
-    	this(name, email);
-    	
-    	this.password = password;
-    }
-    
-    public MemberRespons getMemberRespons() {
-    	return new MemberRespons(id, name, email);
-    }
-    
-    public Long getId() {
-    	return id;
-    }
-    public String getName() {
-    	return name;
-    }
-    public void setName(String name) {
-    	this.name = name;
-    }
-    public String getEmail() {
-		return email;
-	}
-    public void setEmail(String email) {
-		this.email = email;
-	}
-    public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	
-	@Override
-	public String toString() {
-		return String.format("이름: %s, 이메일: %s", name, email);
-	}
+  @Column(nullable = false, length = 50)
+  private String email;
+
+  @Column(nullable = false, length = 70)
+  private String password;
+
+  @ElementCollection(fetch = FetchType.EAGER)
+  private List<String> roles = new ArrayList<>();
+
+  public Member() {
+  }
+
+  public Member(String name, String email) {
+    this.name = name;
+    this.email = email;
+  }
+
+  public Member(String name, String email, String password) {
+    this(name, email);
+
+    this.password = password;
+  }
+
+  public MemberResponse getMemberRespons() {
+    return new MemberResponse(id, name, email);
+  }
+
+  @Override
+  public String toString() {
+    return String.format("이름: %s, 이메일: %s", name, email);
+  }
+
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return this.roles.stream()
+        .map(SimpleGrantedAuthority::new)
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return true;
+  }
+
+  @Override
+  public String getUsername() {
+    return email;
+  }
+
+  public void addRole(String role) {
+    roles.add(role);
+  }
+
+  public MemberResponse toMemberResponse() {
+    return new MemberResponse(id, name, email);
+  }
 }
