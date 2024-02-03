@@ -1,27 +1,31 @@
 import axios from "axios";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 import LoginRequest from "../models/requests/LoginRequest";
 import MemberRequest from "../models/requests/MemberRequest";
 import MemberRespons from "../models/responses/MemberRespons";
 
 class MemberService {
-  async login(member: LoginRequest): Promise<Boolean> {
-    try {
-      const response = await axios.post<Boolean>(
-        "http://localhost:8080/login",
-        member
-      );
+  signIn(member: LoginRequest, navigate: NavigateFunction) {
+    axios
+      .post("http://localhost:8080/sign-in", member)
+      .then((res) => {
+        let data = res.data;
 
-      return response.data;
-    } catch (e) {
-      return false;
-    }
+        axios.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${data?.accessToken}`;
+
+        navigate("/member");
+      })
+      .catch((e) => {
+        console.log(e);
+        navigate("/");
+      });
   }
 
-  async addMember(member: MemberRequest) {
-    console.log(member);
-
+  async signUp(member: MemberRequest) {
     try {
-      await axios.post("http://localhost:8080/mem", member);
+      await axios.post("http://localhost:8080/sign-up", member);
     } catch (e) {
       console.error(e);
     }
@@ -48,4 +52,6 @@ class MemberService {
   }
 }
 
-export default new MemberService();
+const service = new MemberService();
+
+export default service;

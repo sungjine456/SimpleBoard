@@ -25,7 +25,7 @@ public class MemberController {
 	private MemberService memberService;
 
 	@PostMapping("/sign-in")
-	public JwtToken signIn(@RequestBody MemberRequest req) {
+	public String signIn(@RequestBody MemberRequest req) {
 		String username = req.getEmail();
 		String password = req.getPassword();
 		JwtToken jwtToken = memberService.signIn(username, password);
@@ -33,7 +33,7 @@ public class MemberController {
 		log.info("request username = {}, password = {}", username, password);
 		log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(), jwtToken.getRefreshToken());
 
-		return jwtToken;
+		return jwtToken.getAccessToken();
 	}
 
 	@PostMapping("/sign-up")
@@ -50,10 +50,5 @@ public class MemberController {
 		log.info("받은 아이디 : " + id);
 
 		return memberService.getMemberById(id).getMemberRespons();
-	}
-
-	@PostMapping("/test")
-	public String test() {
-		return "success";
 	}
 }
