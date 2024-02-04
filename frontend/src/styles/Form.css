@@ -29,3 +29,10 @@
 .form .buttons {
   justify-content: end;
 }
+
+small {
+  margin-left: auto;
+  font-size: 13px;
+  padding-bottom: 5px;
+  color: #ff6868;
+}

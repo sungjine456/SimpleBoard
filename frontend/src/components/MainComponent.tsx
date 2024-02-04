@@ -1,9 +1,9 @@
-import SignInComponent from "./SignInComponent";
+import SignInFormComponent from "./SignInFormComponent";
 
 function MainComponent() {
   return (
     <div>
-      <SignInComponent />
+      <SignInFormComponent />
     </div>
   );
 }

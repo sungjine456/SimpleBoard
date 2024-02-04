@@ -1,7 +1,7 @@
 import axios from "axios";
-import { NavigateFunction, useNavigate } from "react-router-dom";
-import LoginRequest from "../models/requests/LoginRequest";
+import { NavigateFunction } from "react-router-dom";
 import MemberRequest from "../models/requests/MemberRequest";
+import LoginRequest from "../models/requests/SignInRequest";
 import MemberRespons from "../models/responses/MemberRespons";
 
 class MemberService {
