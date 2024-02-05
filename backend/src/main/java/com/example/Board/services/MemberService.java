@@ -51,7 +51,7 @@ public class MemberService {
         mem.setPassword(encodedPassword);
         mem.addRole("USER");
 
-        return memberRepository.save(mem).toMemberResponse();
+        return new MemberResponse(memberRepository.save(mem), "성공");
     }
 
     public Member getMemberById(Long id) {

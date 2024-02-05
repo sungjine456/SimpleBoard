@@ -11,6 +11,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,14 +35,14 @@ class MemberControllerTest {
     @LocalServerPort
     int serverPort;
 
-    private MemberAddRequest addReq;
+    private MemberAddRequest addSuccessReq;
     private String name = "name";
-    private String email = "email";
-    private String password = "pass";
+    private String email = "email@abc.com";
+    private String password = "password";
 
     @BeforeEach
     void beforeEach() {
-        addReq = new MemberAddRequest(name, email, password);
+        addSuccessReq = new MemberAddRequest(name, email, password);
     }
 
     @AfterEach
@@ -49,32 +50,38 @@ class MemberControllerTest {
         databaseCleanUp.truncateAllEntity();
     }
 
+    // TODO: 로그인 테스트 필요
+    // TODO: 실패하는 테스트 필요
+
     @Test
     public void signUpTest() {
-        String url = "http://localhost:" + serverPort + "/sign-up";
-        ResponseEntity<MemberResponse> responseEntity = testRestTemplate.postForEntity(url, addReq,
+        String url = String.format("http://localhost:%d/sign-up", serverPort);
+
+        ResponseEntity<MemberResponse> responseEntity = testRestTemplate.postForEntity(url, addSuccessReq,
                 MemberResponse.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         MemberResponse res = responseEntity.getBody();
-        assertThat(res.getName()).isEqualTo(addReq.getName());
-        assertThat(res.getEmail()).isEqualTo(addReq.getEmail());
+        assertThat(res.getName()).isEqualTo(addSuccessReq.getName());
+        assertThat(res.getEmail()).isEqualTo(addSuccessReq.getEmail());
     }
 
     @Test
-    public void signInTest() {
-        memberService.signUp(new Member(name, email, password));
-
+    public void findMemberTest() {
+        MemberResponse mr = memberService.signUp(new Member(name, email, password));
         JwtToken jwtToken = memberService.signIn(email, password);
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setBearerAuth(jwtToken.getAccessToken());
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        String url = String.format("http://localhost:%d/mem/%d", serverPort, mr.getId());
 
-        String url = "http://localhost:" + serverPort + "/test";
-        ResponseEntity<String> responseEntity = testRestTemplate.postForEntity(url, new HttpEntity<>(httpHeaders),
-                String.class);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(jwtToken.getAccessToken());
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ResponseEntity<MemberResponse> responseEntity = testRestTemplate.exchange(url, HttpMethod.GET,
+                new HttpEntity<Object>(headers), MemberResponse.class);
+
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isEqualTo("success");
+        assertThat(responseEntity.getBody().getName()).isEqualTo("name");
+        assertThat(responseEntity.getBody().getEmail()).isEqualTo("email@abc.com");
     }
 }

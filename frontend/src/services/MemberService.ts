@@ -19,7 +19,6 @@ class MemberService {
       })
       .catch((e) => {
         console.log(e);
-        navigate("/");
       });
   }
 

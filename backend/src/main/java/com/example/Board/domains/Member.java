@@ -9,8 +9,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.example.Board.modal.responses.MemberResponse;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -58,13 +56,9 @@ public class Member implements UserDetails {
     this.password = password;
   }
 
-  public MemberResponse getMemberRespons() {
-    return new MemberResponse(id, name, email);
-  }
-
   @Override
   public String toString() {
-    return String.format("이름: %s, 이메일: %s", name, email);
+    return String.format("아이디: %d 이름: %s, 이메일: %s", id, name, email);
   }
 
   @Override
@@ -101,9 +95,5 @@ public class Member implements UserDetails {
 
   public void addRole(String role) {
     roles.add(role);
-  }
-
-  public MemberResponse toMemberResponse() {
-    return new MemberResponse(id, name, email);
   }
 }

@@ -1,5 +1,7 @@
 package com.example.Board.controllers;
 
+import static com.example.Board.utils.Commons.isEmailFormat;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,20 +27,29 @@ public class MemberController {
 	private MemberService memberService;
 
 	@PostMapping("/sign-in")
-	public String signIn(@RequestBody MemberRequest req) {
-		String username = req.getEmail();
+	public ResponseEntity<String> signIn(@RequestBody MemberRequest req) {
+		String email = req.getEmail();
 		String password = req.getPassword();
-		JwtToken jwtToken = memberService.signIn(username, password);
 
-		log.info("request username = {}, password = {}", username, password);
+		if (!checkPassword(password) && !isEmailFormat(email)) {
+			return ResponseEntity.badRequest().body("올바르지 않은 로그인 형식입니다.");
+		}
+
+		JwtToken jwtToken = memberService.signIn(email, password);
+
+		log.info("request email = {}, password = {}", email, password);
 		log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(), jwtToken.getRefreshToken());
 
-		return jwtToken.getAccessToken();
+		return ResponseEntity.ok(jwtToken.getAccessToken());
 	}
 
 	@PostMapping("/sign-up")
 	public ResponseEntity<MemberResponse> signUp(@RequestBody MemberAddRequest req) {
 		log.info("sign up data : " + req);
+
+		if (!req.getName().equals("") && !checkPassword(req.getPassword()) && !isEmailFormat(req.getEmail())) {
+			return ResponseEntity.badRequest().body(new MemberResponse(-1L, "", "", "올바르지 않은 로그인 형식입니다."));
+		}
 
 		Member mem = new Member(req.getName(), req.getEmail(), req.getPassword());
 
@@ -49,6 +60,10 @@ public class MemberController {
 	public MemberResponse findMember(@PathVariable("id") Long id) {
 		log.info("받은 아이디 : " + id);
 
-		return memberService.getMemberById(id).getMemberRespons();
+		return new MemberResponse(memberService.getMemberById(id), "성공");
+	}
+
+	private boolean checkPassword(String password) {
+		return password.length() >= 8 && password.length() <= 15;
 	}
 }
