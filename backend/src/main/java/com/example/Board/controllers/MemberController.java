@@ -2,6 +2,8 @@ package com.example.Board.controllers;
 
 import static com.example.Board.utils.Commons.isEmailFormat;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,18 +28,17 @@ public class MemberController {
 	@Autowired
 	private MemberService memberService;
 
+	private MemberResponse wrongResponse = new MemberResponse(-1L, "", "", "올바르지 않은 로그인 형식입니다.");
+
 	@PostMapping("/sign-in")
 	public ResponseEntity<String> signIn(@RequestBody MemberRequest req) {
 		String email = req.getEmail();
 		String password = req.getPassword();
 
-		if (!checkPassword(password) && !isEmailFormat(email)) {
-			return ResponseEntity.badRequest().body("올바르지 않은 로그인 형식입니다.");
-		}
+		log.info("request email = {}, password = {}", email, password);
 
 		JwtToken jwtToken = memberService.signIn(email, password);
 
-		log.info("request email = {}, password = {}", email, password);
 		log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(), jwtToken.getRefreshToken());
 
 		return ResponseEntity.ok(jwtToken.getAccessToken());
@@ -47,8 +48,8 @@ public class MemberController {
 	public ResponseEntity<MemberResponse> signUp(@RequestBody MemberAddRequest req) {
 		log.info("sign up data : " + req);
 
-		if (!req.getName().equals("") && !checkPassword(req.getPassword()) && !isEmailFormat(req.getEmail())) {
-			return ResponseEntity.badRequest().body(new MemberResponse(-1L, "", "", "올바르지 않은 로그인 형식입니다."));
+		if (req.getName().equals("") || !checkPassword(req.getPassword()) || !isEmailFormat(req.getEmail())) {
+			return ResponseEntity.badRequest().body(wrongResponse);
 		}
 
 		Member mem = new Member(req.getName(), req.getEmail(), req.getPassword());
@@ -57,10 +58,16 @@ public class MemberController {
 	}
 
 	@GetMapping("/mem/{id}")
-	public MemberResponse findMember(@PathVariable("id") Long id) {
+	public ResponseEntity<MemberResponse> findMember(@PathVariable("id") Long id) {
 		log.info("받은 아이디 : " + id);
 
-		return new MemberResponse(memberService.getMemberById(id), "성공");
+		Optional<Member> member = memberService.getMemberById(id);
+
+		if (member.isPresent()) {
+			return ResponseEntity.ok(new MemberResponse(member.get(), "성공"));
+		} else {
+			return ResponseEntity.badRequest().body(wrongResponse);
+		}
 	}
 
 	private boolean checkPassword(String password) {

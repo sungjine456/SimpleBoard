@@ -1,5 +1,7 @@
 package com.example.Board.services;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +56,7 @@ public class MemberService {
         return new MemberResponse(memberRepository.save(mem), "성공");
     }
 
-    public Member getMemberById(Long id) {
-        return memberRepository.getReferenceById(id);
+    public Optional<Member> getMemberById(Long id) {
+        return memberRepository.findById(id);
     }
 }

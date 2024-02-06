@@ -20,6 +20,7 @@ import com.example.Board.DatabaseCleanUp;
 import com.example.Board.configs.jwt.JwtToken;
 import com.example.Board.domains.Member;
 import com.example.Board.modal.requests.MemberAddRequest;
+import com.example.Board.modal.requests.MemberRequest;
 import com.example.Board.modal.responses.MemberResponse;
 import com.example.Board.services.MemberService;
 
@@ -35,14 +36,13 @@ class MemberControllerTest {
     @LocalServerPort
     int serverPort;
 
-    private MemberAddRequest addSuccessReq;
-    private String name = "name";
-    private String email = "email@abc.com";
+    private MemberResponse mr;
     private String password = "password";
+    private Member member = new Member("name", "email@abc.com", password);
 
     @BeforeEach
     void beforeEach() {
-        addSuccessReq = new MemberAddRequest(name, email, password);
+        mr = memberService.signUp(member);
     }
 
     @AfterEach
@@ -50,11 +50,42 @@ class MemberControllerTest {
         databaseCleanUp.truncateAllEntity();
     }
 
-    // TODO: 로그인 테스트 필요
-    // TODO: 실패하는 테스트 필요
+    @Test
+    public void signIn() {
+        MemberRequest memberReq = new MemberRequest(member.getEmail(), password);
+        String url = String.format("http://localhost:%d/sign-in", serverPort);
+
+        ResponseEntity<String> responseEntity = testRestTemplate.postForEntity(url, memberReq,
+                String.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
 
     @Test
-    public void signUpTest() {
+    public void signIn_whenWrongPassword() {
+        MemberRequest memberReq = new MemberRequest(member.getEmail(), "wrongPassword");
+        String url = String.format("http://localhost:%d/sign-in", serverPort);
+
+        ResponseEntity<String> responseEntity = testRestTemplate.postForEntity(url, memberReq,
+                String.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    }
+
+    @Test
+    public void signIn_whenWrongEmail() {
+        MemberRequest memberReq = new MemberRequest("wrongEmail@abc.com", "password");
+        String url = String.format("http://localhost:%d/sign-in", serverPort);
+
+        ResponseEntity<String> responseEntity = testRestTemplate.postForEntity(url, memberReq,
+                String.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    }
+
+    @Test
+    public void signUp() {
+        MemberAddRequest addSuccessReq = new MemberAddRequest("newName", "newemail@abc.com", "newPassword");
         String url = String.format("http://localhost:%d/sign-up", serverPort);
 
         ResponseEntity<MemberResponse> responseEntity = testRestTemplate.postForEntity(url, addSuccessReq,
@@ -67,9 +98,47 @@ class MemberControllerTest {
     }
 
     @Test
-    public void findMemberTest() {
-        MemberResponse mr = memberService.signUp(new Member(name, email, password));
-        JwtToken jwtToken = memberService.signIn(email, password);
+    public void signUp_whenWrongName() {
+        MemberAddRequest addSuccessReq = new MemberAddRequest("", "newemail@abc.com", "newPassword");
+        String url = String.format("http://localhost:%d/sign-up", serverPort);
+
+        ResponseEntity<MemberResponse> responseEntity = testRestTemplate.postForEntity(url, addSuccessReq,
+                MemberResponse.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        MemberResponse res = responseEntity.getBody();
+        assertThat(res.getMessage()).isEqualTo("올바르지 않은 로그인 형식입니다.");
+    }
+
+    @Test
+    public void signUp_whenWrongEmail() {
+        MemberAddRequest addSuccessReq = new MemberAddRequest("newName", "wrongFormatEmail", "newPassword");
+        String url = String.format("http://localhost:%d/sign-up", serverPort);
+
+        ResponseEntity<MemberResponse> responseEntity = testRestTemplate.postForEntity(url, addSuccessReq,
+                MemberResponse.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        MemberResponse res = responseEntity.getBody();
+        assertThat(res.getMessage()).isEqualTo("올바르지 않은 로그인 형식입니다.");
+    }
+
+    @Test
+    public void signUp_whenWrongPassword() {
+        MemberAddRequest addSuccessReq = new MemberAddRequest("newName", "newemail@abc.com", "short");
+        String url = String.format("http://localhost:%d/sign-up", serverPort);
+
+        ResponseEntity<MemberResponse> responseEntity = testRestTemplate.postForEntity(url, addSuccessReq,
+                MemberResponse.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        MemberResponse res = responseEntity.getBody();
+        assertThat(res.getMessage()).isEqualTo("올바르지 않은 로그인 형식입니다.");
+    }
+
+    @Test
+    public void findMember() {
+        JwtToken jwtToken = memberService.signIn(member.getEmail(), password);
 
         String url = String.format("http://localhost:%d/mem/%d", serverPort, mr.getId());
 
@@ -83,5 +152,21 @@ class MemberControllerTest {
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody().getName()).isEqualTo("name");
         assertThat(responseEntity.getBody().getEmail()).isEqualTo("email@abc.com");
+    }
+
+    @Test
+    public void findMember_whenWrongId() {
+        JwtToken jwtToken = memberService.signIn(member.getEmail(), password);
+
+        String url = String.format("http://localhost:%d/mem/%d", serverPort, 0);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(jwtToken.getAccessToken());
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ResponseEntity<MemberResponse> responseEntity = testRestTemplate.exchange(url, HttpMethod.GET,
+                new HttpEntity<Object>(headers), MemberResponse.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 }
