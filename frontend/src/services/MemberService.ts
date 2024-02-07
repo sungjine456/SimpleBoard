@@ -10,6 +10,8 @@ class MemberService {
       .then((res) => {
         axios.defaults.headers.common["Authorization"] = `Bearer ${res.data}`;
 
+        localStorage.setItem("token", res.data);
+
         return true;
       })
       .catch((_) => {
