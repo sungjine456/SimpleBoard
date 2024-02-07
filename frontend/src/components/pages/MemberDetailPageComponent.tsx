@@ -1,7 +1,7 @@
 import { useState } from "react";
-import MemberService from "../services/MemberService";
+import MemberService from "../../services/MemberService";
 
-function MemberDetailComponent() {
+function MemberDetailPageComponent() {
   const [email, setEmail] = useState("");
 
   MemberService.findMember().then((d) => setEmail(d.email));
@@ -9,4 +9,4 @@ function MemberDetailComponent() {
   return <div>{email}</div>;
 }
 
-export default MemberDetailComponent;
+export default MemberDetailPageComponent;

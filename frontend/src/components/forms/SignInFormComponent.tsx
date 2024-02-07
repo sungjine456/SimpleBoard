@@ -1,11 +1,15 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import SignInRequest from "../models/requests/SignInRequest";
-import MemberService from "../services/MemberService";
-import "../styles/Common.css";
-import "../styles/Form.css";
+import SignInRequest from "../../models/requests/SignInRequest";
+import MemberService from "../../services/MemberService";
+import "../../styles/Common.css";
+import "../../styles/Form.css";
 
-function SignInFormComponent() {
+interface ISignInForm {
+  handler: (b: boolean) => void;
+}
+
+function SignInFormComponent({ handler }: ISignInForm) {
   let navigate = useNavigate();
 
   const {
@@ -13,7 +17,6 @@ function SignInFormComponent() {
     handleSubmit,
     formState: { isSubmitted, errors },
   } = useForm<SignInRequest>({
-    mode: "onSubmit",
     defaultValues: {
       email: "",
       password: "",
@@ -21,7 +24,7 @@ function SignInFormComponent() {
   });
 
   const onSubmit = (data: SignInRequest) => {
-    MemberService.signIn(data, navigate);
+    MemberService.signIn(data).then((b) => handler(b));
   };
 
   return (

@@ -1,8 +1,8 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import memberService from "../services/MemberService";
-import "../styles/Common.css";
-import "../styles/Form.css";
+import memberService from "../../services/MemberService";
+import "../../styles/Common.css";
+import "../../styles/Form.css";
 
 interface SignUpForm {
   name: string;
@@ -104,7 +104,6 @@ function SignUpFormComponent() {
               message: "8자리 이상 비밀번호를 사용하세요.",
             },
             validate: (pw, values) => {
-              console.log(values.password);
               return pw === values.password || "비밀번호가 일치하지 않습니다.";
             },
           })}

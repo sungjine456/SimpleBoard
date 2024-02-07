@@ -1,24 +1,21 @@
 import axios from "axios";
-import { NavigateFunction } from "react-router-dom";
 import MemberRequest from "../models/requests/MemberRequest";
 import LoginRequest from "../models/requests/SignInRequest";
 import MemberRespons from "../models/responses/MemberRespons";
 
 class MemberService {
-  signIn(member: LoginRequest, navigate: NavigateFunction) {
-    axios
+  async signIn(member: LoginRequest): Promise<boolean> {
+    return axios
       .post("http://localhost:8080/sign-in", member)
       .then((res) => {
         let data = res.data;
 
-        axios.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${data?.accessToken}`;
+        axios.defaults.headers.common["Authorization"] = `Bearer ${data}`;
 
-        navigate("/member");
+        return true;
       })
-      .catch((e) => {
-        console.log(e);
+      .catch((_) => {
+        return false;
       });
   }
 

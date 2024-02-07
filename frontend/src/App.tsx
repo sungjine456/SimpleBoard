@@ -1,8 +1,8 @@
 import { Route, Routes } from "react-router-dom";
-import MainComponent from "./components/MainComponent";
-import SignUpFormComponent from "./components/SignUpFormComponent";
+import SignUpFormComponent from "./components/forms/SignUpFormComponent";
+import MainComponent from "./components/pages/MainPageComponent";
+import MemberDetailComponent from "./components/pages/MemberDetailPageComponent";
 import "./styles/App.css";
-import MemberDetailComponent from "./components/MemberDetailComponent";
 
 function App() {
   return (
