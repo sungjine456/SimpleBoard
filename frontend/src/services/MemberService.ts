@@ -8,9 +8,7 @@ class MemberService {
     return axios
       .post("http://localhost:8080/sign-in", member)
       .then((res) => {
-        let data = res.data;
-
-        axios.defaults.headers.common["Authorization"] = `Bearer ${data}`;
+        axios.defaults.headers.common["Authorization"] = `Bearer ${res.data}`;
 
         return true;
       })
