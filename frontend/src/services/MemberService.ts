@@ -27,7 +27,7 @@ class MemberService {
     }
   }
 
-  async findMember(): Promise<MemberRespons> {
+  async findMember(id: number): Promise<MemberRespons> {
     let member: MemberRespons | PromiseLike<MemberRespons> = {
       id: -1,
       name: "-",
@@ -36,7 +36,7 @@ class MemberService {
 
     try {
       const response = await axios.get<MemberRespons>(
-        "http://localhost:8080/mem/1"
+        `http://localhost:8080/mem/${id}`
       );
 
       member = response.data;

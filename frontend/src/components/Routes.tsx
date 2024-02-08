@@ -21,7 +21,7 @@ const Routes = () => {
       <Route path="/" element={<MainPageComponent />} />
       <Route path="/signUp" element={<SignUpFormComponent />} />
       <Route element={<PrivateRoutes />}>
-        <Route path="/member" element={<MemberDetailPageComponent />} />
+        <Route path="/mem/:userId" element={<MemberDetailPageComponent />} />
       </Route>
       <Route path="*" element={<NotFoundPageComponent />} />
     </Router>

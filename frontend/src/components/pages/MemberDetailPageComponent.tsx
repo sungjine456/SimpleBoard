@@ -1,10 +1,15 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import MemberService from "../../services/MemberService";
 
 function MemberDetailPageComponent() {
   const [email, setEmail] = useState("");
+  const params = useParams();
+  const id = parseInt(params.userId ?? "-1");
 
-  MemberService.findMember().then((d) => setEmail(d.email));
+  if (id > 0) {
+    MemberService.findMember(id).then((d) => setEmail(d.email));
+  }
 
   return <div>{email}</div>;
 }
