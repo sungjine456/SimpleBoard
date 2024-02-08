@@ -1,27 +1,28 @@
-import { Route, Routes } from "react-router-dom";
-import SignUpFormComponent from "./components/forms/SignUpFormComponent";
-import MainComponent from "./components/pages/MainPageComponent";
-import MemberDetailComponent from "./components/pages/MemberDetailPageComponent";
-import "./styles/App.css";
 import axios from "axios";
+import { useContext } from "react";
+import Routes from "./components/Routes";
+import { AuthContext, AuthProvider } from "./components/contexts/AuthContext";
+import "./styles/App.css";
 
 function App() {
-  const initializeUserInfo = async () => {
+  const { setAuthenticated } = useContext(AuthContext);
+
+  const initialize = () => {
     const token = localStorage.getItem("token");
+
     if (!token) return;
 
     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    setAuthenticated(true);
   };
 
-  initializeUserInfo();
+  initialize();
 
   return (
     <div className="App">
-      <Routes>
-        <Route path="/" element={<MainComponent />} />
-        <Route path="/signUp" element={<SignUpFormComponent />} />
-        <Route path="/member" element={<MemberDetailComponent />} />
-      </Routes>
+      <AuthProvider>
+        <Routes />
+      </AuthProvider>
     </div>
   );
 }

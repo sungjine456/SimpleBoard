@@ -6,7 +6,7 @@ import "../../styles/Common.css";
 import "../../styles/Form.css";
 
 interface ISignInForm {
-  handler: (b: boolean) => void;
+  handler: () => void;
 }
 
 function SignInFormComponent({ handler }: ISignInForm) {
@@ -24,7 +24,9 @@ function SignInFormComponent({ handler }: ISignInForm) {
   });
 
   const onSubmit = (data: SignInRequest) => {
-    MemberService.signIn(data).then((b) => handler(b));
+    MemberService.signIn(data).then((b) => {
+      if (b) handler();
+    });
   };
 
   return (

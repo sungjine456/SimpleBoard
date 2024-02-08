@@ -20,7 +20,7 @@ describe("submits form of sign-in", () => {
   test("when success", async () => {
     let isSucceed = false;
 
-    render(<SignInFormComponent handler={(b) => (isSucceed = b)} />);
+    render(<SignInFormComponent handler={() => (isSucceed = true)} />);
 
     const email = screen.getByPlaceholderText("이메일");
     const password = screen.getByPlaceholderText("비밀번호");

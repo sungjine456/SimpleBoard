@@ -1,17 +1,22 @@
-import axios from "axios";
-import { useState } from "react";
+import { useContext } from "react";
+import SignOutButton from "../buttons/SignOutButton";
+import { AuthContext } from "../contexts/AuthContext";
 import SignInFormComponent from "../forms/SignInFormComponent";
 
 function MainPageComponent() {
-  const [isSignedIn, setIsSignedIn] = useState<boolean>(
-    !!axios.defaults.headers.common["Authorization"]
-  );
+  const { authenticated, setAuthenticated } = useContext(AuthContext);
+
+  const handleSignIn = () => {
+    setAuthenticated(true);
+  };
 
   return (
     <div>
-      <p>{isSignedIn}</p>
-      {isSignedIn ? null : (
-        <SignInFormComponent handler={(b) => setIsSignedIn(b)} />
+      <p>{authenticated}</p>
+      {authenticated ? (
+        <SignOutButton />
+      ) : (
+        <SignInFormComponent handler={() => handleSignIn()} />
       )}
     </div>
   );
