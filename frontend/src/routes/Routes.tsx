@@ -1,10 +1,10 @@
 import { useContext } from "react";
 import { Navigate, Outlet, Route, Routes as Router } from "react-router-dom";
-import { AuthContext } from "./contexts/AuthContext";
-import SignUpFormComponent from "./forms/SignUpFormComponent";
-import MainPageComponent from "./pages/MainPageComponent";
-import MemberDetailPageComponent from "./pages/MemberDetailPageComponent";
-import NotFoundPageComponent from "./pages/NotFoundPageComponent";
+import { AuthContext } from "../components/contexts/AuthContext";
+import SignUpFormComponent from "../components/forms/SignUpFormComponent";
+import MainPageComponent from "../components/pages/MainPageComponent";
+import MemberDetailPageComponent from "../components/pages/MemberDetailPageComponent";
+import NotFoundPageComponent from "../components/pages/NotFoundPageComponent";
 
 const PrivateRoutes = () => {
   const { authenticated } = useContext(AuthContext);

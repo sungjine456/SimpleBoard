@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useContext } from "react";
-import Routes from "./components/Routes";
+import Routes from "./routes/Routes";
 import { AuthContext, AuthProvider } from "./components/contexts/AuthContext";
 import "./styles/App.css";
 
