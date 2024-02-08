@@ -1,2 +1,19 @@
 # Simple Board Project
-### `Spring Boot` + `Hibernate` + `H2`
+
+## 적용 기술:
+
+Front-end:
+
+- `React`
+- `Typescript`
+- `Axios`
+- `Jest`
+
+Back-end:
+
+- `SpringBoot`
+- `Gradle`
+- `Hibernate`
+- `H2`
+- `log4j2`
+- `JUnit`
