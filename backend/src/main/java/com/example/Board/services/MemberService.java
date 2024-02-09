@@ -46,14 +46,18 @@ public class MemberService {
 
     @Transactional
     public MemberResponse signUp(Member mem) {
-        log.info("sign up member: {}", mem.toString());
+        log.info("sign up member: {}", mem);
 
-        String encodedPassword = passwordEncoder.encode(mem.getPassword());
+        if (!memberRepository.existsByEmail(mem.getEmail())) {
+            String encodedPassword = passwordEncoder.encode(mem.getPassword());
 
-        mem.setPassword(encodedPassword);
-        mem.addRole("USER");
+            mem.setPassword(encodedPassword);
+            mem.addRole("USER");
 
-        return new MemberResponse(memberRepository.save(mem), "성공");
+            return new MemberResponse(memberRepository.save(mem), "성공");
+        } else {
+            return new MemberResponse(-1L, "", "", "중복");
+        }
     }
 
     public Optional<Member> getMemberById(Long id) {

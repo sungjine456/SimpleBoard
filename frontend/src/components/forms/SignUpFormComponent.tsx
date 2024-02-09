@@ -17,9 +17,10 @@ function SignUpFormComponent() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { isSubmitted, errors },
   } = useForm<SignUpForm>({
-    mode: "onSubmit",
+    mode: "onBlur",
     defaultValues: {
       name: "",
       email: "",
@@ -31,7 +32,18 @@ function SignUpFormComponent() {
   const onSubmit = (data: SignUpForm) => {
     memberService
       .signUp({ name: data.name, email: data.email, password: data.password })
-      .then(() => navigate("/"));
+      .then((res) => {
+        if (res.id > 0) {
+          navigate("/");
+        } else {
+          if (res.message === "중복") {
+            setError("email", {
+              type: "manual",
+              message: "이미 존재하는 아이디입니다.",
+            });
+          }
+        }
+      });
   };
 
   return (
@@ -65,6 +77,11 @@ function SignUpFormComponent() {
               value:
                 /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i,
               message: "이메일 형식에 맞지 않습니다.",
+            },
+            validate: async (e) => {
+              if (await memberService.checkEmail(e))
+                return "이미 존재하는 아이디입니다.";
+              return;
             },
           })}
         ></input>

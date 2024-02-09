@@ -19,6 +19,7 @@ import com.example.Board.domains.Member;
 import com.example.Board.modal.requests.MemberAddRequest;
 import com.example.Board.modal.requests.MemberRequest;
 import com.example.Board.modal.responses.MemberResponse;
+import com.example.Board.repositories.MemberRepository;
 import com.example.Board.services.MemberService;
 
 @RestController
@@ -27,6 +28,8 @@ public class MemberController {
 
 	@Autowired
 	private MemberService memberService;
+	@Autowired
+	private MemberRepository memberRepository;
 
 	private MemberResponse wrongResponse = new MemberResponse(-1L, "", "", "올바르지 않은 로그인 형식입니다.");
 
@@ -39,7 +42,8 @@ public class MemberController {
 
 		JwtToken jwtToken = memberService.signIn(email, password);
 
-		log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(), jwtToken.getRefreshToken());
+		log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(),
+				jwtToken.getRefreshToken());
 
 		return ResponseEntity.ok(jwtToken.getAccessToken());
 	}
@@ -68,6 +72,13 @@ public class MemberController {
 		} else {
 			return ResponseEntity.badRequest().body(wrongResponse);
 		}
+	}
+
+	@PostMapping("checkEmail")
+	public Boolean checkEmail(@RequestBody MemberRequest req) {
+		log.info("checkEmail : {}", req.getEmail());
+
+		return memberRepository.existsByEmail(req.getEmail());
 	}
 
 	private boolean checkPassword(String password) {

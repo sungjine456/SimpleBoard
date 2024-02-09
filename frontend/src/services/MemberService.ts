@@ -19,12 +19,10 @@ class MemberService {
       });
   }
 
-  async signUp(member: MemberRequest) {
-    try {
-      await axios.post("http://localhost:8080/sign-up", member);
-    } catch (e) {
-      console.error(e);
-    }
+  async signUp(member: MemberRequest): Promise<MemberRespons> {
+    return axios
+      .post("http://localhost:8080/sign-up", member)
+      .then((body) => body.data);
   }
 
   async findMember(id: number): Promise<MemberRespons> {
@@ -32,6 +30,7 @@ class MemberService {
       id: -1,
       name: "-",
       email: "-",
+      message: "",
     };
 
     try {
@@ -45,6 +44,12 @@ class MemberService {
     }
 
     return member;
+  }
+
+  async checkEmail(email: string): Promise<boolean> {
+    return axios
+      .post("http://localhost:8080/checkEmail", { email: email })
+      .then((body) => body.data);
   }
 }
 

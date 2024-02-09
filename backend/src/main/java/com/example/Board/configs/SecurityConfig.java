@@ -31,7 +31,7 @@ public class SecurityConfig {
 				.csrf(c -> c.disable())
 				.sessionManagement(m -> m.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(req -> req
-						.requestMatchers("/sign-in", "/sign-up").permitAll()
+						.requestMatchers("/sign-in", "/sign-up", "checkEmail").permitAll()
 						.requestMatchers("/mem/**").hasRole("USER")
 						.anyRequest()
 						.authenticated())

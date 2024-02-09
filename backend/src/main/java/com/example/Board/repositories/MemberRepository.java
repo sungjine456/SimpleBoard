@@ -13,4 +13,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query(value = "select id from member where email = ?1 and password = ?2", nativeQuery = true)
     String loginCheck(String email, String password);
+
+    Boolean existsByEmail(String email);
 }

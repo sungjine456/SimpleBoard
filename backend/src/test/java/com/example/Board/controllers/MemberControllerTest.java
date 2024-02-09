@@ -16,7 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-import com.example.Board.DatabaseCleanUp;
+import com.example.Board.InitializeDBTest;
 import com.example.Board.configs.jwt.JwtToken;
 import com.example.Board.domains.Member;
 import com.example.Board.modal.requests.MemberAddRequest;
@@ -25,10 +25,8 @@ import com.example.Board.modal.responses.MemberResponse;
 import com.example.Board.services.MemberService;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class MemberControllerTest {
+class MemberControllerTest extends InitializeDBTest {
 
-    @Autowired
-    DatabaseCleanUp databaseCleanUp;
     @Autowired
     MemberService memberService;
     @Autowired
