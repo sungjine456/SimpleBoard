@@ -1,7 +1,8 @@
 import axios from "axios";
 import { useContext } from "react";
-import Routes from "./routes/Routes";
 import { AuthContext, AuthProvider } from "./components/contexts/AuthContext";
+import Header from "./components/layouts/Header";
+import Routes from "./routes/Routes";
 import "./styles/App.css";
 
 function App() {
@@ -19,9 +20,12 @@ function App() {
   initialize();
 
   return (
-    <div className="App">
+    <div className="app">
       <AuthProvider>
-        <Routes />
+        <Header />
+        <main>
+          <Routes />
+        </main>
       </AuthProvider>
     </div>
   );

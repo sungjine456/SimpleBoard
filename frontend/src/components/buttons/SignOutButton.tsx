@@ -1,14 +1,10 @@
-import axios from "axios";
-import { useContext } from "react";
-import { AuthContext } from "../contexts/AuthContext";
+import { useSignOut } from "../../services/AuthService";
 
 function SignOutButton() {
-  const { setAuthenticated } = useContext(AuthContext);
+  const signOut = useSignOut();
 
   const onClick = () => {
-    localStorage.removeItem("token");
-    setAuthenticated(false);
-    axios.defaults.headers.common["Authorization"] = "";
+    signOut();
   };
 
   return <button onClick={onClick}>로그아웃</button>;
