@@ -46,16 +46,20 @@ public class MemberController {
 	}
 
 	@PostMapping("/sign-up")
-	public ResponseEntity<MemberResponse> signUp(@RequestBody MemberAddRequest req) {
+	public ResponseEntity<String> signUp(@RequestBody MemberAddRequest req) {
 		log.info("sign-up request : " + req);
 
 		if (req.getName().equals("") || !checkPassword(req.getPassword()) || !isEmailFormat(req.getEmail())) {
-			return ResponseEntity.badRequest().body(wrongResponse);
+			return ResponseEntity.badRequest().body("실패");
 		}
 
 		Member mem = new Member(req.getName(), req.getEmail(), req.getPassword());
 
-		return ResponseEntity.ok(memberService.signUp(mem));
+		String tokenOrMsg = memberService.signUp(mem).map(t -> t.getAccessToken()).orElse("중복");
+
+		log.info("email = {}, tokenOrMsg = {} ", req.getEmail(), tokenOrMsg);
+
+		return ResponseEntity.ok(tokenOrMsg);
 	}
 
 	@GetMapping("/mem/{id}")

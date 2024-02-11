@@ -7,11 +7,7 @@ export function useSignIn(): (member: LoginRequest) => Promise<boolean> {
   return async (member: LoginRequest) => {
     try {
       const res = await axios.post("http://localhost:8080/sign-in", member);
-
-      axios.defaults.headers.common["Authorization"] = `Bearer ${res.data}`;
-
-      localStorage.setItem("token", res.data);
-
+      signIn(res.data);
       return true;
     } catch (_) {
       return false;
@@ -19,19 +15,19 @@ export function useSignIn(): (member: LoginRequest) => Promise<boolean> {
   };
 }
 
-export function useSignUp(): (member: MemberRequest) => Promise<MemberRespons> {
+export function useSignUp(): (member: MemberRequest) => Promise<string> {
   return async (member: MemberRequest) => {
     try {
       const res = await axios.post("http://localhost:8080/sign-up", member);
 
-      return res.data;
+      if (res.data === "중복") {
+        return res.data;
+      } else {
+        signIn(res.data);
+        return;
+      }
     } catch (_) {
-      return {
-        id: -1,
-        name: "-",
-        email: "-",
-        message: "",
-      };
+      return "실패";
     }
   };
 }
@@ -63,3 +59,7 @@ export function useCheckEmail(): (email: string) => Promise<boolean> {
   };
 }
 
+function signIn(token: string) {
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  localStorage.setItem("token", token);
+}

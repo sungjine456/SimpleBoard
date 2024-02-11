@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useCheckEmail, useSignUp } from "../../services/MemberService";
 import "../../styles/Common.css";
 import "../../styles/Form.css";
+import { AuthContext } from "../contexts/AuthContext";
 
 interface SignUpForm {
   name: string;
@@ -16,6 +17,7 @@ function SignUpFormComponent() {
   const navigate = useNavigate();
   const checkEmail = useCheckEmail();
   const signUp = useSignUp();
+  const { setAuthenticated } = useContext(AuthContext);
 
   const {
     register,
@@ -38,15 +40,16 @@ function SignUpFormComponent() {
       email: data.email,
       password: data.password,
     }).then((res) => {
-      if (res.id > 0) {
-        navigate("/");
+      if (res === "중복") {
+        setError("email", {
+          type: "manual",
+          message: "이미 존재하는 아이디입니다.",
+        });
+      } else if ("실패") {
+        alert("가입에 실패했습니다. 다시 시도해주세요.");
       } else {
-        if (res.message === "중복") {
-          setError("email", {
-            type: "manual",
-            message: "이미 존재하는 아이디입니다.",
-          });
-        }
+        setAuthenticated(true);
+        navigate("/");
       }
     });
   };
