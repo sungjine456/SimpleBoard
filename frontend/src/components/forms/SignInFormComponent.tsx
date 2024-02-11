@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import SignInRequest from "../../models/requests/SignInRequest";
-import MemberService from "../../services/MemberService";
+import { useSignIn } from "../../services/MemberService";
 import "../../styles/Common.css";
 import "../../styles/Form.css";
 
@@ -10,7 +10,8 @@ interface ISignInForm {
 }
 
 function SignInFormComponent({ handler }: ISignInForm) {
-  let navigate = useNavigate();
+  const navigate = useNavigate();
+  const signIn = useSignIn();
 
   const {
     register,
@@ -24,7 +25,7 @@ function SignInFormComponent({ handler }: ISignInForm) {
   });
 
   const onSubmit = (data: SignInRequest) => {
-    MemberService.signIn(data).then((b) => {
+    signIn(data).then((b) => {
       if (b) handler();
     });
   };

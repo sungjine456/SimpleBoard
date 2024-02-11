@@ -1,6 +1,7 @@
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import memberService from "../../services/MemberService";
+import { useCheckEmail, useSignUp } from "../../services/MemberService";
 import "../../styles/Common.css";
 import "../../styles/Form.css";
 
@@ -12,7 +13,9 @@ interface SignUpForm {
 }
 
 function SignUpFormComponent() {
-  let navigate = useNavigate();
+  const navigate = useNavigate();
+  const checkEmail = useCheckEmail();
+  const signUp = useSignUp();
 
   const {
     register,
@@ -30,20 +33,22 @@ function SignUpFormComponent() {
   });
 
   const onSubmit = (data: SignUpForm) => {
-    memberService
-      .signUp({ name: data.name, email: data.email, password: data.password })
-      .then((res) => {
-        if (res.id > 0) {
-          navigate("/");
-        } else {
-          if (res.message === "중복") {
-            setError("email", {
-              type: "manual",
-              message: "이미 존재하는 아이디입니다.",
-            });
-          }
+    signUp({
+      name: data.name,
+      email: data.email,
+      password: data.password,
+    }).then((res) => {
+      if (res.id > 0) {
+        navigate("/");
+      } else {
+        if (res.message === "중복") {
+          setError("email", {
+            type: "manual",
+            message: "이미 존재하는 아이디입니다.",
+          });
         }
-      });
+      }
+    });
   };
 
   return (
@@ -79,8 +84,7 @@ function SignUpFormComponent() {
               message: "이메일 형식에 맞지 않습니다.",
             },
             validate: async (e) => {
-              if (await memberService.checkEmail(e))
-                return "이미 존재하는 아이디입니다.";
+              if (await checkEmail(e)) return "이미 존재하는 아이디입니다.";
               return;
             },
           })}

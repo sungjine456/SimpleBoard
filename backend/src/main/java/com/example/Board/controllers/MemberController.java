@@ -35,12 +35,9 @@ public class MemberController {
 
 	@PostMapping("/sign-in")
 	public ResponseEntity<String> signIn(@RequestBody MemberRequest req) {
-		String email = req.getEmail();
-		String password = req.getPassword();
+		log.info("sign-in request {}", req);
 
-		log.info("request email = {}, password = {}", email, password);
-
-		JwtToken jwtToken = memberService.signIn(email, password);
+		JwtToken jwtToken = memberService.signIn(req.getEmail(), req.getPassword());
 
 		log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(),
 				jwtToken.getRefreshToken());
@@ -50,7 +47,7 @@ public class MemberController {
 
 	@PostMapping("/sign-up")
 	public ResponseEntity<MemberResponse> signUp(@RequestBody MemberAddRequest req) {
-		log.info("sign up data : " + req);
+		log.info("sign-up request : " + req);
 
 		if (req.getName().equals("") || !checkPassword(req.getPassword()) || !isEmailFormat(req.getEmail())) {
 			return ResponseEntity.badRequest().body(wrongResponse);

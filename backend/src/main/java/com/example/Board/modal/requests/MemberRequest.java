@@ -11,4 +11,9 @@ public class MemberRequest {
 
 	private String email;
 	private String password;
+
+	@Override
+	public String toString() {
+		return String.format("email = %s, password = %s", email, password);
+	}
 }

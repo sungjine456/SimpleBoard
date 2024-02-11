@@ -3,56 +3,63 @@ import MemberRequest from "../models/requests/MemberRequest";
 import LoginRequest from "../models/requests/SignInRequest";
 import MemberRespons from "../models/responses/MemberRespons";
 
-class MemberService {
-  async signIn(member: LoginRequest): Promise<boolean> {
-    return axios
-      .post("http://localhost:8080/sign-in", member)
-      .then((res) => {
-        axios.defaults.headers.common["Authorization"] = `Bearer ${res.data}`;
-
-        localStorage.setItem("token", res.data);
-
-        return true;
-      })
-      .catch((_) => {
-        return false;
-      });
-  }
-
-  async signUp(member: MemberRequest): Promise<MemberRespons> {
-    return axios
-      .post("http://localhost:8080/sign-up", member)
-      .then((body) => body.data);
-  }
-
-  async findMember(id: number): Promise<MemberRespons> {
-    let member: MemberRespons | PromiseLike<MemberRespons> = {
-      id: -1,
-      name: "-",
-      email: "-",
-      message: "",
-    };
-
+export function useSignIn(): (member: LoginRequest) => Promise<boolean> {
+  return async (member: LoginRequest) => {
     try {
-      const response = await axios.get<MemberRespons>(
-        `http://localhost:8080/mem/${id}`
-      );
+      const res = await axios.post("http://localhost:8080/sign-in", member);
 
-      member = response.data;
-    } catch (e) {
-      console.error(e);
+      axios.defaults.headers.common["Authorization"] = `Bearer ${res.data}`;
+
+      localStorage.setItem("token", res.data);
+
+      return true;
+    } catch (_) {
+      return false;
     }
-
-    return member;
-  }
-
-  async checkEmail(email: string): Promise<boolean> {
-    return axios
-      .post("http://localhost:8080/checkEmail", { email: email })
-      .then((body) => body.data);
-  }
+  };
 }
 
-const service = new MemberService();
+export function useSignUp(): (member: MemberRequest) => Promise<MemberRespons> {
+  return async (member: MemberRequest) => {
+    try {
+      const res = await axios.post("http://localhost:8080/sign-up", member);
 
-export default service;
+      return res.data;
+    } catch (_) {
+      return {
+        id: -1,
+        name: "-",
+        email: "-",
+        message: "",
+      };
+    }
+  };
+}
+
+export function useFindMember(): (id: number) => Promise<MemberRespons> {
+  return async (id: number) => {
+    try {
+      const res = await axios.get<MemberRespons>(
+        `http://localhost:8080/mem/${id}`
+      );
+      return res.data;
+    } catch (_) {
+      return {
+        id: -1,
+        name: "-",
+        email: "-",
+        message: "",
+      };
+    }
+  };
+}
+
+export function useCheckEmail(): (email: string) => Promise<boolean> {
+  return async (email: string) => {
+    const body = await axios.post("http://localhost:8080/checkEmail", {
+      email: email,
+    });
+    return body.data;
+  };
+}
+
