@@ -1,10 +1,10 @@
 import axios from "axios";
 import MemberRequest from "../models/requests/MemberRequest";
-import LoginRequest from "../models/requests/SignInRequest";
+import SignInRequest from "../models/requests/SignInRequest";
 import MemberRespons from "../models/responses/MemberRespons";
 
-export function useSignIn(): (member: LoginRequest) => Promise<boolean> {
-  return (member: LoginRequest) => {
+export function useSignIn(): (member: SignInRequest) => Promise<boolean> {
+  return (member: SignInRequest) => {
     return axios
       .post("http://localhost:8080/sign-in", member)
       .then((r) => {
