@@ -2,6 +2,8 @@ package com.example.Board.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,7 @@ import com.example.Board.domains.Member;
 import com.example.Board.modal.requests.MemberAddRequest;
 import com.example.Board.modal.requests.MemberRequest;
 import com.example.Board.modal.responses.MemberResponse;
+import com.example.Board.repositories.MemberRepository;
 import com.example.Board.services.MemberService;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -30,17 +33,20 @@ class MemberControllerTest extends InitializeDBTest {
     @Autowired
     MemberService memberService;
     @Autowired
+    MemberRepository memberRepository;
+    @Autowired
     TestRestTemplate testRestTemplate;
     @LocalServerPort
     int serverPort;
 
-    private MemberResponse mr;
+    private Optional<JwtToken> token;
     private String password = "password";
     private Member member = new Member("name", "email@abc.com", password);
 
     @BeforeEach
     void beforeEach() {
-        mr = memberService.signUp(member);
+        member.setId(1L);
+        token = memberService.signUp(member);
     }
 
     @AfterEach
@@ -86,13 +92,23 @@ class MemberControllerTest extends InitializeDBTest {
         MemberAddRequest addSuccessReq = new MemberAddRequest("newName", "newemail@abc.com", "newPassword");
         String url = String.format("http://localhost:%d/sign-up", serverPort);
 
-        ResponseEntity<MemberResponse> responseEntity = testRestTemplate.postForEntity(url, addSuccessReq,
-                MemberResponse.class);
+        ResponseEntity<String> responseEntity = testRestTemplate.postForEntity(url, addSuccessReq,
+                String.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        MemberResponse res = responseEntity.getBody();
-        assertThat(res.getName()).isEqualTo(addSuccessReq.getName());
-        assertThat(res.getEmail()).isEqualTo(addSuccessReq.getEmail());
+        assertThat(responseEntity.getBody()).isNotEmpty();
+    }
+
+    @Test
+    public void signUp_whenSameEmail() {
+        MemberAddRequest addSuccessReq = new MemberAddRequest("name", "email@abc.com", "newPassword");
+        String url = String.format("http://localhost:%d/sign-up", serverPort);
+
+        ResponseEntity<String> responseEntity = testRestTemplate.postForEntity(url, addSuccessReq,
+                String.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(responseEntity.getBody()).isEqualTo("중복");
     }
 
     @Test
@@ -100,12 +116,11 @@ class MemberControllerTest extends InitializeDBTest {
         MemberAddRequest addSuccessReq = new MemberAddRequest("", "newemail@abc.com", "newPassword");
         String url = String.format("http://localhost:%d/sign-up", serverPort);
 
-        ResponseEntity<MemberResponse> responseEntity = testRestTemplate.postForEntity(url, addSuccessReq,
-                MemberResponse.class);
+        ResponseEntity<String> responseEntity = testRestTemplate.postForEntity(url, addSuccessReq,
+                String.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        MemberResponse res = responseEntity.getBody();
-        assertThat(res.getMessage()).isEqualTo("올바르지 않은 로그인 형식입니다.");
+        assertThat(responseEntity.getBody()).isEqualTo("실패");
     }
 
     @Test
@@ -113,12 +128,11 @@ class MemberControllerTest extends InitializeDBTest {
         MemberAddRequest addSuccessReq = new MemberAddRequest("newName", "wrongFormatEmail", "newPassword");
         String url = String.format("http://localhost:%d/sign-up", serverPort);
 
-        ResponseEntity<MemberResponse> responseEntity = testRestTemplate.postForEntity(url, addSuccessReq,
-                MemberResponse.class);
+        ResponseEntity<String> responseEntity = testRestTemplate.postForEntity(url, addSuccessReq,
+                String.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        MemberResponse res = responseEntity.getBody();
-        assertThat(res.getMessage()).isEqualTo("올바르지 않은 로그인 형식입니다.");
+        assertThat(responseEntity.getBody()).isEqualTo("실패");
     }
 
     @Test
@@ -126,22 +140,21 @@ class MemberControllerTest extends InitializeDBTest {
         MemberAddRequest addSuccessReq = new MemberAddRequest("newName", "newemail@abc.com", "short");
         String url = String.format("http://localhost:%d/sign-up", serverPort);
 
-        ResponseEntity<MemberResponse> responseEntity = testRestTemplate.postForEntity(url, addSuccessReq,
-                MemberResponse.class);
+        ResponseEntity<String> responseEntity = testRestTemplate.postForEntity(url, addSuccessReq,
+                String.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        MemberResponse res = responseEntity.getBody();
-        assertThat(res.getMessage()).isEqualTo("올바르지 않은 로그인 형식입니다.");
+        assertThat(responseEntity.getBody()).isEqualTo("실패");
     }
 
     @Test
     public void findMember() {
-        JwtToken jwtToken = memberService.signIn(member.getEmail(), password);
+        memberService.signIn(member.getEmail(), password);
 
-        String url = String.format("http://localhost:%d/mem/%d", serverPort, mr.getId());
+        String url = String.format("http://localhost:%d/mem/%d", serverPort, member.getId());
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(jwtToken.getAccessToken());
+        headers.setBearerAuth(token.get().getAccessToken());
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         ResponseEntity<MemberResponse> responseEntity = testRestTemplate.exchange(url, HttpMethod.GET,

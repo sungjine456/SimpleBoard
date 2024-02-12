@@ -54,12 +54,15 @@ public class MemberController {
 		}
 
 		Member mem = new Member(req.getName(), req.getEmail(), req.getPassword());
+		Optional<JwtToken> token = memberService.signUp(mem);
 
-		String tokenOrMsg = memberService.signUp(mem).map(t -> t.getAccessToken()).orElse("중복");
+		if (token.isPresent()) {
+			log.info("email = {}, tokenOrMsg = {} ", req.getEmail(), token.get());
 
-		log.info("email = {}, tokenOrMsg = {} ", req.getEmail(), tokenOrMsg);
-
-		return ResponseEntity.ok(tokenOrMsg);
+			return ResponseEntity.ok(token.get().getAccessToken());
+		} else {
+			return ResponseEntity.badRequest().body("중복");
+		}
 	}
 
 	@GetMapping("/mem/{id}")
