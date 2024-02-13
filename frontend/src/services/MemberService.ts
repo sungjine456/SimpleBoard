@@ -1,7 +1,7 @@
 import axios from "axios";
 import MemberRequest from "../models/requests/MemberRequest";
 import SignInRequest from "../models/requests/SignInRequest";
-import MemberRespons from "../models/responses/MemberRespons";
+import MemberResponse from "../models/responses/MemberResponse";
 
 export function useSignIn(): (member: SignInRequest) => Promise<boolean> {
   return (member: SignInRequest) => {
@@ -33,10 +33,10 @@ export function useSignUp(): (member: MemberRequest) => Promise<string> {
   };
 }
 
-export function useFindMember(): (id: number) => Promise<MemberRespons> {
+export function useFindMember(): (id: number) => Promise<MemberResponse> {
   return (id: number) => {
     return axios
-      .get<MemberRespons>(`http://localhost:8080/mem/${id}`)
+      .get<MemberResponse>(`http://localhost:8080/mem/${id}`)
       .then((r) => r.data)
       .catch((_) => {
         return {

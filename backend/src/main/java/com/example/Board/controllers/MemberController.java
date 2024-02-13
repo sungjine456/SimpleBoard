@@ -45,6 +45,9 @@ public class MemberController {
 		return ResponseEntity.ok(jwtToken.getAccessToken());
 	}
 
+	/*
+	 * 가입 성공 시 로그인까지 된다
+	 */
 	@PostMapping("/sign-up")
 	public ResponseEntity<String> signUp(@RequestBody MemberAddRequest req) {
 		log.info("sign-up request : " + req);
