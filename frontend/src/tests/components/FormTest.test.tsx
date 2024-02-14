@@ -10,14 +10,18 @@ import SignUpFormComponent from "../../components/forms/SignUpFormComponent";
 const mock = new MockAdapter(axios, { delayResponse: 200 });
 const navigate = jest.fn();
 
-mock.onPost("http://localhost:8080/sign-in").reply(200, "accessToken");
-
 beforeEach(() => {
   jest.spyOn(router, "useNavigate").mockImplementation(() => navigate);
 });
 
 describe("submits form of sign-in", () => {
   test("when success", async () => {
+    const emailData = "test@abc.com";
+
+    mock
+      .onPost("http://localhost:8080/sign-in")
+      .reply(200, { token: "accessToken" });
+
     let isSucceed = false;
 
     render(<SignInFormComponent handler={() => (isSucceed = true)} />);
@@ -26,7 +30,7 @@ describe("submits form of sign-in", () => {
     const password = screen.getByPlaceholderText("비밀번호");
     const button = screen.getByRole("button", { name: "로그인" });
 
-    userEvent.type(email, "test@abc.com");
+    userEvent.type(email, emailData);
     userEvent.type(password, "Test1234");
 
     userEvent.click(button);

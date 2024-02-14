@@ -38,21 +38,27 @@ describe("useSignUp", () => {
   };
 
   test("when returned an ok", async () => {
-    mock.onPost("http://localhost:8080/sign-up").reply(200);
+    mock
+      .onPost("http://localhost:8080/sign-up")
+      .reply(200, { name: req.name, email: req.email });
     const { result } = renderHook(() => useSignUp());
 
     expect(await result.current(req)).toBeUndefined();
   });
 
   test("when returned a bad request with 중복", async () => {
-    mock.onPost("http://localhost:8080/sign-up").reply(400, "중복");
+    mock
+      .onPost("http://localhost:8080/sign-up")
+      .reply(400, { message: "중복" });
     const { result } = renderHook(() => useSignUp());
 
     expect(await result.current(req)).toBe("중복");
   });
 
   test("when returned a failure", async () => {
-    mock.onPost("http://localhost:8080/sign-up").reply(400);
+    mock
+      .onPost("http://localhost:8080/sign-up")
+      .reply(400, { message: "실패" });
     const { result } = renderHook(() => useSignUp());
 
     expect(await result.current(req)).toBe("실패");

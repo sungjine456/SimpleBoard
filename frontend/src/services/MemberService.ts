@@ -2,11 +2,13 @@ import axios from "axios";
 import MemberRequest from "../models/requests/MemberRequest";
 import SignInRequest from "../models/requests/SignInRequest";
 import MemberResponse from "../models/responses/MemberResponse";
+import SignInResponse from "../models/responses/SignInResponse";
+import storage from "../utils/Storage";
 
 export function useSignIn(): (member: SignInRequest) => Promise<boolean> {
   return (member: SignInRequest) => {
     return axios
-      .post("http://localhost:8080/sign-in", member)
+      .post<SignInResponse>("http://localhost:8080/sign-in", member)
       .then((r) => {
         signIn(r.data);
         return true;
@@ -18,14 +20,14 @@ export function useSignIn(): (member: SignInRequest) => Promise<boolean> {
 export function useSignUp(): (member: MemberRequest) => Promise<string> {
   return (member: MemberRequest) => {
     return axios
-      .post("http://localhost:8080/sign-up", member)
+      .post<SignInResponse>("http://localhost:8080/sign-up", member)
       .then((r) => {
         signIn(r.data);
         return;
       })
       .catch((e) => {
-        if (e.response?.data === "중복") {
-          return e.response?.data;
+        if (e.response?.data?.message === "중복") {
+          return e.response.data.message;
         } else {
           return "실패";
         }
@@ -59,7 +61,8 @@ export function useCheckEmail(): (email: string) => Promise<boolean> {
   };
 }
 
-function signIn(token: string) {
-  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-  localStorage.setItem("token", token);
+function signIn(res: SignInResponse) {
+  storage.set("user", { id: res.id, name: res.name, email: res.email });
+  axios.defaults.headers.common["Authorization"] = `Bearer ${res.token}`;
+  storage.set("token", res.token);
 }

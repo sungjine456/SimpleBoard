@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.example.Board.configs.jwt.JwtToken;
 import com.example.Board.configs.jwt.JwtTokenProvider;
 import com.example.Board.domains.Member;
+import com.example.Board.modal.responses.SignInResponse;
 import com.example.Board.repositories.MemberRepository;
 
 import jakarta.transaction.Transactional;
@@ -39,10 +40,10 @@ public class MemberService {
     }
 
     /*
-     * @return token or none
+     * @return response or none
      */
     @Transactional
-    public Optional<JwtToken> signUp(Member mem) {
+    public Optional<SignInResponse> signUp(Member mem) {
         log.info("sign up member: {}", mem);
 
         if (!memberRepository.existsByEmail(mem.getEmail())) {
@@ -52,9 +53,10 @@ public class MemberService {
             mem.setPassword(encodedPassword);
             mem.addRole("USER");
 
-            memberRepository.save(mem);
+            Member saveMember = memberRepository.save(mem);
+            JwtToken token = createJWTToken(mem.getUsername(), password);
 
-            return Optional.of(createJWTToken(mem.getUsername(), password));
+            return Optional.of(new SignInResponse(saveMember, token.getAccessToken()));
         } else {
             return Optional.empty();
         }

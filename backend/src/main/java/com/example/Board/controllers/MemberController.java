@@ -19,6 +19,7 @@ import com.example.Board.domains.Member;
 import com.example.Board.modal.requests.MemberAddRequest;
 import com.example.Board.modal.requests.MemberRequest;
 import com.example.Board.modal.responses.MemberResponse;
+import com.example.Board.modal.responses.SignInResponse;
 import com.example.Board.repositories.MemberRepository;
 import com.example.Board.services.MemberService;
 
@@ -34,7 +35,7 @@ public class MemberController {
 	private MemberResponse wrongResponse = new MemberResponse(-1L, "", "", "올바르지 않은 로그인 형식입니다.");
 
 	@PostMapping("/sign-in")
-	public ResponseEntity<String> signIn(@RequestBody MemberRequest req) {
+	public ResponseEntity<SignInResponse> signIn(@RequestBody MemberRequest req) {
 		log.info("sign-in request {}", req);
 
 		JwtToken jwtToken = memberService.signIn(req.getEmail(), req.getPassword());
@@ -42,29 +43,31 @@ public class MemberController {
 		log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(),
 				jwtToken.getRefreshToken());
 
-		return ResponseEntity.ok(jwtToken.getAccessToken());
+		Member member = memberRepository.findByEmail(req.getEmail()).get();
+
+		return ResponseEntity.ok(new SignInResponse(member, jwtToken.getAccessToken()));
 	}
 
 	/*
 	 * 가입 성공 시 로그인까지 된다
 	 */
 	@PostMapping("/sign-up")
-	public ResponseEntity<String> signUp(@RequestBody MemberAddRequest req) {
+	public ResponseEntity<SignInResponse> signUp(@RequestBody MemberAddRequest req) {
 		log.info("sign-up request : " + req);
 
 		if (req.getName().equals("") || !checkPassword(req.getPassword()) || !isEmailFormat(req.getEmail())) {
-			return ResponseEntity.badRequest().body("실패");
+			return ResponseEntity.badRequest().body(new SignInResponse("실패"));
 		}
 
 		Member mem = new Member(req.getName(), req.getEmail(), req.getPassword());
-		Optional<JwtToken> token = memberService.signUp(mem);
+		Optional<SignInResponse> res = memberService.signUp(mem);
 
-		if (token.isPresent()) {
-			log.info("email = {}, tokenOrMsg = {} ", req.getEmail(), token.get());
+		if (res.isPresent()) {
+			log.info("email = {}, tokenOrMsg = {} ", req.getEmail(), res.get().getToken());
 
-			return ResponseEntity.ok(token.get().getAccessToken());
+			return ResponseEntity.ok(res.get());
 		} else {
-			return ResponseEntity.badRequest().body("중복");
+			return ResponseEntity.badRequest().body(new SignInResponse("중복"));
 		}
 	}
 

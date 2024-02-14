@@ -43,7 +43,7 @@ function HambergerIcon() {
       <div id="items">
         <ul>
           <li>
-            <p onClick={() => handleMainClick("/")}>메인 홈</p>
+            <p onClick={() => handleMainClick("/my")}>내 계정</p>
           </li>
           {authenticated && (
             <li>

@@ -5,6 +5,7 @@ import SignUpFormComponent from "../components/forms/SignUpFormComponent";
 import MainPageComponent from "../components/pages/MainPageComponent";
 import MemberDetailPageComponent from "../components/pages/MemberDetailPageComponent";
 import NotFoundPageComponent from "../components/pages/NotFoundPageComponent";
+import MyPageComponent from "../components/pages/MyPageComponent";
 
 const PrivateRoutes = () => {
   const { authenticated } = useContext(AuthContext);
@@ -20,6 +21,7 @@ const Routes = () => {
     <Router>
       <Route path="/" element={<MainPageComponent />} />
       <Route path="/signUp" element={<SignUpFormComponent />} />
+      <Route path="my" element={<MyPageComponent />} />
       <Route element={<PrivateRoutes />}>
         <Route path="/mem/:userId" element={<MemberDetailPageComponent />} />
       </Route>
