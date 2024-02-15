@@ -9,17 +9,38 @@ import {
 } from "../../services/MemberService";
 import SignInRequest from "../../models/requests/SignInRequest";
 import MemberRequest from "../../models/requests/MemberRequest";
+import storage from "../../utils/Storage";
 
 const mock = new MockAdapter(axios, { delayResponse: 200 });
 
+const testName = "name";
+const testEmail = "test@abc.com";
+const testPassword = "password";
+
+beforeEach(() => {
+  localStorage.clear();
+  jest.clearAllMocks();
+});
+
 describe("useSignIn", () => {
-  const req: SignInRequest = { email: "test@abc.com", password: "password" };
+  const req: SignInRequest = { email: testEmail, password: testPassword };
 
   test("when returned an ok", async () => {
-    mock.onPost("http://localhost:8080/sign-in").reply(200, "accessToken");
+    mock.onPost("http://localhost:8080/sign-in").reply(200, {
+      name: testName,
+      email: testEmail,
+      token: "accesstoken",
+    });
     const { result } = renderHook(() => useSignIn());
 
-    expect(await result.current(req)).toBe(true);
+    const r = await result.current(req);
+    const u = storage.get("user");
+
+    expect(r).toBe(true);
+    expect(u.name).toBe(testName);
+    expect(u.email).toBe(testEmail);
+    expect(storage.get("token")).toBe("accesstoken");
+    expect(localStorage.length).toBe(2);
   });
 
   test("when returned a bad request", async () => {
@@ -32,18 +53,25 @@ describe("useSignIn", () => {
 
 describe("useSignUp", () => {
   const req: MemberRequest = {
-    name: "name",
-    email: "test@abc.com",
-    password: "password",
+    name: testName,
+    email: testEmail,
+    password: testPassword,
   };
 
   test("when returned an ok", async () => {
     mock
       .onPost("http://localhost:8080/sign-up")
-      .reply(200, { name: req.name, email: req.email });
+      .reply(200, { name: req.name, email: req.email, token: "accesstoken" });
     const { result } = renderHook(() => useSignUp());
 
-    expect(await result.current(req)).toBeUndefined();
+    const r = await result.current(req);
+    const u = storage.get("user");
+
+    expect(r).toBeUndefined();
+    expect(u.name).toBe(testName);
+    expect(u.email).toBe(testEmail);
+    expect(storage.get("token")).toBe("accesstoken");
+    expect(localStorage.length).toBe(2);
   });
 
   test("when returned a bad request with 중복", async () => {
@@ -69,8 +97,8 @@ describe("useFindMember", () => {
   const id = 1;
   const data = {
     id: id,
-    name: "name",
-    email: "test@abc.com",
+    name: testName,
+    email: testEmail,
     message: "msg",
   };
 
