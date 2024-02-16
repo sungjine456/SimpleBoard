@@ -2,8 +2,8 @@ import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useCheckEmail, useSignUp } from "../../services/MemberService";
-import "../../styles/Common.css";
-import "../../styles/Form.css";
+import "../../styles/common.css";
+import "../../styles/form.css";
 import { AuthContext } from "../contexts/AuthContext";
 
 interface SignUpForm {

@@ -2,8 +2,8 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import SignInRequest from "../../models/requests/SignInRequest";
 import { useSignIn } from "../../services/MemberService";
-import "../../styles/Common.css";
-import "../../styles/Form.css";
+import "../../styles/common.css";
+import "../../styles/form.css";
 
 interface ISignInForm {
   handler: () => void;

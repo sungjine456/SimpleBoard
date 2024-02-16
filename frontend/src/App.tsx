@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { AuthContext, AuthProvider } from "./components/contexts/AuthContext";
 import Header from "./components/layouts/Header";
 import Routes from "./routes/Routes";
-import "./styles/App.css";
+import "./styles/app.css";
 
 function App() {
   const { setAuthenticated } = useContext(AuthContext);
