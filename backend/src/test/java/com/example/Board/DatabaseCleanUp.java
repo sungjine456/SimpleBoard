@@ -1,6 +1,5 @@
 package com.example.Board;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,8 +18,9 @@ import lombok.RequiredArgsConstructor;
 public class DatabaseCleanUp implements InitializingBean {
 
     private final EntityManager entityManager;
-    private List<String> tableNames = new ArrayList<>();
+    private List<String> tableNames;
 
+    @SuppressWarnings("null")
     @Override
     public void afterPropertiesSet() throws Exception {
         tableNames = entityManager.getMetamodel().getEntities().stream()
