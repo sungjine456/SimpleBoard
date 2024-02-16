@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import "../../styles/header.css";
+import "../../styles/pages/header.css";
 import HambergerIcon from "../icons/HambergerIcon";
 
 function Header() {

@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useCheckEmail, useSignUp } from "../../services/MemberService";
 import "../../styles/common.css";
-import "../../styles/form.css";
+import "../../styles/components/form.css";
 import { AuthContext } from "../contexts/AuthContext";
 
 interface SignUpForm {

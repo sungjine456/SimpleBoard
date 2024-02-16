@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import SignInRequest from "../../models/requests/SignInRequest";
 import { useSignIn } from "../../services/MemberService";
 import "../../styles/common.css";
-import "../../styles/form.css";
+import "../../styles/components/form.css";
 
 interface ISignInForm {
   handler: () => void;
