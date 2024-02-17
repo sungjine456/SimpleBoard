@@ -66,6 +66,15 @@ public class MemberService {
         return memberRepository.findById(id);
     }
 
+    public boolean checkPassword(long id, String password) {
+        log.info("check password: id = {}, password = {}", id, password);
+
+        return memberRepository
+                .findById(id)
+                .filter(m -> passwordEncoder.matches(password, m.getPassword()))
+                .isPresent();
+    }
+
     private JwtToken createJWTToken(String username, String password) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,
                 password);

@@ -21,8 +21,9 @@ import org.springframework.http.ResponseEntity;
 import com.example.Board.InitializeDBTest;
 import com.example.Board.configs.jwt.JwtToken;
 import com.example.Board.domains.Member;
-import com.example.Board.modal.requests.MemberAddRequest;
-import com.example.Board.modal.requests.MemberRequest;
+import com.example.Board.modal.requests.MemberToEmailRequest;
+import com.example.Board.modal.requests.MemberToIdRequest;
+import com.example.Board.modal.requests.SignUpRequest;
 import com.example.Board.modal.responses.MemberResponse;
 import com.example.Board.modal.responses.SignInResponse;
 import com.example.Board.repositories.MemberRepository;
@@ -57,7 +58,7 @@ class MemberControllerTest extends InitializeDBTest {
 
     @Test
     public void signIn() {
-        MemberRequest memberReq = new MemberRequest(member.getEmail(), password);
+        MemberToEmailRequest memberReq = new MemberToEmailRequest(member.getEmail(), password);
         String url = String.format("http://localhost:%d/sign-in", serverPort);
 
         ResponseEntity<SignInResponse> responseEntity = testRestTemplate.postForEntity(url, memberReq,
@@ -68,7 +69,7 @@ class MemberControllerTest extends InitializeDBTest {
 
     @Test
     public void signIn_whenWrongPassword() {
-        MemberRequest memberReq = new MemberRequest(member.getEmail(), "wrongPassword");
+        MemberToEmailRequest memberReq = new MemberToEmailRequest(member.getEmail(), "wrongPassword");
         String url = String.format("http://localhost:%d/sign-in", serverPort);
 
         ResponseEntity<SignInResponse> responseEntity = testRestTemplate.postForEntity(url, memberReq,
@@ -79,7 +80,7 @@ class MemberControllerTest extends InitializeDBTest {
 
     @Test
     public void signIn_whenWrongEmail() {
-        MemberRequest memberReq = new MemberRequest("wrongEmail@abc.com", "password");
+        MemberToEmailRequest memberReq = new MemberToEmailRequest("wrongEmail@abc.com", "password");
         String url = String.format("http://localhost:%d/sign-in", serverPort);
 
         ResponseEntity<SignInResponse> responseEntity = testRestTemplate.postForEntity(url, memberReq,
@@ -90,7 +91,7 @@ class MemberControllerTest extends InitializeDBTest {
 
     @Test
     public void signUp() {
-        MemberAddRequest addSuccessReq = new MemberAddRequest("newName", "newemail@abc.com", "newPassword");
+        SignUpRequest addSuccessReq = new SignUpRequest("newName", "newemail@abc.com", "newPassword");
         String url = String.format("http://localhost:%d/sign-up", serverPort);
 
         ResponseEntity<SignInResponse> responseEntity = testRestTemplate.postForEntity(url, addSuccessReq,
@@ -103,7 +104,7 @@ class MemberControllerTest extends InitializeDBTest {
 
     @Test
     public void signUp_whenSameEmail() {
-        MemberAddRequest addSuccessReq = new MemberAddRequest("name", "email@abc.com", "newPassword");
+        SignUpRequest addSuccessReq = new SignUpRequest("name", "email@abc.com", "newPassword");
         String url = String.format("http://localhost:%d/sign-up", serverPort);
 
         ResponseEntity<SignInResponse> responseEntity = testRestTemplate.postForEntity(url, addSuccessReq,
@@ -115,7 +116,7 @@ class MemberControllerTest extends InitializeDBTest {
 
     @Test
     public void signUp_whenWrongName() {
-        MemberAddRequest addSuccessReq = new MemberAddRequest("", "newemail@abc.com", "newPassword");
+        SignUpRequest addSuccessReq = new SignUpRequest("", "newemail@abc.com", "newPassword");
         String url = String.format("http://localhost:%d/sign-up", serverPort);
 
         ResponseEntity<SignInResponse> responseEntity = testRestTemplate.postForEntity(url, addSuccessReq,
@@ -127,7 +128,7 @@ class MemberControllerTest extends InitializeDBTest {
 
     @Test
     public void signUp_whenWrongEmail() {
-        MemberAddRequest addSuccessReq = new MemberAddRequest("newName", "wrongFormatEmail", "newPassword");
+        SignUpRequest addSuccessReq = new SignUpRequest("newName", "wrongFormatEmail", "newPassword");
         String url = String.format("http://localhost:%d/sign-up", serverPort);
 
         ResponseEntity<SignInResponse> responseEntity = testRestTemplate.postForEntity(url, addSuccessReq,
@@ -139,7 +140,7 @@ class MemberControllerTest extends InitializeDBTest {
 
     @Test
     public void signUp_whenWrongPassword() {
-        MemberAddRequest addSuccessReq = new MemberAddRequest("newName", "newemail@abc.com", "short");
+        SignUpRequest addSuccessReq = new SignUpRequest("newName", "newemail@abc.com", "short");
         String url = String.format("http://localhost:%d/sign-up", serverPort);
 
         ResponseEntity<SignInResponse> responseEntity = testRestTemplate.postForEntity(url, addSuccessReq,
@@ -181,5 +182,62 @@ class MemberControllerTest extends InitializeDBTest {
                 new HttpEntity<Object>(headers), MemberResponse.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    public void verifyIdentity() {
+        memberService.signIn(member.getEmail(), password);
+
+        MemberToIdRequest req = new MemberToIdRequest(member.getId(), password);
+
+        String url = String.format("http://localhost:%d/my/check", serverPort);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token.get());
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ResponseEntity<Boolean> responseEntity = testRestTemplate.exchange(url, HttpMethod.POST,
+                new HttpEntity<Object>(req, headers), Boolean.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).isTrue();
+    }
+
+    @Test
+    public void verifyIdentity_whenWrongId() {
+        memberService.signIn(member.getEmail(), password);
+
+        MemberToIdRequest req = new MemberToIdRequest(-1l, password);
+
+        String url = String.format("http://localhost:%d/my/check", serverPort);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token.get());
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ResponseEntity<Boolean> responseEntity = testRestTemplate.exchange(url, HttpMethod.POST,
+                new HttpEntity<Object>(req, headers), Boolean.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).isFalse();
+    }
+
+    @Test
+    public void verifyIdentity_whenWrongPassword() {
+        memberService.signIn(member.getEmail(), password);
+
+        MemberToIdRequest req = new MemberToIdRequest(member.getId(), "wrongPassword");
+
+        String url = String.format("http://localhost:%d/my/check", serverPort);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token.get());
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ResponseEntity<Boolean> responseEntity = testRestTemplate.exchange(url, HttpMethod.POST,
+                new HttpEntity<Object>(req, headers), Boolean.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).isFalse();
     }
 }

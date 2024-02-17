@@ -7,14 +7,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberAddRequest {
+public class MemberToEmailRequest {
 
-	private String name;
 	private String email;
 	private String password;
 
 	@Override
 	public String toString() {
-		return String.format("이름: %s, 이메일: %s", name, email);
+		return String.format("email = %s, password = %s", email, password);
 	}
 }

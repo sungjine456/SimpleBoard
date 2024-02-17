@@ -7,13 +7,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberRequest {
+public class MemberToIdRequest {
 
-	private String email;
+	private long id;
 	private String password;
 
 	@Override
 	public String toString() {
-		return String.format("email = %s, password = %s", email, password);
+		return String.format("email = %d, password = %s", id, password);
 	}
 }

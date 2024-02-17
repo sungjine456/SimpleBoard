@@ -16,8 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Board.configs.jwt.JwtToken;
 import com.example.Board.domains.Member;
-import com.example.Board.modal.requests.MemberAddRequest;
-import com.example.Board.modal.requests.MemberRequest;
+import com.example.Board.modal.requests.MemberToEmailRequest;
+import com.example.Board.modal.requests.MemberToIdRequest;
+import com.example.Board.modal.requests.SignUpRequest;
 import com.example.Board.modal.responses.MemberResponse;
 import com.example.Board.modal.responses.SignInResponse;
 import com.example.Board.repositories.MemberRepository;
@@ -35,7 +36,7 @@ public class MemberController {
 	private MemberResponse wrongResponse = new MemberResponse(-1L, "", "", "올바르지 않은 로그인 형식입니다.");
 
 	@PostMapping("/sign-in")
-	public ResponseEntity<SignInResponse> signIn(@RequestBody MemberRequest req) {
+	public ResponseEntity<SignInResponse> signIn(@RequestBody MemberToEmailRequest req) {
 		log.info("sign-in request {}", req);
 
 		JwtToken jwtToken = memberService.signIn(req.getEmail(), req.getPassword());
@@ -52,7 +53,7 @@ public class MemberController {
 	 * 가입 성공 시 로그인까지 된다
 	 */
 	@PostMapping("/sign-up")
-	public ResponseEntity<SignInResponse> signUp(@RequestBody MemberAddRequest req) {
+	public ResponseEntity<SignInResponse> signUp(@RequestBody SignUpRequest req) {
 		log.info("sign-up request : " + req);
 
 		if (req.getName().equals("") || !checkPassword(req.getPassword()) || !isEmailFormat(req.getEmail())) {
@@ -85,10 +86,17 @@ public class MemberController {
 	}
 
 	@PostMapping("checkEmail")
-	public Boolean checkEmail(@RequestBody MemberRequest req) {
+	public Boolean checkEmail(@RequestBody MemberToEmailRequest req) {
 		log.info("checkEmail : {}", req.getEmail());
 
 		return memberRepository.existsByEmail(req.getEmail());
+	}
+
+	@PostMapping("/my/check")
+	public Boolean verifyIdentity(@RequestBody MemberToIdRequest req) {
+		log.info("checkPassword : {}", req);
+
+		return memberService.checkPassword(req.getId(), req.getPassword());
 	}
 
 	private boolean checkPassword(String password) {
