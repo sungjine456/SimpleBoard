@@ -1,12 +1,15 @@
 import axios from "axios";
-import MemberRequest from "../models/requests/MemberRequest";
-import SignInRequest from "../models/requests/SignInRequest";
+import MemberToEmailRequest from "../models/requests/MemberToEmailRequest";
+import MemberToIdRequest from "../models/requests/MemberToIdRequest";
+import SignUpRequest from "../models/requests/SignUpRequest";
 import MemberResponse from "../models/responses/MemberResponse";
 import SignInResponse from "../models/responses/SignInResponse";
 import storage from "../utils/Storage";
 
-export function useSignIn(): (member: SignInRequest) => Promise<boolean> {
-  return (member: SignInRequest) => {
+export function useSignIn(): (
+  member: MemberToEmailRequest
+) => Promise<boolean> {
+  return (member: MemberToEmailRequest) => {
     return axios
       .post<SignInResponse>("http://localhost:8080/sign-in", member)
       .then((r) => {
@@ -17,8 +20,8 @@ export function useSignIn(): (member: SignInRequest) => Promise<boolean> {
   };
 }
 
-export function useSignUp(): (member: MemberRequest) => Promise<string> {
-  return (member: MemberRequest) => {
+export function useSignUp(): (member: SignUpRequest) => Promise<string> {
+  return (member: SignUpRequest) => {
     return axios
       .post<SignInResponse>("http://localhost:8080/sign-up", member)
       .then((r) => {
@@ -57,6 +60,16 @@ export function useCheckEmail(): (email: string) => Promise<boolean> {
       .post("http://localhost:8080/checkEmail", {
         email: email,
       })
+      .then((b) => b.data);
+  };
+}
+
+export function useVerifyIdentity(): (
+  member: MemberToIdRequest
+) => Promise<boolean> {
+  return (member: MemberToIdRequest) => {
+    return axios
+      .post("http://localhost:8080/my/check", member)
       .then((b) => b.data);
   };
 }

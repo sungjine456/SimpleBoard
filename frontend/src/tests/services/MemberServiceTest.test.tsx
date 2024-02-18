@@ -1,14 +1,15 @@
 import { renderHook } from "@testing-library/react";
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
+import MemberToEmailRequest from "../../models/requests/MemberToEmailRequest";
+import SignUpRequest from "../../models/requests/SignUpRequest";
 import {
   useCheckEmail,
   useFindMember,
   useSignIn,
   useSignUp,
+  useVerifyIdentity,
 } from "../../services/MemberService";
-import SignInRequest from "../../models/requests/SignInRequest";
-import MemberRequest from "../../models/requests/MemberRequest";
 import storage from "../../utils/Storage";
 
 const mock = new MockAdapter(axios, { delayResponse: 200 });
@@ -23,7 +24,10 @@ beforeEach(() => {
 });
 
 describe("useSignIn", () => {
-  const req: SignInRequest = { email: testEmail, password: testPassword };
+  const req: MemberToEmailRequest = {
+    email: testEmail,
+    password: testPassword,
+  };
 
   test("when returned an ok", async () => {
     mock.onPost("http://localhost:8080/sign-in").reply(200, {
@@ -52,7 +56,7 @@ describe("useSignIn", () => {
 });
 
 describe("useSignUp", () => {
-  const req: MemberRequest = {
+  const req: SignUpRequest = {
     name: testName,
     email: testEmail,
     password: testPassword,
@@ -128,5 +132,14 @@ describe("useCheckEmail", () => {
     const { result } = renderHook(() => useCheckEmail());
 
     expect(await result.current("email")).toBe(true);
+  });
+});
+
+describe("useVerifyIdentity", () => {
+  test("when returned an ok", async () => {
+    mock.onPost("http://localhost:8080/my/check").reply(200, true);
+    const { result } = renderHook(() => useVerifyIdentity());
+
+    expect(await result.current({ id: 1, password: testPassword })).toBe(true);
   });
 });

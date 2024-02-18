@@ -1,7 +1,7 @@
-interface MemberRequest {
+interface SignUpRequest {
   name: string;
   email: string;
   password: string;
 }
 
-export default MemberRequest;
+export default SignUpRequest;

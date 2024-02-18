@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import SignInRequest from "../../models/requests/SignInRequest";
+import MemberToEmailRequest from "../../models/requests/MemberToEmailRequest";
 import { useSignIn } from "../../services/MemberService";
 import "../../styles/common.css";
 import "../../styles/components/form.css";
@@ -17,14 +17,14 @@ function SignInFormComponent({ handler }: ISignInForm) {
     register,
     handleSubmit,
     formState: { isSubmitted, errors },
-  } = useForm<SignInRequest>({
+  } = useForm<MemberToEmailRequest>({
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const onSubmit = (data: SignInRequest) => {
+  const onSubmit = (data: MemberToEmailRequest) => {
     signIn(data).then((b) => {
       if (b) handler();
     });
