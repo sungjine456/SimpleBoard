@@ -3,11 +3,10 @@ import { useContext } from "react";
 import { AuthContext } from "../components/contexts/AuthContext";
 
 export function useSignOut() {
-  const { setAuthenticated } = useContext(AuthContext);
+  const { signOut } = useContext(AuthContext);
 
   return () => {
     localStorage.removeItem("token");
-    setAuthenticated(false);
-    axios.defaults.headers.common["Authorization"] = "";
+    signOut();
   };
 }

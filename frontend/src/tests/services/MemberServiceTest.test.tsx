@@ -1,6 +1,7 @@
-import { renderHook } from "@testing-library/react";
+import { renderHook, waitFor } from "@testing-library/react";
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
+import { AuthProvider } from "../../components/contexts/AuthContext";
 import MemberToEmailRequest from "../../models/requests/MemberToEmailRequest";
 import SignUpRequest from "../../models/requests/SignUpRequest";
 import {
@@ -10,7 +11,6 @@ import {
   useSignUp,
   useVerifyIdentity,
 } from "../../services/MemberService";
-import storage from "../../utils/Storage";
 
 const mock = new MockAdapter(axios, { delayResponse: 200 });
 
@@ -33,18 +33,24 @@ describe("useSignIn", () => {
     mock.onPost("http://localhost:8080/sign-in").reply(200, {
       name: testName,
       email: testEmail,
-      token: "accesstoken",
+      token: "accessToken",
     });
-    const { result } = renderHook(() => useSignIn());
 
-    const r = await result.current(req);
-    const u = storage.get("user");
+    const Wrapper = ({ children }: { children: React.ReactNode }) => {
+      return <AuthProvider>{children}</AuthProvider>;
+    };
 
-    expect(r).toBe(true);
-    expect(u.name).toBe(testName);
-    expect(u.email).toBe(testEmail);
-    expect(storage.get("token")).toBe("accesstoken");
-    expect(localStorage.length).toBe(2);
+    const { result } = renderHook(() => useSignIn(), {
+      wrapper: Wrapper,
+    });
+
+    await waitFor(() => {
+      expect(result.current(req)).resolves.toBe(true);
+      expect(axios.defaults.headers.common["Authorization"]).toBe(
+        "Bearer accessToken"
+      );
+    });
+    // TODO: storage, context의 데이터 테스트 추가
   });
 
   test("when returned a bad request", async () => {
@@ -65,17 +71,23 @@ describe("useSignUp", () => {
   test("when returned an ok", async () => {
     mock
       .onPost("http://localhost:8080/sign-up")
-      .reply(200, { name: req.name, email: req.email, token: "accesstoken" });
-    const { result } = renderHook(() => useSignUp());
+      .reply(200, { name: req.name, email: req.email, token: "accessToken" });
 
-    const r = await result.current(req);
-    const u = storage.get("user");
+    const Wrapper = ({ children }: { children: React.ReactNode }) => {
+      return <AuthProvider>{children}</AuthProvider>;
+    };
 
-    expect(r).toBeUndefined();
-    expect(u.name).toBe(testName);
-    expect(u.email).toBe(testEmail);
-    expect(storage.get("token")).toBe("accesstoken");
-    expect(localStorage.length).toBe(2);
+    const { result } = renderHook(() => useSignUp(), {
+      wrapper: Wrapper,
+    });
+
+    await waitFor(() => {
+      expect(result.current(req)).resolves.toBeUndefined();
+      expect(axios.defaults.headers.common["Authorization"]).toBe(
+        "Bearer accessToken"
+      );
+    });
+    // TODO: storage, context의 데이터 테스트 추가
   });
 
   test("when returned a bad request with 중복", async () => {

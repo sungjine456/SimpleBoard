@@ -5,11 +5,7 @@ import { useSignIn } from "../../services/MemberService";
 import "../../styles/common.css";
 import "../../styles/components/form.css";
 
-interface ISignInForm {
-  handler: () => void;
-}
-
-function SignInFormComponent({ handler }: ISignInForm) {
+function SignInFormComponent() {
   const navigate = useNavigate();
   const signIn = useSignIn();
 
@@ -25,9 +21,7 @@ function SignInFormComponent({ handler }: ISignInForm) {
   });
 
   const onSubmit = (data: MemberToEmailRequest) => {
-    signIn(data).then((b) => {
-      if (b) handler();
-    });
+    signIn(data);
   };
 
   return (

@@ -2,6 +2,7 @@ import axios from "axios";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
+import { AuthProvider } from "./components/contexts/AuthContext";
 import reportWebVitals from "./reportWebVitals";
 import "./styles/pages/index.css";
 
@@ -14,7 +15,9 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <BrowserRouter>
-    <App />
+    <AuthProvider>
+      <App />
+    </AuthProvider>
   </BrowserRouter>
 );
 

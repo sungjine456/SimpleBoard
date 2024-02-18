@@ -4,20 +4,12 @@ import { AuthContext } from "../contexts/AuthContext";
 import SignInFormComponent from "../forms/SignInFormComponent";
 
 function MainPageComponent() {
-  const { authenticated, setAuthenticated } = useContext(AuthContext);
-
-  const handleSignIn = () => {
-    setAuthenticated(true);
-  };
+  const { authenticated } = useContext(AuthContext);
 
   return (
     <div>
       <p>{authenticated}</p>
-      {authenticated ? (
-        <SignOutButton />
-      ) : (
-        <SignInFormComponent handler={() => handleSignIn()} />
-      )}
+      {authenticated ? <SignOutButton /> : <SignInFormComponent />}
     </div>
   );
 }

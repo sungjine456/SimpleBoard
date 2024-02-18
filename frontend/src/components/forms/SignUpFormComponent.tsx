@@ -1,10 +1,8 @@
-import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useCheckEmail, useSignUp } from "../../services/MemberService";
 import "../../styles/common.css";
 import "../../styles/components/form.css";
-import { AuthContext } from "../contexts/AuthContext";
 
 interface SignUpForm {
   name: string;
@@ -17,7 +15,6 @@ function SignUpFormComponent() {
   const navigate = useNavigate();
   const checkEmail = useCheckEmail();
   const signUp = useSignUp();
-  const { setAuthenticated } = useContext(AuthContext);
 
   const {
     register,
@@ -48,7 +45,6 @@ function SignUpFormComponent() {
       } else if (res === "실패") {
         alert("가입에 실패했습니다. 다시 시도해주세요.");
       } else {
-        setAuthenticated(true);
         navigate("/");
       }
     });

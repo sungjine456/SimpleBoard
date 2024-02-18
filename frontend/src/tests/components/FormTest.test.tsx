@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import * as router from "react-router";
+import { AuthProvider } from "../../components/contexts/AuthContext";
 import SignInFormComponent from "../../components/forms/SignInFormComponent";
 import SignUpFormComponent from "../../components/forms/SignUpFormComponent";
 
@@ -22,9 +23,11 @@ describe("submits form of sign-in", () => {
       .onPost("http://localhost:8080/sign-in")
       .reply(200, { token: "accessToken" });
 
-    let isSucceed = false;
-
-    render(<SignInFormComponent handler={() => (isSucceed = true)} />);
+    render(
+      <AuthProvider>
+        <SignInFormComponent />
+      </AuthProvider>
+    );
 
     const email = screen.getByPlaceholderText("이메일");
     const password = screen.getByPlaceholderText("비밀번호");
@@ -38,7 +41,6 @@ describe("submits form of sign-in", () => {
     await screen.findByRole("button", { name: "로그인" });
 
     await waitFor(() => {
-      expect(isSucceed).toBe(true);
       expect(axios.defaults.headers.common["Authorization"]).toBe(
         "Bearer accessToken"
       );
@@ -46,7 +48,7 @@ describe("submits form of sign-in", () => {
   });
 
   test("when empty email", async () => {
-    render(<SignInFormComponent handler={() => {}} />);
+    render(<SignInFormComponent />);
 
     const email = screen.getByPlaceholderText("이메일");
     const password = screen.getByPlaceholderText("비밀번호");
@@ -69,7 +71,7 @@ describe("submits form of sign-in", () => {
   });
 
   test("when whrong email", async () => {
-    render(<SignInFormComponent handler={() => {}} />);
+    render(<SignInFormComponent />);
 
     const email = screen.getByPlaceholderText("이메일");
     const password = screen.getByPlaceholderText("비밀번호");
@@ -92,7 +94,7 @@ describe("submits form of sign-in", () => {
   });
 
   test("when empty password", async () => {
-    render(<SignInFormComponent handler={() => {}} />);
+    render(<SignInFormComponent />);
 
     const email = screen.getByPlaceholderText("이메일");
     const password = screen.getByPlaceholderText("비밀번호");
@@ -115,7 +117,7 @@ describe("submits form of sign-in", () => {
   });
 
   test("when short password", async () => {
-    render(<SignInFormComponent handler={() => {}} />);
+    render(<SignInFormComponent />);
 
     const email = screen.getByPlaceholderText("이메일");
     const password = screen.getByPlaceholderText("비밀번호");
@@ -138,7 +140,7 @@ describe("submits form of sign-in", () => {
   });
 
   test("when wrong email and short password", async () => {
-    render(<SignInFormComponent handler={() => {}} />);
+    render(<SignInFormComponent />);
 
     const email = screen.getByPlaceholderText("이메일");
     const password = screen.getByPlaceholderText("비밀번호");

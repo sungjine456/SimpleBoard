@@ -1,14 +1,17 @@
 import axios from "axios";
+import { useContext } from "react";
+import { AuthContext } from "../components/contexts/AuthContext";
 import MemberToEmailRequest from "../models/requests/MemberToEmailRequest";
 import MemberToIdRequest from "../models/requests/MemberToIdRequest";
 import SignUpRequest from "../models/requests/SignUpRequest";
 import MemberResponse from "../models/responses/MemberResponse";
 import SignInResponse from "../models/responses/SignInResponse";
-import storage from "../utils/Storage";
 
 export function useSignIn(): (
   member: MemberToEmailRequest
 ) => Promise<boolean> {
+  const { signIn } = useContext(AuthContext);
+
   return (member: MemberToEmailRequest) => {
     return axios
       .post<SignInResponse>("http://localhost:8080/sign-in", member)
@@ -21,6 +24,8 @@ export function useSignIn(): (
 }
 
 export function useSignUp(): (member: SignUpRequest) => Promise<string> {
+  const { signIn } = useContext(AuthContext);
+
   return (member: SignUpRequest) => {
     return axios
       .post<SignInResponse>("http://localhost:8080/sign-up", member)
@@ -72,10 +77,4 @@ export function useVerifyIdentity(): (
       .post("http://localhost:8080/my/check", member)
       .then((b) => b.data);
   };
-}
-
-function signIn(res: SignInResponse) {
-  storage.set("user", { id: res.id, name: res.name, email: res.email });
-  axios.defaults.headers.common["Authorization"] = `Bearer ${res.token}`;
-  storage.set("token", res.token);
 }
