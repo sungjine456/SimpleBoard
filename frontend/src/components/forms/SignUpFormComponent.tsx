@@ -51,7 +51,7 @@ function SignUpFormComponent() {
   };
 
   return (
-    <div className="form">
+    <form>
       <div>
         <label>이름</label>
         <input
@@ -135,12 +135,12 @@ function SignUpFormComponent() {
       )}
       <button
         className="btn btn-light align-self-end"
-        type="button"
+        type="submit"
         onClick={handleSubmit(onSubmit)}
       >
         가입하기
       </button>
-    </div>
+    </form>
   );
 }
 

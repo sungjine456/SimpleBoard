@@ -39,7 +39,7 @@ function PasswordCheckComponent() {
   return (
     <div>
       <div className="title">비밀번호 재확인</div>
-      <div className="form">
+      <form>
         <div>
           <label>비밀번호</label>
           <input
@@ -69,7 +69,7 @@ function PasswordCheckComponent() {
             확인
           </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 }

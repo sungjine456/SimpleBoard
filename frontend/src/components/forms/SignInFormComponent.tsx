@@ -25,7 +25,7 @@ function SignInFormComponent() {
   };
 
   return (
-    <div className="form">
+    <form>
       <div>
         <label>이메일</label>
         <input
@@ -66,16 +66,20 @@ function SignInFormComponent() {
       <div className="buttons">
         <button
           className="btn btn-light"
-          type="button"
+          type="submit"
           onClick={handleSubmit(onSubmit)}
         >
           로그인
         </button>
-        <button className="btn btn-light" onClick={() => navigate("/signUp")}>
+        <button
+          className="btn btn-light"
+          type="button"
+          onClick={() => navigate("/signUp")}
+        >
           가입하기
         </button>
       </div>
-    </div>
+    </form>
   );
 }
 

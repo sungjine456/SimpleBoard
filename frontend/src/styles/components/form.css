@@ -1,32 +1,32 @@
-.form {
+form {
   display: flex;
   flex-direction: column;
 }
 
-.form div {
+form div {
   display: flex;
   align-items: center;
   width: 310px;
 }
 
-.form div label {
+form div label {
   font-size: 22px;
   word-break: keep-all;
 }
 
-.form div input {
+form div input {
   width: 180px;
   height: 24px;
   margin-left: auto;
   font-size: 20px;
 }
 
-.form button {
+form button {
   height: 35px;
   font-size: 17px;
 }
 
-.form .buttons {
+form .buttons {
   justify-content: end;
 }
 
