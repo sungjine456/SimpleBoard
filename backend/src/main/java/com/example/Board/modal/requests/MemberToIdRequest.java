@@ -14,6 +14,6 @@ public class MemberToIdRequest {
 
 	@Override
 	public String toString() {
-		return String.format("email = %d, password = %s", id, password);
+		return String.format("아이디 = %d, 비밀번호 = %s", id, password);
 	}
 }

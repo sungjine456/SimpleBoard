@@ -1,7 +1,8 @@
-import { useSignOut } from "../../services/AuthService";
+import { useContext } from "react";
+import { AuthContext } from "../contexts/AuthContext";
 
 function SignOutButton() {
-  const signOut = useSignOut();
+  const { signOut } = useContext(AuthContext);
 
   const onClick = () => {
     signOut();

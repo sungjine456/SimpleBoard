@@ -14,6 +14,6 @@ public class MemberToEmailRequest {
 
 	@Override
 	public String toString() {
-		return String.format("email = %s, password = %s", email, password);
+		return String.format("이메일 = %s, 비밀번호 = %s", email, password);
 	}
 }

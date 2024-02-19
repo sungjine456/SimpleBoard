@@ -48,7 +48,7 @@ const AuthProvider = ({ children }: { children?: ReactNode }) => {
   const setTokenHandler = (token: string) => {
     setToken(token);
 
-    if (token != "") {
+    if (token !== "") {
       storage.set("token", token);
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     } else {

@@ -1,15 +1,13 @@
 import { useContext, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSignOut } from "../../services/AuthService";
 import "../../styles/components/icons.css";
 import { AuthContext } from "../contexts/AuthContext";
 
 function HambergerIcon() {
   const [checked, setChecked] = useState(false);
   const navigate = useNavigate();
-  const signOut = useSignOut();
+  const { authenticated, signOut } = useContext(AuthContext);
 
-  const { authenticated } = useContext(AuthContext);
   const icon = useRef<HTMLInputElement>(null);
 
   const handleMainClick = (path: string) => {

@@ -1,9 +1,11 @@
+import { useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "../../styles/components/table.css";
 import "../../styles/pages/my-page.css";
-import storage from "../../utils/Storage";
+import { AuthContext } from "../contexts/AuthContext";
 
 function MyPageComponent() {
+  const { member } = useContext(AuthContext);
   const { state } = useLocation();
   const navigate = useNavigate();
 
@@ -12,8 +14,6 @@ function MyPageComponent() {
   if (state != null && state.success) {
     success = state.success;
   }
-
-  const user = storage.get("user");
 
   const update = () => {
     navigate("/"); //TODO Update 기능 추가
@@ -31,11 +31,11 @@ function MyPageComponent() {
           <tbody>
             <tr>
               <th>이름</th>
-              <td>{user.name}</td>
+              <td>{member.name}</td>
             </tr>
             <tr>
               <th>이메일</th>
-              <td>{user.email}</td>
+              <td>{member.email}</td>
             </tr>
             <tr>
               <th>비밀번호</th>
@@ -48,13 +48,13 @@ function MyPageComponent() {
             <tr>
               <th>이름</th>
               <td>
-                <input defaultValue={user.name} />
+                <input defaultValue={member.name} />
               </td>
             </tr>
             <tr>
               <th>이메일</th>
               <td>
-                <input defaultValue={user.email} />
+                <input defaultValue={member.email} />
               </td>
             </tr>
             <tr>

@@ -4,15 +4,14 @@ import { AuthContext } from "../components/contexts/AuthContext";
 import SignUpFormComponent from "../components/forms/SignUpFormComponent";
 import MainPageComponent from "../components/pages/MainPageComponent";
 import MemberDetailPageComponent from "../components/pages/MemberDetailPageComponent";
-import NotFoundPageComponent from "../components/pages/NotFoundPageComponent";
 import MyPageComponent from "../components/pages/MyPageComponent";
+import NotFoundPageComponent from "../components/pages/NotFoundPageComponent";
 import PasswordCheckComponent from "../components/pages/PasswordCheckComponent";
 
 const PrivateRoutes = () => {
-  const { authenticated } = useContext(AuthContext);
+  const { token, authenticated } = useContext(AuthContext);
 
-  if (!authenticated && !localStorage.getItem("token"))
-    return <Navigate to="/" replace />;
+  if (!authenticated && token) return <Navigate to="/" replace />;
 
   return <Outlet />;
 };
