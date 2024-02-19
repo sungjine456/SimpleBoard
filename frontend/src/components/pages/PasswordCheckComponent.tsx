@@ -1,9 +1,10 @@
+import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useVerifyIdentity } from "../../services/MemberService";
 import "../../styles/common.css";
 import "../../styles/components/form.css";
-import storage from "../../utils/Storage";
+import { AuthContext } from "../contexts/AuthContext";
 
 interface CheckForm {
   password: string;
@@ -12,6 +13,7 @@ interface CheckForm {
 function PasswordCheckComponent() {
   const navigate = useNavigate();
   const verifyIdentity = useVerifyIdentity();
+  const { member } = useContext(AuthContext);
 
   const {
     register,
@@ -25,7 +27,7 @@ function PasswordCheckComponent() {
 
   const onSubmit = (data: CheckForm) => {
     verifyIdentity({
-      id: storage.get("user").id,
+      id: member.id,
       password: data.password,
     }).then((b) => {
       if (b) {
