@@ -62,6 +62,16 @@ public class MemberService {
         }
     }
 
+    @Transactional
+    public Boolean updateMember(Long id, String name) {
+        log.info("update member: id = {}, name = {}", id, name);
+
+        return memberRepository.findById(id).map(m -> {
+            m.setName(name);
+            return m;
+        }).isPresent();
+    }
+
     public Optional<Member> getMemberById(Long id) {
         return memberRepository.findById(id);
     }

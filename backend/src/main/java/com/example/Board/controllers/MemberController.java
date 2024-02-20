@@ -19,6 +19,7 @@ import com.example.Board.domains.Member;
 import com.example.Board.modal.requests.MemberToEmailRequest;
 import com.example.Board.modal.requests.MemberToIdRequest;
 import com.example.Board.modal.requests.SignUpRequest;
+import com.example.Board.modal.requests.UpdateRequest;
 import com.example.Board.modal.responses.MemberResponse;
 import com.example.Board.modal.responses.SignInResponse;
 import com.example.Board.repositories.MemberRepository;
@@ -90,6 +91,13 @@ public class MemberController {
 		log.info("checkEmail : {}", req.getEmail());
 
 		return memberRepository.existsByEmail(req.getEmail());
+	}
+
+	@PostMapping("/my")
+	public Boolean updateMember(@RequestBody UpdateRequest req) {
+		log.info("updateMember : {}", req);
+
+		return memberService.updateMember(req.getId(), req.getName());
 	}
 
 	@PostMapping("/my/check")

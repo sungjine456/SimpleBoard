@@ -2,6 +2,8 @@ package com.example.Board.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,8 +24,9 @@ public class MemberServiceTest extends InitializeDBTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    private String name = "name";
     private String password = "password";
-    private Member member = new Member("name", "email@abc.com");
+    private Member member = new Member(name, "email@abc.com");
     private Member savedMember;
 
     @BeforeEach
@@ -48,5 +51,21 @@ public class MemberServiceTest extends InitializeDBTest {
 
         assertThat(memberService.checkPassword(savedMember.getId(), "wrongPwd")).isFalse();
         assertThat(memberService.checkPassword(-1l, encodedPassword)).isFalse();
+    }
+
+    @Test
+    public void updateMember() {
+        String updatedName = "updated name";
+        Optional<Member> m = memberRepository.findById(member.getId());
+
+        assertThat(m.isPresent()).isTrue();
+        assertThat(m.get().getName()).as(name);
+
+        boolean isSuccessful = memberService.updateMember(member.getId(), updatedName);
+        m = memberRepository.findById(member.getId());
+
+        assertThat(isSuccessful).isTrue();
+        assertThat(m.isPresent()).isTrue();
+        assertThat(m.get().getName()).as(updatedName);
     }
 }

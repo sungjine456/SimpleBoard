@@ -7,6 +7,10 @@
   flex-direction: column;
 }
 
+.d-block {
+  display: block;
+}
+
 .align-self-end {
   align-self: end;
 }

@@ -11,6 +11,7 @@ interface IAuthContext {
   signIn: (_: SignInResponse) => void;
   signOut: () => void;
   setToken: (token: string) => void;
+  updateMember: (name: string) => void;
 }
 
 const defaultMember: Member = { id: -1, name: "-", email: "-" };
@@ -22,6 +23,7 @@ const initialValue = {
   signIn: (_: SignInResponse) => {},
   signOut: () => {},
   setToken: (_: string) => {},
+  updateMember: (_: string) => {},
 };
 
 const AuthContext = createContext<IAuthContext>(initialValue);
@@ -57,6 +59,10 @@ const AuthProvider = ({ children }: { children?: ReactNode }) => {
     }
   };
 
+  const updateMemberHandler = (name: string) => {
+    member.name = name;
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -66,6 +72,7 @@ const AuthProvider = ({ children }: { children?: ReactNode }) => {
         signIn,
         signOut,
         setToken: setTokenHandler,
+        updateMember: updateMemberHandler,
       }}
     >
       {children}

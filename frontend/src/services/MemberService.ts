@@ -78,3 +78,19 @@ export function useVerifyIdentity(): (
       .then((b) => b.data);
   };
 }
+
+export function useUpdateMember(): (
+  id: number,
+  name: string
+) => Promise<boolean> {
+  const { updateMember } = useContext(AuthContext);
+
+  return (id: number, name: string) => {
+    return axios
+      .post("http://localhost:8080/my", { id: id, name: name })
+      .then((b) => {
+        updateMember(name);
+        return b.data;
+      });
+  };
+}

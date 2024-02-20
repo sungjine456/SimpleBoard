@@ -1,15 +1,14 @@
 #my-page {
   display: flex;
   flex-direction: column;
+  width: 360px;
 }
 
 .title {
-  width: 100%;
-  text-align: center;
-  padding-bottom: 15px;
+  padding-bottom: 12px;
 }
 
 .buttons {
   display: flex;
-  justify-content: flex-end;
+  align-self: flex-end;
 }
