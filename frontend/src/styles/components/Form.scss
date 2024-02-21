@@ -1,0 +1,37 @@
+form {
+  display: flex;
+  flex-direction: column;
+
+  div {
+    display: flex;
+    width: 310px;
+
+    label {
+      font-size: 22px;
+      word-break: keep-all;
+    }
+
+    input {
+      width: 180px;
+      height: 24px;
+      margin-left: auto;
+      font-size: 20px;
+    }
+  }
+
+  button {
+    height: 35px;
+    font-size: 17px;
+  }
+
+  .buttons {
+    justify-content: end;
+  }
+
+  small {
+    margin-left: auto;
+    font-size: 13px;
+    padding-bottom: 5px;
+    color: #ff6868;
+  }
+}

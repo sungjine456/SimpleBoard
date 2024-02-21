@@ -1,0 +1,87 @@
+#i-ham {
+  display: none;
+}
+
+#items {
+  position: fixed;
+  width: 300px;
+  height: 100%;
+  background: #333;
+  top: 0px;
+  padding: 60px 25px 25px 25px;
+  box-sizing: border-box;
+  z-index: 1;
+  right: -300px;
+  transition: all 0.35s;
+}
+
+p {
+  cursor: pointer;
+}
+
+label[for="i-ham"] {
+  position: relative;
+  display: block;
+  width: 40px;
+  height: 30px;
+  cursor: pointer;
+  margin-right: 30px;
+
+  & > span {
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 5px;
+    border-radius: 30px;
+    background: #000;
+    transition: all 0.35s;
+    z-index: 2;
+  }
+
+  & > span:nth-child(1) {
+    top: 0px;
+  }
+
+  & > span:nth-child(2) {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  & > span:nth-child(3) {
+    bottom: 0px;
+  }
+}
+
+#i-ham:checked + label {
+  & > span:nth-child(1) {
+    top: 50%;
+    transform: translateY(-50%) rotate(45deg);
+  }
+
+  & > span:nth-child(2) {
+    opacity: 0;
+  }
+
+  & > span:nth-child(3) {
+    bottom: 50%;
+    transform: translateY(50%) rotate(-45deg);
+  }
+}
+
+#i-ham:checked + label + #items {
+  right: 0px;
+  & > ul > li > a {
+    color: white;
+  }
+}
+
+#i-ham:checked + label + div + #background {
+  display: block;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  bottom: 0;
+  left: 0;
+  background-color: #000;
+  opacity: 0.4;
+}

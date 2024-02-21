@@ -49,7 +49,7 @@ function HambergerIcon() {
           )}
         </ul>
       </div>
-      <div id="background" onClick={() => handleBackgroundClick()}></div>
+      <div id="background d-none" onClick={() => handleBackgroundClick()}></div>
     </div>
   );
 }

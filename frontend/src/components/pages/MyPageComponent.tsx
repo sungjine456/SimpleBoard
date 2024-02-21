@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useUpdateMember } from "../../services/MemberService";
-import styles from "../../styles/pages/MyPage.module.css";
+import styles from "../../styles/pages/MyPage.module.scss";
 import { AuthContext } from "../contexts/AuthContext";
 
 function MyPageComponent() {

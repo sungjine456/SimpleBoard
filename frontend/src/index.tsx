@@ -4,7 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import { AuthProvider } from "./components/contexts/AuthContext";
 import reportWebVitals from "./reportWebVitals";
-import "./styles/pages/Index.css";
+import "./styles/pages/Index.scss";
 
 axios.defaults.baseURL = "http://localhost:3000/";
 axios.defaults.withCredentials = true;
