@@ -2,9 +2,7 @@ import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useUpdateMember } from "../../services/MemberService";
-import "../../styles/common.css";
-import "../../styles/components/table.css";
-import "../../styles/pages/my-page.css";
+import styles from "../../styles/pages/MyPage.module.css";
 import { AuthContext } from "../contexts/AuthContext";
 
 function MyPageComponent() {
@@ -37,10 +35,9 @@ function MyPageComponent() {
   };
 
   return (
-    <form>
-      <div id="my-page">
-        {!success && <div className="title">계정 페이지</div>}
-        {success && <div className="title">계정 수정 페이지</div>}
+    <div className={styles.main}>
+      <h3>{success ? "계정 수정 페이지" : "계정 페이지"}</h3>
+      <form id="my-page-form">
         <table>
           <colgroup>
             <col style={{ width: "135px" }} />
@@ -100,20 +97,24 @@ function MyPageComponent() {
             </tbody>
           )}
         </table>
-        <div className="buttons">
-          {!success && (
-            <Link to="/my/check">
-              <button type="button">수정하기</button>
-            </Link>
-          )}
-          {success && (
-            <button onClick={handleSubmit(update)} type="submit">
-              수정
-            </button>
-          )}
-        </div>
+      </form>
+      <div className={styles.buttons}>
+        {!success && (
+          <Link to="/my/check">
+            <button type="button">수정하기</button>
+          </Link>
+        )}
+        {success && (
+          <button
+            onClick={handleSubmit(update)}
+            type="submit"
+            form="my-page-form"
+          >
+            수정
+          </button>
+        )}
       </div>
-    </form>
+    </div>
   );
 }
 

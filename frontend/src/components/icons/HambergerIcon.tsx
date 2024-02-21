@@ -1,6 +1,5 @@
 import { useContext, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../../styles/components/icons.css";
 import { AuthContext } from "../contexts/AuthContext";
 
 function HambergerIcon() {

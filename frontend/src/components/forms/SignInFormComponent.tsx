@@ -2,8 +2,6 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import MemberToEmailRequest from "../../models/requests/MemberToEmailRequest";
 import { useSignIn } from "../../services/MemberService";
-import "../../styles/common.css";
-import "../../styles/components/form.css";
 
 function SignInFormComponent() {
   const navigate = useNavigate();

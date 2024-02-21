@@ -1,11 +1,7 @@
-#my-page {
+.main {
   display: flex;
   flex-direction: column;
   width: 360px;
-}
-
-.title {
-  padding-bottom: 12px;
 }
 
 .buttons {

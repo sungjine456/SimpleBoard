@@ -2,8 +2,6 @@ import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useVerifyIdentity } from "../../services/MemberService";
-import "../../styles/common.css";
-import "../../styles/components/form.css";
 import { AuthContext } from "../contexts/AuthContext";
 
 interface CheckForm {
@@ -38,7 +36,7 @@ function PasswordCheckComponent() {
 
   return (
     <div>
-      <div className="title">비밀번호 재확인</div>
+      <h3>비밀번호 재확인</h3>
       <form>
         <div>
           <label>비밀번호</label>
@@ -63,7 +61,7 @@ function PasswordCheckComponent() {
         <div className="buttons">
           <button
             className="btn btn-light"
-            type="button"
+            type="submit"
             onClick={handleSubmit(onSubmit)}
           >
             확인

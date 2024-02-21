@@ -1,8 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useCheckEmail, useSignUp } from "../../services/MemberService";
-import "../../styles/common.css";
-import "../../styles/components/form.css";
 
 interface SignUpForm {
   name: string;
