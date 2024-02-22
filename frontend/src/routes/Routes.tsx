@@ -11,7 +11,7 @@ import PasswordCheckComponent from "../components/pages/PasswordCheckComponent";
 const PrivateRoutes = () => {
   const { token, authenticated } = useContext(AuthContext);
 
-  if (!authenticated && token) return <Navigate to="/" replace />;
+  if (!authenticated || !token) return <Navigate to="/" replace />;
 
   return <Outlet />;
 };
@@ -21,10 +21,10 @@ const Routes = () => {
     <Router>
       <Route path="/" element={<MainPageComponent />} />
       <Route path="/signUp" element={<SignUpFormComponent />} />
-      <Route path="/my" element={<MyPageComponent />} />
-      <Route path="/my/check" element={<PasswordCheckComponent />} />
       <Route element={<PrivateRoutes />}>
         <Route path="/mem/:userId" element={<MemberDetailPageComponent />} />
+        <Route path="/my" element={<MyPageComponent />} />
+        <Route path="/my/check" element={<PasswordCheckComponent />} />
       </Route>
       <Route path="*" element={<NotFoundPageComponent />} />
     </Router>
