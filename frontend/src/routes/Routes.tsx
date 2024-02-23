@@ -4,7 +4,7 @@ import { AuthContext } from "../components/contexts/AuthContext";
 import SignUpFormComponent from "../components/forms/SignUpFormComponent";
 import MainPageComponent from "../components/pages/MainPageComponent";
 import MemberDetailPageComponent from "../components/pages/MemberDetailPageComponent";
-import MyPageComponent from "../components/pages/MyPageComponent";
+import MyPageComponent from "../components/pages/my/MyPageComponent";
 import NotFoundPageComponent from "../components/pages/NotFoundPageComponent";
 import PasswordCheckComponent from "../components/pages/PasswordCheckComponent";
 
