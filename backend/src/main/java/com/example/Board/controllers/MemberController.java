@@ -75,7 +75,7 @@ public class MemberController {
 
 	@GetMapping("/mem/{id}")
 	public ResponseEntity<MemberResponse> findMember(@PathVariable("id") Long id) {
-		log.info("받은 아이디 : " + id);
+		log.info("findMember 받은 아이디 : {} ", id);
 
 		Optional<Member> member = memberService.getMemberById(id);
 

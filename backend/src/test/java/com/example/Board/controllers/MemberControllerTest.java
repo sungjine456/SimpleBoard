@@ -47,7 +47,6 @@ class MemberControllerTest extends InitializeDBTest {
 
     @BeforeEach
     void beforeEach() {
-        member.setId(1L);
         token = memberService.signUp(member).map(r -> r.getToken());
     }
 
