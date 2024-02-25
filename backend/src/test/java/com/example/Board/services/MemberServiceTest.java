@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.example.Board.InitializeDBTest;
 import com.example.Board.domains.Member;
+import com.example.Board.domains.MemberStatus;
 import com.example.Board.repositories.MemberRepository;
 
 @SpringBootTest
@@ -38,6 +39,26 @@ public class MemberServiceTest extends InitializeDBTest {
     @AfterEach
     void afterEach() {
         databaseCleanUp.truncateAllEntity();
+    }
+
+    @Test
+    public void signUp() {
+        String newName = "newName";
+        String newEmail = "newEmail@test.com";
+        Member newMember = new Member(newName, newEmail, password);
+
+        assertThat(memberRepository.findAll().size()).isEqualTo(1);
+
+        memberService.signUp(newMember);
+
+        assertThat(memberRepository.findAll().size()).isEqualTo(2);
+
+        Optional<Member> testMember = memberRepository.findByEmail("newEmail@test.com");
+
+        assertThat(testMember.isPresent()).isTrue();
+        assertThat(testMember.get().getName()).isEqualTo(newName);
+        assertThat(testMember.get().getEmail()).isEqualTo(newEmail);
+        assertThat(testMember.get().getStatus()).isEqualTo(MemberStatus.ACTIVE);
     }
 
     @Test

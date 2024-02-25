@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import com.example.Board.InitializeDBTest;
 import com.example.Board.configs.jwt.JwtToken;
 import com.example.Board.domains.Member;
+import com.example.Board.domains.MemberStatus;
 import com.example.Board.modal.requests.MemberToEmailRequest;
 import com.example.Board.modal.requests.MemberToIdRequest;
 import com.example.Board.modal.requests.SignUpRequest;
@@ -99,6 +100,11 @@ class MemberControllerTest extends InitializeDBTest {
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody().getName()).isEqualTo("newName");
         assertThat(responseEntity.getBody().getEmail()).isEqualTo("newemail@abc.com");
+
+        Optional<Member> testMember = memberRepository.findByEmail(responseEntity.getBody().getEmail());
+
+        assertThat(testMember.isPresent()).isTrue();
+        assertThat(testMember.get().getStatus()).isEqualTo(MemberStatus.ACTIVE);
     }
 
     @Test

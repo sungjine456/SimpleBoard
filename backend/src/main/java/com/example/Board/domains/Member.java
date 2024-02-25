@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,18 +14,23 @@ import org.springframework.security.core.userdetails.UserDetails;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
 @Table
+@NoArgsConstructor
+@DynamicInsert
 public class Member implements UserDetails {
 
   @Id
@@ -42,8 +49,9 @@ public class Member implements UserDetails {
   @ElementCollection(fetch = FetchType.EAGER)
   private List<String> roles = new ArrayList<>();
 
-  public Member() {
-  }
+  @Enumerated(value = EnumType.STRING)
+  @ColumnDefault("'ACTIVE'")
+  private MemberStatus status;
 
   public Member(String name, String email) {
     this.name = name;
