@@ -89,4 +89,35 @@ public class MemberServiceTest extends InitializeDBTest {
         assertThat(m.isPresent()).isTrue();
         assertThat(m.get().getName()).as(updatedName);
     }
+
+    @Test
+    public void leave() {
+        Optional<Member> mem = memberRepository.findById(savedMember.getId());
+
+        assertThat(mem.isPresent()).isTrue();
+        assertThat(mem.get().getStatus()).isEqualTo(MemberStatus.ACTIVE);
+        assertThat(memberService.leave(savedMember.getId(), password)).isTrue();
+
+        mem = memberRepository.findById(savedMember.getId());
+
+        assertThat(mem.get().getStatus()).isEqualTo(MemberStatus.LEAVE);
+    }
+
+    @Test
+    public void leaveWrongPassword() {
+        assertThat(memberService.leave(savedMember.getId(), "wrongPwd")).isFalse();
+
+        Optional<Member> mem = memberRepository.findById(savedMember.getId());
+
+        assertThat(mem.get().getStatus()).isEqualTo(MemberStatus.ACTIVE);
+    }
+
+    @Test
+    public void leaveWrongId() {
+        assertThat(memberService.leave(-1, password)).isFalse();
+
+        Optional<Member> mem = memberRepository.findById(savedMember.getId());
+
+        assertThat(mem.get().getStatus()).isEqualTo(MemberStatus.ACTIVE);
+    }
 }

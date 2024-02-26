@@ -1,7 +1,10 @@
 import { useContext } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { useVerifyIdentity } from "../../services/MemberService";
+import { useLocation, useNavigate } from "react-router-dom";
+import {
+  useLeaveMember,
+  useVerifyIdentity,
+} from "../../services/MemberService";
 import { AuthContext } from "../contexts/AuthContext";
 
 interface CheckForm {
@@ -9,9 +12,12 @@ interface CheckForm {
 }
 
 function PasswordCheckComponent() {
+  const { state } = useLocation();
   const navigate = useNavigate();
   const verifyIdentity = useVerifyIdentity();
-  const { member } = useContext(AuthContext);
+  const leaveMember = useLeaveMember();
+  const { member, signOut } = useContext(AuthContext);
+  const url = state.url;
 
   const {
     register,
@@ -24,12 +30,22 @@ function PasswordCheckComponent() {
   });
 
   const onSubmit = (data: CheckForm) => {
-    verifyIdentity({
+    const reqData = {
       id: member.id,
       password: data.password,
-    }).then((b) => {
+    };
+    verifyIdentity(reqData).then((b) => {
       if (b) {
-        navigate("/my", { state: { success: true } });
+        if (url === "update") {
+          navigate("/my", { state: { success: true } });
+        } else if (url === "leave") {
+          leaveMember(reqData).then((b) => {
+            if (b) {
+              alert("탈퇴되었습니다.");
+              signOut();
+            }
+          });
+        }
       }
     });
   };

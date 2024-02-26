@@ -3,6 +3,7 @@ package com.example.Board.repositories;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.example.Board.InitializeDBTest;
 import com.example.Board.domains.Member;
 import com.example.Board.domains.MemberStatus;
+
+import jakarta.transaction.Transactional;
 
 @SpringBootTest
 public class MemberRepositoryTest extends InitializeDBTest {
@@ -55,5 +58,21 @@ public class MemberRepositoryTest extends InitializeDBTest {
         assertThat(memberRepository.existsByEmail("as@sda")).isFalse();
         assertThat(memberRepository.existsByEmail("as@sda.")).isFalse();
         assertThat(memberRepository.existsByEmail("as@sda.xo")).isTrue();
+    }
+
+    @Test
+    @Transactional
+    public void updateStatus() {
+        Optional<Member> mem = memberRepository.findByEmail(testEmail);
+        assertThat(mem.get().getStatus()).isNotEqualTo(MemberStatus.LEAVE);
+
+        memberRepository.findById(mem.get().getId())
+                .map(m -> {
+                    m.setStatus(MemberStatus.LEAVE);
+                    return m;
+                });
+
+        mem = memberRepository.findByEmail(testEmail);
+        assertThat(mem.get().getStatus()).isEqualTo(MemberStatus.LEAVE);
     }
 }

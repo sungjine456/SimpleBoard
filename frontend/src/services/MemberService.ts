@@ -19,7 +19,10 @@ export function useSignIn(): (
         signIn(r.data);
         return true;
       })
-      .catch((_) => false);
+      .catch((e) => {
+        alert(e.response.data.message);
+        return false;
+      });
   };
 }
 
@@ -92,5 +95,15 @@ export function useUpdateMember(): (
         updateMember(name);
         return b.data;
       });
+  };
+}
+
+export function useLeaveMember(): (
+  member: MemberToIdRequest
+) => Promise<boolean> {
+  return (member: MemberToIdRequest) => {
+    return axios
+      .post("http://localhost:8080/my/leave", member)
+      .then((b) => b.data);
   };
 }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.example.Board.configs.jwt.JwtToken;
 import com.example.Board.configs.jwt.JwtTokenProvider;
 import com.example.Board.domains.Member;
+import com.example.Board.domains.MemberStatus;
 import com.example.Board.modal.responses.SignInResponse;
 import com.example.Board.repositories.MemberRepository;
 
@@ -83,6 +84,19 @@ public class MemberService {
                 .findById(id)
                 .filter(m -> passwordEncoder.matches(password, m.getPassword()))
                 .isPresent();
+    }
+
+    @Transactional
+    public boolean leave(long id, String password) {
+        log.info("leave: id = {}, password = {}", id, password);
+
+        return memberRepository.findById(id)
+                .filter(m -> passwordEncoder.matches(password, m.getPassword()))
+                .map(m -> {
+                    m.setStatus(MemberStatus.LEAVE);
+                    log.info("leave: {}", m.getStatus());
+                    return m;
+                }).isPresent();
     }
 
     private JwtToken createJWTToken(String username, String password) {

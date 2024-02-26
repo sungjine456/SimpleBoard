@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Board.configs.jwt.JwtToken;
 import com.example.Board.domains.Member;
+import com.example.Board.domains.MemberStatus;
 import com.example.Board.modal.requests.MemberToEmailRequest;
 import com.example.Board.modal.requests.MemberToIdRequest;
 import com.example.Board.modal.requests.SignUpRequest;
@@ -45,9 +46,14 @@ public class MemberController {
 		log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(),
 				jwtToken.getRefreshToken());
 
-		Member member = memberRepository.findByEmail(req.getEmail()).get();
+		Optional<Member> member = memberRepository.findByEmail(req.getEmail())
+				.filter(m -> m.getStatus() == MemberStatus.ACTIVE);
 
-		return ResponseEntity.ok(new SignInResponse(member, jwtToken.getAccessToken()));
+		if (member.isPresent()) {
+			return ResponseEntity.ok(new SignInResponse(member.get(), jwtToken.getAccessToken()));
+		} else {
+			return ResponseEntity.badRequest().body(new SignInResponse("존재하지 않는 사용자입니다."));
+		}
 	}
 
 	/*
@@ -105,6 +111,13 @@ public class MemberController {
 		log.info("checkPassword : {}", req);
 
 		return memberService.checkPassword(req.getId(), req.getPassword());
+	}
+
+	@PostMapping("/my/leave")
+	public Boolean leave(@RequestBody MemberToIdRequest req) {
+		log.info("leave : {}", req);
+
+		return memberService.leave(req.getId(), req.getPassword());
 	}
 
 	private boolean checkPassword(String password) {

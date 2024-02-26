@@ -10,17 +10,23 @@ function MainPageComponent() {
 
   return (
     <div className="d-flex-column">
-      {authenticated ? <SignOutButton /> : <SignInFormComponent />}
+      {authenticated ? (
+        <SignOutButton />
+      ) : (
+        <div>
+          <SignInFormComponent />
 
-      <div className="buttons align-self-end">
-        <button
-          className="btn btn-light"
-          type="button"
-          onClick={() => navigate("/signUp")}
-        >
-          가입하기
-        </button>
-      </div>
+          <div className="buttons align-self-end">
+            <button
+              className="btn btn-light"
+              type="button"
+              onClick={() => navigate("/signUp")}
+            >
+              가입하기
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

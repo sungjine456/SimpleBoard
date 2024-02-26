@@ -7,6 +7,7 @@ import SignUpRequest from "../../models/requests/SignUpRequest";
 import {
   useCheckEmail,
   useFindMember,
+  useLeaveMember,
   useSignIn,
   useSignUp,
   useVerifyIdentity,
@@ -54,7 +55,11 @@ describe("useSignIn", () => {
   });
 
   test("when returned a bad request", async () => {
-    mock.onPost("http://localhost:8080/sign-in").reply(403);
+    window.alert = jest.fn();
+
+    mock
+      .onPost("http://localhost:8080/sign-in")
+      .reply(403, { message: "실패" });
     const { result } = renderHook(() => useSignIn());
 
     expect(await result.current(req)).toBe(false);
@@ -148,9 +153,18 @@ describe("useCheckEmail", () => {
 });
 
 describe("useVerifyIdentity", () => {
-  test("when returned an ok", async () => {
+  test("ok http method를 반환", async () => {
     mock.onPost("http://localhost:8080/my/check").reply(200, true);
     const { result } = renderHook(() => useVerifyIdentity());
+
+    expect(await result.current({ id: 1, password: testPassword })).toBe(true);
+  });
+});
+
+describe("useLeaveMember", () => {
+  test("ok http method를 반환", async () => {
+    mock.onPost("http://localhost:8080/my/leave").reply(200, true);
+    const { result } = renderHook(() => useLeaveMember());
 
     expect(await result.current({ id: 1, password: testPassword })).toBe(true);
   });

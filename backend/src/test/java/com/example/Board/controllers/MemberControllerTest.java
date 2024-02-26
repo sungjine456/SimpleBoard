@@ -68,6 +68,23 @@ class MemberControllerTest extends InitializeDBTest {
     }
 
     @Test
+    public void signIn_whenLeaveMember() {
+        Member mem = memberRepository.findByEmail(member.getEmail()).get();
+        mem.setStatus(MemberStatus.LEAVE);
+
+        memberRepository.save(mem);
+
+        MemberToEmailRequest memberReq = new MemberToEmailRequest(member.getEmail(), password);
+        String url = String.format("http://localhost:%d/sign-in", serverPort);
+
+        ResponseEntity<SignInResponse> responseEntity = testRestTemplate.postForEntity(url, memberReq,
+                SignInResponse.class);
+
+        assertThat(memberRepository.findByEmail(member.getEmail()).get().getStatus()).isEqualTo(MemberStatus.LEAVE);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
     public void signIn_whenWrongPassword() {
         MemberToEmailRequest memberReq = new MemberToEmailRequest(member.getEmail(), "wrongPassword");
         String url = String.format("http://localhost:%d/sign-in", serverPort);

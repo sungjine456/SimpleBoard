@@ -30,8 +30,11 @@ function MainComponent() {
         </tbody>
       </table>
       <div className={styles.buttons}>
-        <Link to="/my/check">
+        <Link to="/my/check" state={{ url: "update" }}>
           <button type="button">수정하기</button>
+        </Link>
+        <Link to="/my/check" state={{ url: "leave" }}>
+          <button type="button">탈퇴하기</button>
         </Link>
       </div>
     </div>
