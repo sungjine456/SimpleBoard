@@ -30,7 +30,7 @@ describe("useSignIn", () => {
     password: testPassword,
   };
 
-  test("when returned an ok", async () => {
+  test("성공했을 때", async () => {
     mock.onPost("http://localhost:8080/sign-in").reply(200, {
       name: testName,
       email: testEmail,
@@ -54,7 +54,7 @@ describe("useSignIn", () => {
     // TODO: storage, context의 데이터 테스트 추가
   });
 
-  test("when returned a bad request", async () => {
+  test("실패했을 때", async () => {
     window.alert = jest.fn();
 
     mock
@@ -73,7 +73,7 @@ describe("useSignUp", () => {
     password: testPassword,
   };
 
-  test("when returned an ok", async () => {
+  test("성공했을 때", async () => {
     mock
       .onPost("http://localhost:8080/sign-up")
       .reply(200, { name: req.name, email: req.email, token: "accessToken" });
@@ -95,7 +95,7 @@ describe("useSignUp", () => {
     // TODO: storage, context의 데이터 테스트 추가
   });
 
-  test("when returned a bad request with 중복", async () => {
+  test("중복됐을 때", async () => {
     mock
       .onPost("http://localhost:8080/sign-up")
       .reply(400, { message: "중복" });
@@ -104,7 +104,7 @@ describe("useSignUp", () => {
     expect(await result.current(req)).toBe("중복");
   });
 
-  test("when returned a failure", async () => {
+  test("실패했을 때", async () => {
     mock
       .onPost("http://localhost:8080/sign-up")
       .reply(400, { message: "실패" });
@@ -123,14 +123,14 @@ describe("useFindMember", () => {
     message: "msg",
   };
 
-  test("when returned an ok", async () => {
+  test("성공했을 때", async () => {
     mock.onGet(`http://localhost:8080/mem/${id}`).reply(200, data);
     const { result } = renderHook(() => useFindMember());
 
     expect(await result.current(id)).toStrictEqual(data);
   });
 
-  test("when returned a bad request", async () => {
+  test("실패했을 때", async () => {
     mock.onGet(`http://localhost:8080/mem/${id}`).reply(403);
     const { result } = renderHook(() => useFindMember());
 
@@ -144,7 +144,7 @@ describe("useFindMember", () => {
 });
 
 describe("useCheckEmail", () => {
-  test("when returned an ok", async () => {
+  test("성공했을 때", async () => {
     mock.onPost("http://localhost:8080/checkEmail").reply(200, true);
     const { result } = renderHook(() => useCheckEmail());
 
@@ -153,7 +153,7 @@ describe("useCheckEmail", () => {
 });
 
 describe("useVerifyIdentity", () => {
-  test("ok http method를 반환", async () => {
+  test("성공했을 때", async () => {
     mock.onPost("http://localhost:8080/my/check").reply(200, true);
     const { result } = renderHook(() => useVerifyIdentity());
 
@@ -162,7 +162,7 @@ describe("useVerifyIdentity", () => {
 });
 
 describe("useLeaveMember", () => {
-  test("ok http method를 반환", async () => {
+  test("성공했을 때", async () => {
     mock.onPost("http://localhost:8080/my/leave").reply(200, true);
     const { result } = renderHook(() => useLeaveMember());
 

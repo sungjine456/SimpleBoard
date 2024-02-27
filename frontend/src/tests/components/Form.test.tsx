@@ -15,8 +15,8 @@ beforeEach(() => {
   jest.spyOn(router, "useNavigate").mockImplementation(() => navigate);
 });
 
-describe("submits form of sign-in", () => {
-  test("when success", async () => {
+describe("SignInFormComponent", () => {
+  test("성공했을 때", async () => {
     const emailData = "test@abc.com";
 
     mock
@@ -47,7 +47,7 @@ describe("submits form of sign-in", () => {
     });
   });
 
-  test("when empty email", async () => {
+  test("이메일을 적지 않았을 때", async () => {
     render(<SignInFormComponent />);
 
     const email = screen.getByPlaceholderText("이메일");
@@ -70,7 +70,7 @@ describe("submits form of sign-in", () => {
     expect(screen.getByPlaceholderText("비밀번호")).toHaveValue("Test1234");
   });
 
-  test("when whrong email", async () => {
+  test("잘못된 형식의 이메일을 적었을 때", async () => {
     render(<SignInFormComponent />);
 
     const email = screen.getByPlaceholderText("이메일");
@@ -93,7 +93,7 @@ describe("submits form of sign-in", () => {
     expect(screen.getByPlaceholderText("비밀번호")).toHaveValue("Test1234");
   });
 
-  test("when empty password", async () => {
+  test("비밀번호를 적지 않았을 때", async () => {
     render(<SignInFormComponent />);
 
     const email = screen.getByPlaceholderText("이메일");
@@ -116,7 +116,7 @@ describe("submits form of sign-in", () => {
     expect(screen.getByPlaceholderText("비밀번호")).toHaveValue("");
   });
 
-  test("when short password", async () => {
+  test("비밀번호가 짧을 때", async () => {
     render(<SignInFormComponent />);
 
     const email = screen.getByPlaceholderText("이메일");
@@ -139,7 +139,7 @@ describe("submits form of sign-in", () => {
     expect(screen.getByPlaceholderText("비밀번호")).toHaveValue("test");
   });
 
-  test("when wrong email and short password", async () => {
+  test("잘못된 형식의 이메일과 비밀번호를 짧게 적었을 때", async () => {
     render(<SignInFormComponent />);
 
     const email = screen.getByPlaceholderText("이메일");
@@ -160,28 +160,29 @@ describe("submits form of sign-in", () => {
     expect(screen.getByPlaceholderText("비밀번호")).toHaveValue("test");
   });
 });
+describe("SignUpFormComponent", () => {
+  test("잘못된 데이터를 입력했을 때", async () => {
+    render(<SignUpFormComponent />);
 
-test("submits form of sign-up when whrong datas", async () => {
-  render(<SignUpFormComponent />);
+    const name = screen.getByPlaceholderText("이름");
+    const email = screen.getByPlaceholderText("이메일");
+    const password = screen.getByPlaceholderText("비밀번호");
+    const passwordCheck = screen.getByPlaceholderText("비밀번호 확인");
+    const button = screen.getByRole("button", { name: "가입하기" });
 
-  const name = screen.getByPlaceholderText("이름");
-  const email = screen.getByPlaceholderText("이메일");
-  const password = screen.getByPlaceholderText("비밀번호");
-  const passwordCheck = screen.getByPlaceholderText("비밀번호 확인");
-  const button = screen.getByRole("button", { name: "가입하기" });
+    userEvent.clear(name);
+    userEvent.type(email, "test@abc");
+    userEvent.type(password, "test");
+    userEvent.clear(passwordCheck);
 
-  userEvent.clear(name);
-  userEvent.type(email, "test@abc");
-  userEvent.type(password, "test");
-  userEvent.clear(passwordCheck);
+    userEvent.click(button);
 
-  userEvent.click(button);
+    await screen.findAllByRole("alert");
+    await screen.findByPlaceholderText("이메일");
+    await screen.findByPlaceholderText("비밀번호");
 
-  await screen.findAllByRole("alert");
-  await screen.findByPlaceholderText("이메일");
-  await screen.findByPlaceholderText("비밀번호");
-
-  expect(screen.getAllByRole("alert")).toHaveLength(4);
-  expect(screen.getByPlaceholderText("이메일")).toHaveValue("test@abc");
-  expect(screen.getByPlaceholderText("비밀번호")).toHaveValue("test");
+    expect(screen.getAllByRole("alert")).toHaveLength(4);
+    expect(screen.getByPlaceholderText("이메일")).toHaveValue("test@abc");
+    expect(screen.getByPlaceholderText("비밀번호")).toHaveValue("test");
+  });
 });
