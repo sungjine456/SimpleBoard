@@ -18,12 +18,13 @@ import com.example.Board.repositories.MemberRepository;
 
 @SpringBootTest
 public class MemberServiceTest extends InitializeDBTest {
+
     @Autowired
     MemberRepository memberRepository;
     @Autowired
     MemberService memberService;
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    PasswordEncoder passwordEncoder;
 
     private String name = "name";
     private String password = "password";
@@ -55,7 +56,6 @@ public class MemberServiceTest extends InitializeDBTest {
 
         Optional<Member> testMember = memberRepository.findByEmail("newEmail@test.com");
 
-        assertThat(testMember.isPresent()).isTrue();
         assertThat(testMember.get().getName()).isEqualTo(newName);
         assertThat(testMember.get().getEmail()).isEqualTo(newEmail);
         assertThat(testMember.get().getStatus()).isEqualTo(MemberStatus.ACTIVE);
@@ -68,10 +68,8 @@ public class MemberServiceTest extends InitializeDBTest {
 
     @Test
     public void checkPasswordWrongData() {
-        String encodedPassword = passwordEncoder.encode(password);
-
         assertThat(memberService.checkPassword(savedMember.getId(), "wrongPwd")).isFalse();
-        assertThat(memberService.checkPassword(-1l, encodedPassword)).isFalse();
+        assertThat(memberService.checkPassword(-1l, password)).isFalse();
     }
 
     @Test
@@ -79,14 +77,12 @@ public class MemberServiceTest extends InitializeDBTest {
         String updatedName = "updated name";
         Optional<Member> m = memberRepository.findById(member.getId());
 
-        assertThat(m.isPresent()).isTrue();
         assertThat(m.get().getName()).as(name);
 
         boolean isSuccessful = memberService.updateMember(member.getId(), updatedName);
         m = memberRepository.findById(member.getId());
 
         assertThat(isSuccessful).isTrue();
-        assertThat(m.isPresent()).isTrue();
         assertThat(m.get().getName()).as(updatedName);
     }
 
@@ -94,7 +90,6 @@ public class MemberServiceTest extends InitializeDBTest {
     public void leave() {
         Optional<Member> mem = memberRepository.findById(savedMember.getId());
 
-        assertThat(mem.isPresent()).isTrue();
         assertThat(mem.get().getStatus()).isEqualTo(MemberStatus.ACTIVE);
         assertThat(memberService.leave(savedMember.getId(), password)).isTrue();
 

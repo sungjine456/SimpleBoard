@@ -120,7 +120,6 @@ class MemberControllerTest extends InitializeDBTest {
 
         Optional<Member> testMember = memberRepository.findByEmail(responseEntity.getBody().getEmail());
 
-        assertThat(testMember.isPresent()).isTrue();
         assertThat(testMember.get().getStatus()).isEqualTo(MemberStatus.ACTIVE);
     }
 
