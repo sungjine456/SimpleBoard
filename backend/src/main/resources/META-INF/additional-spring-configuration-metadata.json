@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "description": "jwt 토큰 생성 키값"
+    }
+  ]
+}
