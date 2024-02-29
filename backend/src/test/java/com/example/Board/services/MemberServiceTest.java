@@ -2,6 +2,8 @@ package com.example.Board.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
@@ -54,11 +56,12 @@ public class MemberServiceTest extends InitializeDBTest {
 
         assertThat(memberRepository.findAll().size()).isEqualTo(2);
 
-        Optional<Member> testMember = memberRepository.findByEmail("newEmail@test.com");
+        Member testMember = memberRepository.findByEmail("newEmail@test.com").get();
 
-        assertThat(testMember.get().getName()).isEqualTo(newName);
-        assertThat(testMember.get().getEmail()).isEqualTo(newEmail);
-        assertThat(testMember.get().getStatus()).isEqualTo(MemberStatus.ACTIVE);
+        assertThat(testMember.getName()).isEqualTo(newName);
+        assertThat(testMember.getEmail()).isEqualTo(newEmail);
+        assertThat(testMember.getStatus()).isEqualTo(MemberStatus.ACTIVE);
+        assertThat(testMember.getCreateDate()).isEqualTo(testMember.getUpdateDate());
     }
 
     @Test
@@ -75,15 +78,18 @@ public class MemberServiceTest extends InitializeDBTest {
     @Test
     public void updateMember() {
         String updatedName = "updated name";
-        Optional<Member> m = memberRepository.findById(member.getId());
+        Member testMember = memberRepository.findById(member.getId()).get();
+        LocalDateTime beforeUpdateTime = testMember.getUpdateDate();
 
-        assertThat(m.get().getName()).as(name);
+        assertThat(testMember.getName()).as(name);
 
         boolean isSuccessful = memberService.updateMember(member.getId(), updatedName);
-        m = memberRepository.findById(member.getId());
+        testMember = memberRepository.findById(member.getId()).get();
+        LocalDateTime afterUpdateTime = testMember.getUpdateDate();
 
         assertThat(isSuccessful).isTrue();
-        assertThat(m.get().getName()).as(updatedName);
+        assertThat(testMember.getName()).as(updatedName);
+        assertThat(ChronoUnit.MILLIS.between(beforeUpdateTime, afterUpdateTime)).isGreaterThan(0);
     }
 
     @Test

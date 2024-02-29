@@ -27,7 +27,7 @@ import lombok.Setter;
 @Entity
 @NoArgsConstructor
 @DynamicInsert
-public class Member implements UserDetails {
+public class Member extends TimeEntity implements UserDetails {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)

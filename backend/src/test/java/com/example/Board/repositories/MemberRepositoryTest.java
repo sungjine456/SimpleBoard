@@ -2,8 +2,9 @@ package com.example.Board.repositories;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,10 +24,10 @@ public class MemberRepositoryTest extends InitializeDBTest {
     @Autowired
     MemberRepository memberRepository;
 
-    private String testName = "name";
-    private String testPassword = "password";
-    private String testEmail = "as@sda.xo";
-    private Member member = new Member(testName, testEmail, testPassword);
+    private String initName = "name";
+    private String initPassword = "password";
+    private String initEmail = "email@test.com";
+    private Member member = new Member(initName, initEmail, initPassword);
 
     @BeforeEach
     void beforeEach() {
@@ -40,39 +41,60 @@ public class MemberRepositoryTest extends InitializeDBTest {
 
     @Test
     public void save() {
+        LocalDateTime testTime = LocalDateTime.now();
         List<Member> members = memberRepository.findAll();
 
         assertThat(members.size()).isEqualTo(1);
 
-        Member testMember = members.get(0);
+        String testName = "test";
+        String testPassword = "testPassword";
+        String testEmail = "test@test.com";
+        Member testMember = new Member(testName, testEmail, testPassword);
 
-        assertThat(testMember.getName()).isEqualTo(testName);
-        assertThat(testMember.getEmail()).isEqualTo(testEmail);
-        assertThat(testMember.getPassword()).isEqualTo(testPassword);
-        assertThat(testMember.getStatus()).isEqualTo(MemberStatus.ACTIVE);
+        memberRepository.save(testMember);
+
+        members = memberRepository.findAll();
+
+        assertThat(members.size()).isEqualTo(2);
+
+        Member findMember = memberRepository.findByEmail(testEmail).get();
+
+        assertThat(findMember.getName()).isEqualTo(testName);
+        assertThat(findMember.getPassword()).isEqualTo(testPassword);
+        assertThat(findMember.getStatus()).isEqualTo(MemberStatus.ACTIVE);
+        assertThat(findMember.getCreateDate()).isEqualTo(findMember.getUpdateDate());
+        assertThat(ChronoUnit.MILLIS.between(testTime, findMember.getCreateDate())).isGreaterThan(0);
     }
 
     @Test
     public void checkEmail() {
+        assertThat(memberRepository.existsByEmail("")).isFalse();
+        assertThat(memberRepository.existsByEmail("assdaxrl")).isFalse();
+        assertThat(memberRepository.existsByEmail("assdax.rl")).isFalse();
         assertThat(memberRepository.existsByEmail("as@sda.xrl")).isFalse();
         assertThat(memberRepository.existsByEmail("as@sda")).isFalse();
         assertThat(memberRepository.existsByEmail("as@sda.")).isFalse();
-        assertThat(memberRepository.existsByEmail("as@sda.xo")).isTrue();
+        assertThat(memberRepository.existsByEmail(initEmail)).isTrue();
     }
 
     @Test
     @Transactional
     public void updateStatus() {
-        Optional<Member> mem = memberRepository.findByEmail(testEmail);
-        assertThat(mem.get().getStatus()).isNotEqualTo(MemberStatus.LEAVE);
+        Member mem = memberRepository.findByEmail(initEmail).get();
+        LocalDateTime testTime = LocalDateTime.now();
 
-        memberRepository.findById(mem.get().getId())
+        assertThat(mem.getStatus()).isNotEqualTo(MemberStatus.LEAVE);
+        assertThat(ChronoUnit.MILLIS.between(testTime, mem.getUpdateDate())).isLessThan(0);
+
+        memberRepository.findById(mem.getId())
                 .map(m -> {
                     m.setStatus(MemberStatus.LEAVE);
                     return m;
                 });
 
-        mem = memberRepository.findByEmail(testEmail);
-        assertThat(mem.get().getStatus()).isEqualTo(MemberStatus.LEAVE);
+        mem = memberRepository.findByEmail(initEmail).get();
+
+        assertThat(mem.getStatus()).isEqualTo(MemberStatus.LEAVE);
+        assertThat(ChronoUnit.MILLIS.between(testTime, mem.getUpdateDate())).isGreaterThan(0);
     }
 }
