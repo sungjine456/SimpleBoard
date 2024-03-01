@@ -2,8 +2,6 @@ package com.example.Board.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Optional;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,13 +40,13 @@ class MemberControllerTest extends InitializeDBTest {
     @LocalServerPort
     int serverPort;
 
-    private Optional<String> token;
+    private String token;
     private String password = "password";
     private Member member = new Member("name", "email@abc.com", password);
 
     @BeforeEach
     void beforeEach() {
-        token = memberService.signUp(member).map(r -> r.getToken());
+        token = memberService.signUp(member).map(r -> r.getToken()).get();
     }
 
     @AfterEach
@@ -118,9 +116,9 @@ class MemberControllerTest extends InitializeDBTest {
         assertThat(responseEntity.getBody().getName()).isEqualTo("newName");
         assertThat(responseEntity.getBody().getEmail()).isEqualTo("newemail@abc.com");
 
-        Optional<Member> testMember = memberRepository.findByEmail(responseEntity.getBody().getEmail());
+        Member testMember = memberRepository.findByEmail(responseEntity.getBody().getEmail()).get();
 
-        assertThat(testMember.get().getStatus()).isEqualTo(MemberStatus.ACTIVE);
+        assertThat(testMember.getStatus()).isEqualTo(MemberStatus.ACTIVE);
     }
 
     @Test
@@ -178,7 +176,7 @@ class MemberControllerTest extends InitializeDBTest {
         String url = String.format("http://localhost:%d/mem/%d", serverPort, member.getId());
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(token.get());
+        headers.setBearerAuth(token);
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         ResponseEntity<MemberResponse> responseEntity = testRestTemplate.exchange(url, HttpMethod.GET,
@@ -214,7 +212,7 @@ class MemberControllerTest extends InitializeDBTest {
         String url = String.format("http://localhost:%d/my/check", serverPort);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(token.get());
+        headers.setBearerAuth(token);
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         ResponseEntity<Boolean> responseEntity = testRestTemplate.exchange(url, HttpMethod.POST,
@@ -233,7 +231,7 @@ class MemberControllerTest extends InitializeDBTest {
         String url = String.format("http://localhost:%d/my/check", serverPort);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(token.get());
+        headers.setBearerAuth(token);
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         ResponseEntity<Boolean> responseEntity = testRestTemplate.exchange(url, HttpMethod.POST,
@@ -252,7 +250,7 @@ class MemberControllerTest extends InitializeDBTest {
         String url = String.format("http://localhost:%d/my/check", serverPort);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(token.get());
+        headers.setBearerAuth(token);
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         ResponseEntity<Boolean> responseEntity = testRestTemplate.exchange(url, HttpMethod.POST,

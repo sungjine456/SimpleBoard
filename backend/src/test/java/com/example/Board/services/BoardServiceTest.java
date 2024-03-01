@@ -30,11 +30,11 @@ public class BoardServiceTest extends InitializeDBTest {
 
     private String name = "name";
     private String email = "email@abc.com";
-    private Member member = new Member(name, email, "password");
+    private Member member;
 
     @BeforeEach
     void beforeEach() {
-        member = memberRepository.save(member);
+        member = memberRepository.save(new Member(name, email, "password"));
     }
 
     @AfterEach

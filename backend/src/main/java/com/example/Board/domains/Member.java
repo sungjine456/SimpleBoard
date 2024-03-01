@@ -48,14 +48,9 @@ public class Member extends TimeEntity implements UserDetails {
   @ColumnDefault("'0'")
   private MemberStatus status;
 
-  public Member(String name, String email) {
+  public Member(String name, String email, String password) {
     this.name = name;
     this.email = email;
-  }
-
-  public Member(String name, String email, String password) {
-    this(name, email);
-
     this.password = password;
   }
 

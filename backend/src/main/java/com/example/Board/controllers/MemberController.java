@@ -4,8 +4,6 @@ import static com.example.Board.utils.Commons.isEmailFormat;
 
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,9 +24,11 @@ import com.example.Board.modal.responses.SignInResponse;
 import com.example.Board.repositories.MemberRepository;
 import com.example.Board.services.MemberService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 public class MemberController {
-	private static Logger log = LoggerFactory.getLogger(MemberController.class);
 
 	@Autowired
 	private MemberService memberService;
@@ -61,7 +61,7 @@ public class MemberController {
 	 */
 	@PostMapping("/sign-up")
 	public ResponseEntity<SignInResponse> signUp(@RequestBody SignUpRequest req) {
-		log.info("sign-up request : " + req);
+		log.info("sign-up request : {}", req);
 
 		if (req.getName().equals("") || !checkPassword(req.getPassword()) || !isEmailFormat(req.getEmail())) {
 			return ResponseEntity.badRequest().body(new SignInResponse("실패"));

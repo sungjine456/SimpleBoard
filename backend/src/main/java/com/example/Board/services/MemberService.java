@@ -2,8 +2,6 @@ package com.example.Board.services;
 
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -19,10 +17,11 @@ import com.example.Board.modal.responses.SignInResponse;
 import com.example.Board.repositories.MemberRepository;
 
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 public class MemberService {
-    private static Logger log = LoggerFactory.getLogger(MemberService.class);
 
     @Autowired
     private MemberRepository memberRepository;
