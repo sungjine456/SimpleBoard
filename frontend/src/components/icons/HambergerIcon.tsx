@@ -9,14 +9,14 @@ function HambergerIcon() {
 
   const icon = useRef<HTMLInputElement>(null);
 
-  const handleMainClick = (path: string) => {
+  const clickHandler = (path: string) => {
     setChecked(false);
     navigate(path);
   };
 
-  const handleSignOutClick = (path: string) => {
+  const signOutHandler = (path: string) => {
     signOut();
-    handleMainClick(path);
+    clickHandler(path);
   };
 
   const handleBackgroundClick = () => {
@@ -40,12 +40,17 @@ function HambergerIcon() {
       <div id="items">
         <ul>
           <li>
-            <p onClick={() => handleMainClick("/my")}>내 계정</p>
+            <p onClick={() => clickHandler("/my")}>내 계정</p>
           </li>
           {authenticated && (
-            <li>
-              <p onClick={() => handleSignOutClick("/")}>로그아웃</p>
-            </li>
+            <>
+              <li>
+                <p onClick={() => clickHandler("/board")}>글쓰기</p>
+              </li>
+              <li>
+                <p onClick={() => signOutHandler("/")}>로그아웃</p>
+              </li>
+            </>
           )}
         </ul>
       </div>

@@ -7,6 +7,7 @@ import MemberDetailPageComponent from "../components/pages/MemberDetailPageCompo
 import MyPageComponent from "../components/pages/my/MyPageComponent";
 import NotFoundPageComponent from "../components/pages/NotFoundPageComponent";
 import PasswordCheckComponent from "../components/pages/PasswordCheckComponent";
+import BoardPageComponent from "../components/pages/BoardPageComponent";
 
 const PrivateRoutes = () => {
   const { token, authenticated } = useContext(AuthContext);
@@ -25,6 +26,7 @@ const Routes = () => {
         <Route path="/mem/:userId" element={<MemberDetailPageComponent />} />
         <Route path="/my" element={<MyPageComponent />} />
         <Route path="/my/check" element={<PasswordCheckComponent />} />
+        <Route path="/board" element={<BoardPageComponent />} />
       </Route>
       <Route path="*" element={<NotFoundPageComponent />} />
     </Router>
