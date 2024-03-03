@@ -99,6 +99,7 @@ describe("useSignUp", () => {
     mock
       .onPost("http://localhost:8080/sign-up")
       .reply(400, { message: "중복" });
+
     const { result } = renderHook(() => useSignUp());
 
     expect(await result.current(req)).toBe("중복");
@@ -108,6 +109,7 @@ describe("useSignUp", () => {
     mock
       .onPost("http://localhost:8080/sign-up")
       .reply(400, { message: "실패" });
+
     const { result } = renderHook(() => useSignUp());
 
     expect(await result.current(req)).toBe("실패");
@@ -125,6 +127,7 @@ describe("useFindMember", () => {
 
   test("성공했을 때", async () => {
     mock.onGet(`http://localhost:8080/mem/${id}`).reply(200, data);
+
     const { result } = renderHook(() => useFindMember());
 
     expect(await result.current(id)).toStrictEqual(data);
@@ -132,6 +135,7 @@ describe("useFindMember", () => {
 
   test("실패했을 때", async () => {
     mock.onGet(`http://localhost:8080/mem/${id}`).reply(403);
+
     const { result } = renderHook(() => useFindMember());
 
     const d = await result.current(id);
@@ -146,6 +150,7 @@ describe("useFindMember", () => {
 describe("useCheckEmail", () => {
   test("성공했을 때", async () => {
     mock.onPost("http://localhost:8080/checkEmail").reply(200, true);
+
     const { result } = renderHook(() => useCheckEmail());
 
     expect(await result.current("email")).toBe(true);
@@ -155,6 +160,7 @@ describe("useCheckEmail", () => {
 describe("useVerifyIdentity", () => {
   test("성공했을 때", async () => {
     mock.onPost("http://localhost:8080/my/check").reply(200, true);
+
     const { result } = renderHook(() => useVerifyIdentity());
 
     expect(await result.current({ id: 1, password: testPassword })).toBe(true);
@@ -164,6 +170,7 @@ describe("useVerifyIdentity", () => {
 describe("useLeaveMember", () => {
   test("성공했을 때", async () => {
     mock.onPost("http://localhost:8080/my/leave").reply(200, true);
+
     const { result } = renderHook(() => useLeaveMember());
 
     expect(await result.current({ id: 1, password: testPassword })).toBe(true);

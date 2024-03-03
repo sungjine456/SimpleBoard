@@ -1,13 +1,12 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import { act } from "react-dom/test-utils";
 import * as router from "react-router";
-import { AuthProvider } from "../../../components/contexts/AuthContext";
 import BoardPageComponent from "../../../components/pages/BoardPageComponent";
 
-const mock = new MockAdapter(axios, { delayResponse: 200 });
+const mock = new MockAdapter(axios);
 const navigate = jest.fn();
 window.alert = jest.fn();
 
@@ -29,12 +28,13 @@ test("성공", async () => {
   userEvent.type(title, "title");
   userEvent.type(content, "content");
 
+  expect(title.classList.contains("error")).toBeFalsy();
+  expect(content.classList.contains("error")).toBeFalsy();
+
   await act(async () => userEvent.click(button));
 
-  await waitFor(() => {
-    expect(title.classList.length).toBe(1);
-    expect(content.classList.length).toBe(1);
-  });
+  expect(title.classList.contains("error")).toBeFalsy();
+  expect(content.classList.contains("error")).toBeFalsy();
 });
 
 describe("실패", () => {
@@ -50,12 +50,13 @@ describe("실패", () => {
     userEvent.clear(title);
     userEvent.type(content, "content");
 
+    expect(title.classList.contains("error")).toBeFalsy();
+    expect(content.classList.contains("error")).toBeFalsy();
+
     await act(async () => userEvent.click(button));
 
-    await waitFor(() => {
-      expect(title.classList.length).toBe(2);
-      expect(content.classList.length).toBe(1);
-    });
+    expect(title.classList.contains("error")).toBeTruthy();
+    expect(content.classList.contains("error")).toBeFalsy();
   });
 
   test("내용이 없을 때", async () => {
@@ -70,11 +71,12 @@ describe("실패", () => {
     userEvent.type(title, "title");
     userEvent.clear(content);
 
+    expect(title.classList.contains("error")).toBeFalsy();
+    expect(content.classList.contains("error")).toBeFalsy();
+
     await act(async () => userEvent.click(button));
 
-    await waitFor(() => {
-      expect(title.classList.length).toBe(1);
-      expect(content.classList.length).toBe(2);
-    });
+    expect(title.classList.contains("error")).toBeFalsy();
+    expect(content.classList.contains("error")).toBeTruthy();
   });
 });

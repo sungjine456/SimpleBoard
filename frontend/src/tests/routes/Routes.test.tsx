@@ -1,17 +1,10 @@
 import { render, screen } from "@testing-library/react";
-import * as router from "react-router";
 import { BrowserRouter, MemoryRouter } from "react-router-dom";
 import App from "../../App";
 import { AuthContext } from "../../components/contexts/AuthContext";
 import SignUpFormComponent from "../../components/forms/SignUpFormComponent";
 import SignInResponse from "../../models/responses/SignInResponse";
 import Routes from "../../routes/Routes";
-
-const navigate = jest.fn();
-
-beforeEach(() => {
-  jest.spyOn(router, "useNavigate").mockImplementation(() => navigate);
-});
 
 test("App 랜더링", async () => {
   render(<App />, { wrapper: BrowserRouter });
@@ -63,10 +56,7 @@ describe("로그인 후 접근할 수 있는 페이지 랜더링", () => {
       </MemoryRouter>
     );
 
-    navigate("/my");
-
-    await screen.findByText("로그아웃");
-
+    expect(screen.queryByText("로그인")).toBeNull();
     expect(screen.getByText("로그아웃")).toBeInTheDocument();
   });
 
@@ -77,10 +67,7 @@ describe("로그인 후 접근할 수 있는 페이지 랜더링", () => {
       </MemoryRouter>
     );
 
-    navigate("/my");
-
-    await screen.findByText("로그인");
-
+    expect(screen.queryByText("로그아웃")).toBeNull();
     expect(screen.getByText("로그인")).toBeInTheDocument();
   });
 });
