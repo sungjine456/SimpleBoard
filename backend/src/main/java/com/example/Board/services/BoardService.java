@@ -20,7 +20,7 @@ public class BoardService {
     private MemberRepository memberRepository;
 
     public boolean write(long memberId, String title, String content) {
-        log.info("사용자 아이디 {}, 제목 {}", memberId, title);
+        log.info("write : 사용자 아이디 {}, 제목 {}", memberId, title);
 
         if (!StringUtils.hasText(title) || !StringUtils.hasText(content)) {
             return false;
@@ -28,6 +28,21 @@ public class BoardService {
 
         return memberRepository.findById(memberId).map(member -> {
             return boardRepository.save(new Board(title, content, member));
+        }).isPresent();
+    }
+
+    public boolean update(long memberId, long boardId, String title, String content) {
+        log.info("update : 사용자 아이디 {}, 글 아이디 {}, 제목 {}", memberId, boardId, title);
+
+        if (!StringUtils.hasText(title) || !StringUtils.hasText(content)) {
+            return false;
+        }
+
+        return boardRepository.findByIdAndMemberId(boardId, memberId).map(board -> {
+            board.setTitle(title);
+            board.setContent(content);
+
+            return board;
         }).isPresent();
     }
 }

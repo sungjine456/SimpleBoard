@@ -1,4 +1,4 @@
-package com.example.Board.modal.requests;
+package com.example.Board.modal.requests.members;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

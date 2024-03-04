@@ -17,8 +17,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import com.example.Board.InitializeDBTest;
+import com.example.Board.domains.Board;
 import com.example.Board.domains.Member;
-import com.example.Board.modal.requests.BoardRequest;
+import com.example.Board.modal.requests.boards.BoardRequest;
 import com.example.Board.repositories.BoardRepository;
 import com.example.Board.services.BoardService;
 import com.example.Board.services.MemberService;
@@ -38,12 +39,16 @@ class BoardControllerTest extends InitializeDBTest {
     int serverPort;
 
     private String token;
-    private String password = "password";
-    private Member member = new Member("name", "email@abc.com", password);
+    private Member testMember = new Member("name", "email@abc.com", "password");
+
+    private String testTitle = "title";
+    private String testContent = "content";
+    private Board testBoard;
 
     @BeforeEach
     void beforeEach() {
-        token = memberService.signUp(member).map(r -> r.getToken()).get();
+        token = memberService.signUp(testMember).map(r -> r.getToken()).get();
+        testBoard = boardRepository.save(new Board(testTitle, testContent, testMember));
     }
 
     @AfterEach
@@ -53,7 +58,7 @@ class BoardControllerTest extends InitializeDBTest {
 
     @Test
     public void write() {
-        BoardRequest req = new BoardRequest(member.getId(), "title", "content");
+        BoardRequest req = new BoardRequest(testMember.getId(), "title", "content");
 
         String url = String.format("http://localhost:%d/board", serverPort);
 
@@ -66,5 +71,56 @@ class BoardControllerTest extends InitializeDBTest {
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isTrue();
+    }
+
+    @Test
+    public void update() {
+        BoardRequest req = new BoardRequest(testMember.getId(), "updateTitle", "updateContent");
+
+        String url = String.format("http://localhost:%d/board/%d", serverPort, testBoard.getId());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ResponseEntity<Boolean> responseEntity = testRestTemplate.exchange(url, HttpMethod.POST,
+                new HttpEntity<Object>(req, headers), Boolean.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).isTrue();
+    }
+
+    @Test
+    public void update_wrongMemberId() {
+        BoardRequest req = new BoardRequest(9999999, "updateTitle", "updateContent");
+
+        String url = String.format("http://localhost:%d/board/%d", serverPort, testBoard.getId());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ResponseEntity<Boolean> responseEntity = testRestTemplate.exchange(url, HttpMethod.POST,
+                new HttpEntity<Object>(req, headers), Boolean.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).isFalse();
+    }
+
+    @Test
+    public void update_wrongBoardId() {
+        BoardRequest req = new BoardRequest(testMember.getId(), "updateTitle", "updateContent");
+
+        String url = String.format("http://localhost:%d/board/99999", serverPort);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ResponseEntity<Boolean> responseEntity = testRestTemplate.exchange(url, HttpMethod.POST,
+                new HttpEntity<Object>(req, headers), Boolean.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).isFalse();
     }
 }

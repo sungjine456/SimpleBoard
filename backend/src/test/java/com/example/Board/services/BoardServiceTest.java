@@ -28,13 +28,18 @@ public class BoardServiceTest extends InitializeDBTest {
     @Autowired
     MemberRepository memberRepository;
 
-    private String name = "name";
-    private String email = "email@abc.com";
-    private Member member;
+    private String testName = "name";
+    private String testEmail = "email@abc.com";
+    private Member testMember;
+
+    private String testTitle = "testTitle";
+    private String testContent = "testContent";
+    private Board testBoard;
 
     @BeforeEach
     void beforeEach() {
-        member = memberRepository.save(new Member(name, email, "password"));
+        testMember = memberRepository.save(new Member(testName, testEmail, "password"));
+        testBoard = boardRepository.save(new Board(testTitle, testContent, testMember));
     }
 
     @AfterEach
@@ -45,23 +50,49 @@ public class BoardServiceTest extends InitializeDBTest {
     @Test
     @Transactional
     public void write() {
-        assertThat(boardRepository.findAll().size()).isZero();
+        assertThat(boardRepository.findAll().size()).isOne();
 
         String title = "title";
         String content = "content";
 
-        boardService.write(member.getId(), title, content);
+        boardService.write(testMember.getId(), title, content);
 
         List<Board> boards = boardRepository.findAll();
 
-        assertThat(boards.size()).isOne();
+        assertThat(boards.size()).isEqualTo(2);
 
-        Board board = boards.get(0);
+        Board board = boards.get(1);
 
         assertThat(board.getTitle()).isEqualTo(title);
         assertThat(board.getContent()).isEqualTo(content);
-        assertThat(board.getMember().getName()).isEqualTo(name);
-        assertThat(board.getMember().getEmail()).isEqualTo(email);
+        assertThat(board.getMember().getName()).isEqualTo(testName);
+        assertThat(board.getMember().getEmail()).isEqualTo(testEmail);
         assertThat(board.getCreateDate()).isEqualTo(board.getUpdateDate());
+    }
+
+    @Test
+    @Transactional
+    public void update() {
+        String updateTitle = "updateTitle";
+        String updateContent = "updateContent";
+
+        Board board = boardRepository.findByIdAndMemberId(testBoard.getId(), testMember.getId()).get();
+
+        assertThat(board.getTitle()).isEqualTo(testTitle);
+        assertThat(board.getContent()).isEqualTo(testContent);
+        assertThat(board.getMember().getName()).isEqualTo(testName);
+        assertThat(board.getMember().getEmail()).isEqualTo(testEmail);
+        assertThat(board.getCreateDate()).isEqualTo(board.getUpdateDate());
+
+        boolean succeded = boardService.update(testBoard.getId(), testMember.getId(), updateTitle, updateContent);
+
+        board = boardRepository.findByIdAndMemberId(testBoard.getId(), testMember.getId()).get();
+
+        assertThat(succeded).isTrue();
+        assertThat(board.getTitle()).isEqualTo(updateTitle);
+        assertThat(board.getContent()).isEqualTo(updateContent);
+        assertThat(board.getMember().getName()).isEqualTo(testName);
+        assertThat(board.getMember().getEmail()).isEqualTo(testEmail);
+        assertThat(board.getCreateDate()).isNotEqualTo(board.getUpdateDate());
     }
 }

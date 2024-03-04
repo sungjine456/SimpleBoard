@@ -20,12 +20,12 @@ public class TimeEntity {
 
     @PrePersist
     public void prePersist() {
-        this.createDate = LocalDateTime.now();
-        this.updateDate = this.createDate;
+        createDate = LocalDateTime.now();
+        updateDate = createDate;
     }
 
     @PreUpdate
     public void preUpdate() {
-        this.updateDate = LocalDateTime.now();
+        updateDate = LocalDateTime.now();
     }
 }
