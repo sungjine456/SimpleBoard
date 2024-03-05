@@ -32,7 +32,8 @@ public class SecurityConfig {
 				.sessionManagement(m -> m.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(req -> req
 						.requestMatchers("/sign-in", "/sign-up", "checkEmail").permitAll()
-						.requestMatchers("/mem/**", "/my", "/my/check", "/board").hasRole("USER")
+						.requestMatchers("/mem/**", "/my", "/my/check", "/board", "/board/**", "/boards")
+						.hasRole("USER")
 						.anyRequest()
 						.authenticated())
 				.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),

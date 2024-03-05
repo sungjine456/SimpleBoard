@@ -1,8 +1,8 @@
 import { useContext } from "react";
-import SignOutButton from "../buttons/SignOutButton";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 import SignInFormComponent from "../forms/SignInFormComponent";
-import { useNavigate } from "react-router-dom";
+import BoardsComponent from "./BoardsComponent";
 
 function MainPageComponent() {
   const { authenticated } = useContext(AuthContext);
@@ -11,7 +11,7 @@ function MainPageComponent() {
   return (
     <div className="d-flex-column">
       {authenticated ? (
-        <SignOutButton />
+        <BoardsComponent />
       ) : (
         <div>
           <SignInFormComponent />

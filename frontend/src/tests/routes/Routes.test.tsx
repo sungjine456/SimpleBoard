@@ -57,7 +57,7 @@ describe("로그인 후 접근할 수 있는 페이지 랜더링", () => {
     );
 
     expect(screen.queryByText("로그인")).toBeNull();
-    expect(screen.getByText("로그아웃")).toBeInTheDocument();
+    expect(screen.getByText("현재 작성된 글이 없습니다.")).toBeInTheDocument();
   });
 
   test("로그인되지 않은 경우", async () => {

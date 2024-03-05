@@ -1,5 +1,6 @@
 package com.example.Board.controllers;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ public class BoardController {
     }
 
     @GetMapping("/board/{id}")
-    public ResponseEntity<BoardResponse> find(@PathVariable("id") long id) {
+    public ResponseEntity<BoardResponse> findBoard(@PathVariable("id") long id) {
         log.info("find id ", id);
 
         Optional<Board> board = boardRepository.findById(id);
@@ -65,5 +66,16 @@ public class BoardController {
         boolean succeded = boardService.update(id, req.getMemberId(), req.getTitle(), req.getContent());
 
         return ResponseEntity.ok(succeded);
+    }
+
+    @GetMapping("/boards")
+    public ResponseEntity<List<BoardResponse>> findBoards() {
+        log.info("boards");
+
+        List<BoardResponse> boards = boardRepository.findAll().stream().map(b -> {
+            return new BoardResponse(b);
+        }).toList();
+
+        return ResponseEntity.ok(boards);
     }
 }

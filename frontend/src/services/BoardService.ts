@@ -23,3 +23,14 @@ export function useFindBoard(): (id: number) => Promise<BoardResponse> {
       });
   };
 }
+
+export function useFindBoards(): () => Promise<BoardResponse[]> {
+  return () => {
+    return axios
+      .get<BoardResponse[]>(`http://localhost:8080/boards`)
+      .then((r) => r.data)
+      .catch((_) => {
+        return [];
+      });
+  };
+}

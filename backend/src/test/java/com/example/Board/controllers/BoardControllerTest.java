@@ -126,7 +126,7 @@ class BoardControllerTest extends InitializeDBTest {
     }
 
     @Test
-    public void find() {
+    public void findBoard() {
         String url = String.format("http://localhost:%d/board/%d", serverPort, testBoard.getId());
 
         HttpHeaders headers = new HttpHeaders();
@@ -143,7 +143,7 @@ class BoardControllerTest extends InitializeDBTest {
     }
 
     @Test
-    public void find_whenWrongId() {
+    public void findBoard_whenWrongId() {
         String url = String.format("http://localhost:%d/board/%d", serverPort, 99999);
 
         HttpHeaders headers = new HttpHeaders();
@@ -155,5 +155,23 @@ class BoardControllerTest extends InitializeDBTest {
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(responseEntity.getBody()).isNull();
+    }
+
+    @Test
+    public void findBoards() {
+        String url = String.format("http://localhost:%d/boards", serverPort);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ResponseEntity<BoardResponse[]> responseEntity = testRestTemplate.exchange(url, HttpMethod.GET,
+                new HttpEntity<Object>(headers), BoardResponse[].class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody().length).isOne();
+        assertThat(responseEntity.getBody()[0].getId()).isEqualTo(testBoard.getId());
+        assertThat(responseEntity.getBody()[0].getTitle()).isEqualTo(testTitle);
+        assertThat(responseEntity.getBody()[0].getContent()).isEqualTo(testContent);
     }
 }
