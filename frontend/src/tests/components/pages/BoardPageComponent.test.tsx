@@ -4,7 +4,7 @@ import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import { act } from "react-dom/test-utils";
 import * as router from "react-router";
-import BoardPageComponent from "../../../components/pages/BoardPageComponent";
+import BoardPageComponent from "../../../components/pages/boards/BoardPageComponent";
 
 const mock = new MockAdapter(axios);
 const navigate = jest.fn();

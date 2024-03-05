@@ -1,9 +1,9 @@
 import { useContext, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useWrite } from "../../services/BoardService";
-import styles from "../../styles/pages/Board.module.scss";
-import { AuthContext } from "../contexts/AuthContext";
+import { useWrite } from "../../../services/BoardService";
+import styles from "../../../styles/pages/Board.module.scss";
+import { AuthContext } from "../../contexts/AuthContext";
 
 interface FormData {
   title: string;
@@ -19,13 +19,7 @@ function BoardPageComponent() {
   const titleElement = useRef<HTMLInputElement | null>(null);
   const contentElement = useRef<HTMLTextAreaElement | null>(null);
 
-  const {
-    register,
-    handleSubmit,
-    trigger,
-    getFieldState,
-    formState: { errors },
-  } = useForm<FormData>({
+  const { register, handleSubmit, trigger, getFieldState } = useForm<FormData>({
     mode: "onChange",
     defaultValues: {
       title: "",

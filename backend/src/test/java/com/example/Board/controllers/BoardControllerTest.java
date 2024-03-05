@@ -20,6 +20,7 @@ import com.example.Board.InitializeDBTest;
 import com.example.Board.domains.Board;
 import com.example.Board.domains.Member;
 import com.example.Board.modal.requests.boards.BoardRequest;
+import com.example.Board.modal.responses.BoardResponse;
 import com.example.Board.repositories.BoardRepository;
 import com.example.Board.services.BoardService;
 import com.example.Board.services.MemberService;
@@ -122,5 +123,37 @@ class BoardControllerTest extends InitializeDBTest {
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isFalse();
+    }
+
+    @Test
+    public void find() {
+        String url = String.format("http://localhost:%d/board/%d", serverPort, testBoard.getId());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ResponseEntity<BoardResponse> responseEntity = testRestTemplate.exchange(url, HttpMethod.GET,
+                new HttpEntity<Object>(headers), BoardResponse.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody().getId()).isEqualTo(testBoard.getId());
+        assertThat(responseEntity.getBody().getTitle()).isEqualTo(testTitle);
+        assertThat(responseEntity.getBody().getContent()).isEqualTo(testContent);
+    }
+
+    @Test
+    public void find_whenWrongId() {
+        String url = String.format("http://localhost:%d/board/%d", serverPort, 99999);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ResponseEntity<BoardResponse> responseEntity = testRestTemplate.exchange(url, HttpMethod.GET,
+                new HttpEntity<Object>(headers), BoardResponse.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(responseEntity.getBody()).isNull();
     }
 }
