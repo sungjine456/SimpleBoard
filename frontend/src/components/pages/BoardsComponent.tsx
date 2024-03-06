@@ -1,12 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BoardResponse from "../../models/responses/BoardResponse";
 import { useFindBoards } from "../../services/BoardService";
 
 function BoardsComponent() {
   const findBoards = useFindBoards();
   const [boards, setBoards] = useState<BoardResponse[]>([]);
+  const [didLoad, setDidLoad] = useState<boolean>(false);
 
-  findBoards().then((b) => setBoards(b));
+  useEffect(() => {
+    if (!didLoad) {
+      findBoards().then(setBoards);
+      setDidLoad(true);
+    }
+  }, [findBoards, didLoad]);
 
   return (
     <div>
