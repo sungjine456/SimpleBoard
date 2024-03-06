@@ -20,7 +20,7 @@ function BoardsComponent() {
         <table>
           <tbody>
             {boards.map((b) => (
-              <tr>
+              <tr key={b.id}>
                 <td>{b.id}</td>
                 <td>{b.title}</td>
                 <td>{b.content}</td>
