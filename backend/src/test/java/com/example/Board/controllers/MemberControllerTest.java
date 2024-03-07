@@ -21,7 +21,6 @@ import com.example.Board.configs.jwt.JwtToken;
 import com.example.Board.domains.Member;
 import com.example.Board.domains.MemberStatus;
 import com.example.Board.modal.requests.members.MemberToEmailRequest;
-import com.example.Board.modal.requests.members.MemberToIdRequest;
 import com.example.Board.modal.requests.members.SignUpRequest;
 import com.example.Board.modal.responses.MemberResponse;
 import com.example.Board.modal.responses.SignInResponse;
@@ -207,8 +206,6 @@ class MemberControllerTest extends InitializeDBTest {
     public void verifyIdentity() {
         memberService.signIn(member.getEmail(), password);
 
-        MemberToIdRequest req = new MemberToIdRequest(member.getId(), password);
-
         String url = String.format("http://localhost:%d/my/check", serverPort);
 
         HttpHeaders headers = new HttpHeaders();
@@ -216,37 +213,16 @@ class MemberControllerTest extends InitializeDBTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         ResponseEntity<Boolean> responseEntity = testRestTemplate.exchange(url, HttpMethod.POST,
-                new HttpEntity<Object>(req, headers), Boolean.class);
+                new HttpEntity<Object>(password, headers), Boolean.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isTrue();
     }
 
     @Test
-    public void verifyIdentity_whenWrongId() {
-        memberService.signIn(member.getEmail(), password);
-
-        MemberToIdRequest req = new MemberToIdRequest(-1l, password);
-
-        String url = String.format("http://localhost:%d/my/check", serverPort);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(token);
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        ResponseEntity<Boolean> responseEntity = testRestTemplate.exchange(url, HttpMethod.POST,
-                new HttpEntity<Object>(req, headers), Boolean.class);
-
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isFalse();
-    }
-
-    @Test
     public void verifyIdentity_whenWrongPassword() {
         memberService.signIn(member.getEmail(), password);
 
-        MemberToIdRequest req = new MemberToIdRequest(member.getId(), "wrongPassword");
-
         String url = String.format("http://localhost:%d/my/check", serverPort);
 
         HttpHeaders headers = new HttpHeaders();
@@ -254,7 +230,7 @@ class MemberControllerTest extends InitializeDBTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         ResponseEntity<Boolean> responseEntity = testRestTemplate.exchange(url, HttpMethod.POST,
-                new HttpEntity<Object>(req, headers), Boolean.class);
+                new HttpEntity<Object>("wrongPassword", headers), Boolean.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isFalse();

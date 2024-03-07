@@ -16,7 +16,7 @@ function PasswordCheckComponent() {
   const navigate = useNavigate();
   const verifyIdentity = useVerifyIdentity();
   const leaveMember = useLeaveMember();
-  const { member, signOut } = useContext(AuthContext);
+  const { signOut } = useContext(AuthContext);
   const url = state.url;
 
   const {
@@ -30,16 +30,12 @@ function PasswordCheckComponent() {
   });
 
   const onSubmit = (data: CheckForm) => {
-    const reqData = {
-      id: member.id,
-      password: data.password,
-    };
-    verifyIdentity(reqData).then((b) => {
+    verifyIdentity(data.password).then((b) => {
       if (b) {
         if (url === "update") {
           navigate("/my", { state: { success: true } });
         } else if (url === "leave") {
-          leaveMember(reqData).then((b) => {
+          leaveMember(data.password).then((b) => {
             if (b) {
               alert("탈퇴되었습니다.");
               signOut();

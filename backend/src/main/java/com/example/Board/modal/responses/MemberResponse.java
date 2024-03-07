@@ -16,6 +16,10 @@ public class MemberResponse {
 	private String email;
 	private String message;
 
+	public MemberResponse(Member mem) {
+		this(mem.getId(), mem.getName(), mem.getEmail(), null);
+	}
+
 	public MemberResponse(Member mem, String message) {
 		this(mem.getId(), mem.getName(), mem.getEmail(), message);
 	}

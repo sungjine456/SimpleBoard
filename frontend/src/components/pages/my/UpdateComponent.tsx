@@ -1,12 +1,15 @@
-import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useUpdateMember } from "../../../services/MemberService";
-import { AuthContext } from "../../contexts/AuthContext";
 import styles from "../../../styles/pages/MyPage.module.scss";
 
-function UpdateComponent({ handler }: { handler: (b: boolean) => void }) {
-  const { member } = useContext(AuthContext);
+function UpdateComponent({
+  handler,
+  member,
+}: {
+  member: { name: string; email: string };
+  handler: (b: boolean) => void;
+}) {
   const { pathname } = useLocation();
   const updateMember = useUpdateMember();
   const navigate = useNavigate();
@@ -23,7 +26,7 @@ function UpdateComponent({ handler }: { handler: (b: boolean) => void }) {
   });
 
   const update = (data: { name: string }) => {
-    updateMember(member.id, data.name).then((b) => {
+    updateMember(data).then((b) => {
       handler(!b);
       navigate(pathname, {});
     });

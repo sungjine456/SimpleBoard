@@ -163,7 +163,7 @@ describe("useVerifyIdentity", () => {
 
     const { result } = renderHook(() => useVerifyIdentity());
 
-    expect(await result.current({ id: 1, password: testPassword })).toBe(true);
+    expect(await result.current(testPassword)).toBe(true);
   });
 });
 
@@ -173,6 +173,6 @@ describe("useLeaveMember", () => {
 
     const { result } = renderHook(() => useLeaveMember());
 
-    expect(await result.current({ id: 1, password: testPassword })).toBe(true);
+    expect(await result.current(testPassword)).toBe(true);
   });
 });

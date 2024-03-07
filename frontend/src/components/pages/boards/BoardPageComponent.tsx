@@ -1,9 +1,8 @@
-import { useContext, useRef } from "react";
+import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useWrite } from "../../../services/BoardService";
 import styles from "../../../styles/pages/Board.module.scss";
-import { AuthContext } from "../../contexts/AuthContext";
 
 interface FormData {
   title: string;
@@ -13,7 +12,6 @@ interface FormData {
 function BoardPageComponent() {
   const write = useWrite();
   const navigate = useNavigate();
-  const { member } = useContext(AuthContext);
 
   const submitBtn = useRef<HTMLButtonElement>(null);
   const titleElement = useRef<HTMLInputElement | null>(null);
@@ -56,7 +54,6 @@ function BoardPageComponent() {
 
   const onSubmit = (data: FormData) => {
     write({
-      memberId: member.id,
       title: data.title,
       content: data.content,
     }).then((b) => {

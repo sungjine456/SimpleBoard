@@ -2,6 +2,7 @@ package com.example.Board.controllers;
 
 import static com.example.Board.utils.Commons.isEmailFormat;
 
+import java.security.Principal;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,6 @@ import com.example.Board.configs.jwt.JwtToken;
 import com.example.Board.domains.Member;
 import com.example.Board.domains.MemberStatus;
 import com.example.Board.modal.requests.members.MemberToEmailRequest;
-import com.example.Board.modal.requests.members.MemberToIdRequest;
 import com.example.Board.modal.requests.members.SignUpRequest;
 import com.example.Board.modal.requests.members.UpdateRequest;
 import com.example.Board.modal.responses.MemberResponse;
@@ -99,25 +99,38 @@ public class MemberController {
 		return memberRepository.existsByEmail(req.getEmail());
 	}
 
-	@PostMapping("/my")
-	public Boolean updateMember(@RequestBody UpdateRequest req) {
-		log.info("updateMember : {}", req);
+	@GetMapping("/my")
+	public ResponseEntity<MemberResponse> getMember(Principal principal) {
+		log.info("get member : {}", principal.getName());
 
-		return memberService.updateMember(req.getId(), req.getName());
+		Optional<Member> member = memberRepository.findByEmail(principal.getName());
+
+		if (member.isPresent()) {
+			return ResponseEntity.ok(new MemberResponse(member.get()));
+		} else {
+			return ResponseEntity.badRequest().body(wrongResponse);
+		}
+	}
+
+	@PostMapping("/my")
+	public Boolean updateMember(@RequestBody UpdateRequest req, Principal principal) {
+		log.info("updateMember - name: {}, email: {}", req.getName(), principal.getName());
+
+		return memberService.updateMember(principal.getName(), req.getName());
 	}
 
 	@PostMapping("/my/check")
-	public Boolean verifyIdentity(@RequestBody MemberToIdRequest req) {
-		log.info("checkPassword : {}", req);
+	public Boolean verifyIdentity(@RequestBody String password, Principal principal) {
+		log.info("checkPassword : {}", principal.getName());
 
-		return memberService.checkPassword(req.getId(), req.getPassword());
+		return memberService.checkPassword(principal.getName(), password);
 	}
 
 	@PostMapping("/my/leave")
-	public Boolean leave(@RequestBody MemberToIdRequest req) {
-		log.info("leave : {}", req);
+	public Boolean leave(@RequestBody String password, Principal principal) {
+		log.info("leave : {}", principal.getName());
 
-		return memberService.leave(req.getId(), req.getPassword());
+		return memberService.leave(principal.getName(), password);
 	}
 
 	private boolean checkPassword(String password) {

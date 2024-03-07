@@ -63,13 +63,13 @@ public class MemberServiceTest extends InitializeDBTest {
 
     @Test
     public void checkPassword() {
-        assertThat(memberService.checkPassword(member.getId(), password)).isTrue();
+        assertThat(memberService.checkPassword(member.getEmail(), password)).isTrue();
     }
 
     @Test
     public void checkPasswordWrongData() {
-        assertThat(memberService.checkPassword(member.getId(), "wrongPwd")).isFalse();
-        assertThat(memberService.checkPassword(-1l, password)).isFalse();
+        assertThat(memberService.checkPassword(member.getEmail(), "wrongPwd")).isFalse();
+        assertThat(memberService.checkPassword("", password)).isFalse();
     }
 
     @Test
@@ -80,7 +80,7 @@ public class MemberServiceTest extends InitializeDBTest {
 
         assertThat(testMember.getName()).as(name);
 
-        boolean isSuccessful = memberService.updateMember(member.getId(), updatedName);
+        boolean isSuccessful = memberService.updateMember(member.getEmail(), updatedName);
         testMember = memberRepository.findById(member.getId()).get();
         LocalDateTime afterUpdateTime = testMember.getUpdateDate();
 
@@ -94,7 +94,7 @@ public class MemberServiceTest extends InitializeDBTest {
         Member mem = memberRepository.findById(member.getId()).get();
 
         assertThat(mem.getStatus()).isEqualTo(MemberStatus.ACTIVE);
-        assertThat(memberService.leave(member.getId(), password)).isTrue();
+        assertThat(memberService.leave(member.getEmail(), password)).isTrue();
 
         mem = memberRepository.findById(member.getId()).get();
 
@@ -103,7 +103,7 @@ public class MemberServiceTest extends InitializeDBTest {
 
     @Test
     public void leaveWrongPassword() {
-        assertThat(memberService.leave(member.getId(), "wrongPwd")).isFalse();
+        assertThat(memberService.leave(member.getEmail(), "wrongPwd")).isFalse();
 
         Member mem = memberRepository.findById(member.getId()).get();
 
@@ -112,7 +112,7 @@ public class MemberServiceTest extends InitializeDBTest {
 
     @Test
     public void leaveWrongId() {
-        assertThat(memberService.leave(-1, password)).isFalse();
+        assertThat(memberService.leave("", password)).isFalse();
 
         Member mem = memberRepository.findById(member.getId()).get();
 

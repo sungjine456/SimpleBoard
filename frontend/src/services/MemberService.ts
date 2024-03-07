@@ -2,7 +2,6 @@ import axios from "axios";
 import { useContext } from "react";
 import { AuthContext } from "../components/contexts/AuthContext";
 import MemberToEmailRequest from "../models/requests/MemberToEmailRequest";
-import MemberToIdRequest from "../models/requests/MemberToIdRequest";
 import SignUpRequest from "../models/requests/SignUpRequest";
 import MemberResponse from "../models/responses/MemberResponse";
 import SignInResponse from "../models/responses/SignInResponse";
@@ -72,38 +71,42 @@ export function useCheckEmail(): (email: string) => Promise<boolean> {
   };
 }
 
-export function useVerifyIdentity(): (
-  member: MemberToIdRequest
-) => Promise<boolean> {
-  return (member: MemberToIdRequest) => {
+export function useVerifyIdentity(): (psasword: string) => Promise<boolean> {
+  return (password: string) => {
     return axios
-      .post("http://localhost:8080/my/check", member)
+      .post("http://localhost:8080/my/check", password)
       .then((b) => b.data);
   };
 }
 
-export function useUpdateMember(): (
-  id: number,
-  name: string
-) => Promise<boolean> {
-  const { updateMember } = useContext(AuthContext);
-
-  return (id: number, name: string) => {
+export function useGetMember(): () => Promise<MemberResponse> {
+  return () => {
     return axios
-      .post("http://localhost:8080/my", { id: id, name: name })
-      .then((b) => {
-        updateMember(name);
-        return b.data;
+      .get<MemberResponse>(`http://localhost:8080/my`)
+      .then((r) => r.data)
+      .catch((_) => {
+        return {
+          id: -1,
+          name: "-",
+          email: "-",
+          message: "",
+        };
       });
   };
 }
 
-export function useLeaveMember(): (
-  member: MemberToIdRequest
-) => Promise<boolean> {
-  return (member: MemberToIdRequest) => {
+export function useUpdateMember(): (req: { name: string }) => Promise<boolean> {
+  return (req: { name: string }) => {
+    return axios.post("http://localhost:8080/my", req).then((b) => {
+      return b.data;
+    });
+  };
+}
+
+export function useLeaveMember(): (password: string) => Promise<boolean> {
+  return (password: string) => {
     return axios
-      .post("http://localhost:8080/my/leave", member)
+      .post("http://localhost:8080/my/leave", password)
       .then((b) => b.data);
   };
 }

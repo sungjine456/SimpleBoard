@@ -63,10 +63,10 @@ public class MemberService {
     }
 
     @Transactional
-    public Boolean updateMember(Long id, String name) {
-        log.info("update member: id = {}, name = {}", id, name);
+    public Boolean updateMember(String email, String name) {
+        log.info("update member: email = {}, name = {}", email, name);
 
-        return memberRepository.findById(id).map(m -> {
+        return memberRepository.findByEmail(email).map(m -> {
             m.setName(name);
             return m;
         }).isPresent();
@@ -76,20 +76,20 @@ public class MemberService {
         return memberRepository.findById(id);
     }
 
-    public boolean checkPassword(long id, String password) {
-        log.info("check password: id = {}, password = {}", id, password);
+    public boolean checkPassword(String email, String password) {
+        log.info("check password: email = {}, password = {}", email, password);
 
         return memberRepository
-                .findById(id)
+                .findByEmail(email)
                 .filter(m -> passwordEncoder.matches(password, m.getPassword()))
                 .isPresent();
     }
 
     @Transactional
-    public boolean leave(long id, String password) {
-        log.info("leave: id = {}, password = {}", id, password);
+    public boolean leave(String email, String password) {
+        log.info("leave: email = {}, password = {}", email, password);
 
-        return memberRepository.findById(id)
+        return memberRepository.findByEmail(email)
                 .filter(m -> passwordEncoder.matches(password, m.getPassword()))
                 .map(m -> {
                     m.setStatus(MemberStatus.LEAVE);

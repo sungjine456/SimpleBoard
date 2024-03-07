@@ -1,11 +1,11 @@
-import { useContext } from "react";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../../contexts/AuthContext";
 import styles from "../../../styles/pages/MyPage.module.scss";
 
-function MainComponent() {
-  const { member } = useContext(AuthContext);
-
+function MainComponent({
+  member,
+}: {
+  member: { name: string; email: string };
+}) {
   return (
     <div className={styles.main}>
       <h3>계정 페이지</h3>

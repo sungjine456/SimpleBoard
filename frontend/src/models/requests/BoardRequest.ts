@@ -1,5 +1,4 @@
 interface BoardRequest {
-  memberId: number;
   title: string;
   content: string;
 }
