@@ -11,16 +11,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MemberResponse {
 
-	private Long id;
 	private String name;
 	private String email;
 	private String message;
 
 	public MemberResponse(Member mem) {
-		this(mem.getId(), mem.getName(), mem.getEmail(), null);
+		this(mem.getName(), mem.getEmail(), null);
 	}
 
 	public MemberResponse(Member mem, String message) {
-		this(mem.getId(), mem.getName(), mem.getEmail(), message);
+		this(mem.getName(), mem.getEmail(), message);
 	}
 }

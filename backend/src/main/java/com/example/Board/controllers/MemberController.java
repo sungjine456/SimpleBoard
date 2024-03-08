@@ -35,7 +35,7 @@ public class MemberController {
 	@Autowired
 	private MemberRepository memberRepository;
 
-	private MemberResponse wrongResponse = new MemberResponse(-1L, "", "", "올바르지 않은 로그인 형식입니다.");
+	private MemberResponse wrongResponse = new MemberResponse("", "", "올바르지 않은 로그인 형식입니다.");
 
 	@PostMapping("/sign-in")
 	public ResponseEntity<SignInResponse> signIn(@RequestBody MemberToEmailRequest req) {

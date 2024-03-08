@@ -140,7 +140,6 @@ describe("useFindMember", () => {
 
     const d = await result.current(id);
 
-    expect(d.id).toBe(-1);
     expect(d.name).toBe("-");
     expect(d.email).toBe("-");
     expect(d.message).toBe("");

@@ -52,7 +52,6 @@ export function useFindMember(): (id: number) => Promise<MemberResponse> {
       .then((r) => r.data)
       .catch((_) => {
         return {
-          id: -1,
           name: "-",
           email: "-",
           message: "",
@@ -86,7 +85,6 @@ export function useGetMember(): () => Promise<MemberResponse> {
       .then((r) => r.data)
       .catch((_) => {
         return {
-          id: -1,
           name: "-",
           email: "-",
           message: "",
