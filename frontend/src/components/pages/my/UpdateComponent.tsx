@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useUpdateMember } from "../../../services/MemberService";
@@ -17,13 +18,15 @@ function UpdateComponent({
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { isSubmitted, errors },
   } = useForm<{ name: string }>({
     mode: "onBlur",
-    defaultValues: {
-      name: member.name,
-    },
   });
+
+  useEffect(() => {
+    setValue("name", member.name);
+  }, [setValue, member.name]);
 
   const update = (data: { name: string }) => {
     updateMember(data).then((b) => {
