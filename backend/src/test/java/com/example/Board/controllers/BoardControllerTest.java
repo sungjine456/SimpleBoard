@@ -59,7 +59,7 @@ class BoardControllerTest extends InitializeDBTest {
 
     @Test
     public void write() {
-        BoardRequest req = new BoardRequest(testMember.getId(), "title", "content");
+        BoardRequest req = new BoardRequest("title", "content");
 
         String url = String.format("http://localhost:%d/board", serverPort);
 
@@ -76,7 +76,7 @@ class BoardControllerTest extends InitializeDBTest {
 
     @Test
     public void update() {
-        BoardRequest req = new BoardRequest(testMember.getId(), "updateTitle", "updateContent");
+        BoardRequest req = new BoardRequest("updateTitle", "updateContent");
 
         String url = String.format("http://localhost:%d/board/%d", serverPort, testBoard.getId());
 
@@ -92,25 +92,8 @@ class BoardControllerTest extends InitializeDBTest {
     }
 
     @Test
-    public void update_wrongMemberId() {
-        BoardRequest req = new BoardRequest(9999999, "updateTitle", "updateContent");
-
-        String url = String.format("http://localhost:%d/board/%d", serverPort, testBoard.getId());
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(token);
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        ResponseEntity<Boolean> responseEntity = testRestTemplate.exchange(url, HttpMethod.POST,
-                new HttpEntity<Object>(req, headers), Boolean.class);
-
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isFalse();
-    }
-
-    @Test
     public void update_wrongBoardId() {
-        BoardRequest req = new BoardRequest(testMember.getId(), "updateTitle", "updateContent");
+        BoardRequest req = new BoardRequest("updateTitle", "updateContent");
 
         String url = String.format("http://localhost:%d/board/99999", serverPort);
 

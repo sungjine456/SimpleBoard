@@ -1,5 +1,6 @@
 package com.example.Board.controllers;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,14 +31,14 @@ public class BoardController {
     private BoardRepository boardRepository;
 
     @PostMapping("/board")
-    public ResponseEntity<Boolean> write(@RequestBody BoardRequest req) {
-        log.info("write request {} ", req);
+    public ResponseEntity<Boolean> write(@RequestBody BoardRequest req, Principal principal) {
+        log.info("write 제목 : {}, 이메일 : {}", req.getTitle(), principal.getName());
 
         if (!StringUtils.hasText(req.getTitle()) && !StringUtils.hasText(req.getContent())) {
             return ResponseEntity.ok(false);
         }
 
-        boardService.write(req.getMemberId(), req.getTitle(), req.getContent());
+        boardService.write(principal.getName(), req.getTitle(), req.getContent());
 
         return ResponseEntity.ok(true);
     }
@@ -56,14 +57,15 @@ public class BoardController {
     }
 
     @PostMapping("/board/{id}")
-    public ResponseEntity<Boolean> update(@RequestBody BoardRequest req, @PathVariable("id") long id) {
-        log.info("update request {} ", req);
+    public ResponseEntity<Boolean> update(@RequestBody BoardRequest req, @PathVariable("id") long id,
+            Principal principal) {
+        log.info("update 제목 : {}, 이메일 : {}", req.getTitle(), principal.getName());
 
         if (!StringUtils.hasText(req.getTitle()) && !StringUtils.hasText(req.getContent())) {
             return ResponseEntity.ok(false);
         }
 
-        boolean succeded = boardService.update(id, req.getMemberId(), req.getTitle(), req.getContent());
+        boolean succeded = boardService.update(id, principal.getName(), req.getTitle(), req.getContent());
 
         return ResponseEntity.ok(succeded);
     }

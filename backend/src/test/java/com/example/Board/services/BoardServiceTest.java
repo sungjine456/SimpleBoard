@@ -55,7 +55,7 @@ public class BoardServiceTest extends InitializeDBTest {
         String title = "title";
         String content = "content";
 
-        boardService.write(testMember.getId(), title, content);
+        boardService.write(testMember.getEmail(), title, content);
 
         List<Board> boards = boardRepository.findAll();
 
@@ -84,7 +84,7 @@ public class BoardServiceTest extends InitializeDBTest {
         assertThat(board.getMember().getEmail()).isEqualTo(testEmail);
         assertThat(board.getCreateDate()).isEqualTo(board.getUpdateDate());
 
-        boolean succeded = boardService.update(testBoard.getId(), testMember.getId(), updateTitle, updateContent);
+        boolean succeded = boardService.update(testBoard.getId(), testMember.getEmail(), updateTitle, updateContent);
 
         board = boardRepository.findByIdAndMemberId(testBoard.getId(), testMember.getId()).get();
 
@@ -98,21 +98,21 @@ public class BoardServiceTest extends InitializeDBTest {
 
     @Test
     public void update_whenWrongTitle() {
-        boolean succeded = boardService.update(testBoard.getId(), testMember.getId(), null, "updateContent");
+        boolean succeded = boardService.update(testBoard.getId(), testMember.getEmail(), null, "updateContent");
 
         assertThat(succeded).isFalse();
     }
 
     @Test
     public void update_whenEmptyContent() {
-        boolean succeded = boardService.update(testBoard.getId(), testMember.getId(), "updateTitle", "");
+        boolean succeded = boardService.update(testBoard.getId(), testMember.getEmail(), "updateTitle", "");
 
         assertThat(succeded).isFalse();
     }
 
     @Test
     public void update_whenNullContent() {
-        boolean succeded = boardService.update(testBoard.getId(), testMember.getId(), "updateTitle", null);
+        boolean succeded = boardService.update(testBoard.getId(), testMember.getEmail(), "updateTitle", null);
 
         assertThat(succeded).isFalse();
     }

@@ -81,6 +81,20 @@ public class BoardRepositoryTest extends InitializeDBTest {
     }
 
     @Test
+    public void findByIdAndMemberEmail() {
+        Board board = boardRepository.findByIdAndMemberEmail(testBoard.getId(), testMember.getEmail()).get();
+
+        assertThat(board.getTitle()).isEqualTo(testTitle);
+        assertThat(board.getContent()).isEqualTo(testContent);
+    }
+
+    @Test
+    public void findByIdAndMemberEmail_wrongData() {
+        assertThat(boardRepository.findByIdAndMemberEmail(99999, testMember.getEmail())).isEmpty();
+        assertThat(boardRepository.findByIdAndMemberEmail(testBoard.getId(), "")).isEmpty();
+    }
+
+    @Test
     @Transactional
     public void update() {
         String updateTitle = "updateTitle";

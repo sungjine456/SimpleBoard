@@ -19,26 +19,26 @@ public class BoardService {
     @Autowired
     private MemberRepository memberRepository;
 
-    public boolean write(long memberId, String title, String content) {
-        log.info("write : 사용자 아이디 {}, 제목 {}", memberId, title);
+    public boolean write(String email, String title, String content) {
+        log.info("write : 사용자 이메일 {}, 제목 {}", email, title);
 
         if (!StringUtils.hasText(title) || !StringUtils.hasText(content)) {
             return false;
         }
 
-        return memberRepository.findById(memberId).map(member -> {
+        return memberRepository.findByEmail(email).map(member -> {
             return boardRepository.save(new Board(title, content, member));
         }).isPresent();
     }
 
-    public boolean update(long boardId, long memberId, String title, String content) {
-        log.info("update : 글 아이디 {}, 사용자 아이디 {}, 제목 {}", boardId, memberId, title);
+    public boolean update(long boardId, String email, String title, String content) {
+        log.info("update : 글 아이디 {}, 사용자 이메일 {}, 제목 {}", boardId, email, title);
 
         if (!StringUtils.hasText(title) || !StringUtils.hasText(content)) {
             return false;
         }
 
-        return boardRepository.findByIdAndMemberId(boardId, memberId).map(board -> {
+        return boardRepository.findByIdAndMemberEmail(boardId, email).map(board -> {
             board.setTitle(title);
             board.setContent(content);
 
