@@ -21,8 +21,10 @@ function MyPageComponent() {
 
   useEffect(() => {
     if (!didLoad) {
-      getMember().then(setMember);
-      setDidLoad(true);
+      getMember().then((m) => {
+        setMember(m);
+        setDidLoad(true);
+      });
     }
   }, [didLoad, getMember]);
 

@@ -12,8 +12,10 @@ function BoardDetailPageComponent() {
 
   useEffect(() => {
     if (!didLoad) {
-      findBoard(id).then(setBoard);
-      setDidLoad(true);
+      findBoard(id).then((b) => {
+        setBoard(b);
+        setDidLoad(true);
+      });
     }
   }, [findBoard, id, didLoad]);
 

@@ -9,8 +9,10 @@ function BoardsComponent() {
 
   useEffect(() => {
     if (!didLoad) {
-      findBoards().then(setBoards);
-      setDidLoad(true);
+      findBoards().then((b) => {
+        setBoards(b);
+        setDidLoad(true);
+      });
     }
   }, [findBoards, didLoad]);
 
