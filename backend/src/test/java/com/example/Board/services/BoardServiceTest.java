@@ -95,4 +95,25 @@ public class BoardServiceTest extends InitializeDBTest {
         assertThat(board.getMember().getEmail()).isEqualTo(testEmail);
         assertThat(board.getCreateDate()).isNotEqualTo(board.getUpdateDate());
     }
+
+    @Test
+    public void update_whenWrongTitle() {
+        boolean succeded = boardService.update(testBoard.getId(), testMember.getId(), null, "updateContent");
+
+        assertThat(succeded).isFalse();
+    }
+
+    @Test
+    public void update_whenEmptyContent() {
+        boolean succeded = boardService.update(testBoard.getId(), testMember.getId(), "updateTitle", "");
+
+        assertThat(succeded).isFalse();
+    }
+
+    @Test
+    public void update_whenNullContent() {
+        boolean succeded = boardService.update(testBoard.getId(), testMember.getId(), "updateTitle", null);
+
+        assertThat(succeded).isFalse();
+    }
 }

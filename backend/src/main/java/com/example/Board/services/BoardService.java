@@ -31,8 +31,8 @@ public class BoardService {
         }).isPresent();
     }
 
-    public boolean update(long memberId, long boardId, String title, String content) {
-        log.info("update : 사용자 아이디 {}, 글 아이디 {}, 제목 {}", memberId, boardId, title);
+    public boolean update(long boardId, long memberId, String title, String content) {
+        log.info("update : 글 아이디 {}, 사용자 아이디 {}, 제목 {}", boardId, memberId, title);
 
         if (!StringUtils.hasText(title) || !StringUtils.hasText(content)) {
             return false;
