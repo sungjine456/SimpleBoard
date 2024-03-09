@@ -4,44 +4,31 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.example.Board.InitializeDBTest;
 import com.example.Board.domains.Board;
-import com.example.Board.domains.Member;
 
 import jakarta.transaction.Transactional;
 
 @SpringBootTest
-public class BoardRepositoryTest extends InitializeDBTest {
+public class BoardRepositoryTest extends InitializeRepositoryTest {
 
-    @Autowired
-    MemberRepository memberRepository;
     @Autowired
     BoardRepository boardRepository;
-
-    private String testName = "name";
-    private String testPassword = "password";
-    private String testEmail = "as@sda.xo";
-    private Member testMember = new Member(testName, testEmail, testPassword);
 
     private String testTitle = "testTitle";
     private String testContent = "testContent";
     private Board testBoard;
 
     @BeforeEach
-    void beforeEach() {
-        testMember = memberRepository.save(testMember);
-        testBoard = boardRepository.save(new Board(testTitle, testContent, testMember));
-    }
+    @Override
+    protected void beforeEach() {
+        super.beforeEach();
 
-    @AfterEach
-    void afterEach() {
-        databaseCleanUp.truncateAllEntity();
+        testBoard = boardRepository.save(new Board(testTitle, testContent, initMember));
     }
 
     @Test
@@ -53,7 +40,7 @@ public class BoardRepositoryTest extends InitializeDBTest {
         String title = "title";
         String content = "content";
 
-        Board board = new Board(title, content, testMember);
+        Board board = new Board(title, content, initMember);
         boardRepository.save(board);
 
         boards = boardRepository.findAll();
@@ -63,12 +50,12 @@ public class BoardRepositoryTest extends InitializeDBTest {
         assertThat(findBoard.getTitle()).isEqualTo(title);
         assertThat(findBoard.getContent()).isEqualTo(content);
         assertThat(findBoard.getCreateDate()).isEqualTo(findBoard.getUpdateDate());
-        assertThat(findBoard.getMember().getEmail()).isEqualTo(testEmail);
+        assertThat(findBoard.getMember().getEmail()).isEqualTo(initEmail);
     }
 
     @Test
     public void findByIdAndMemberId() {
-        Board board = boardRepository.findByIdAndMemberId(testBoard.getId(), testMember.getId()).get();
+        Board board = boardRepository.findByIdAndMemberId(testBoard.getId(), initMember.getId()).get();
 
         assertThat(board.getTitle()).isEqualTo(testTitle);
         assertThat(board.getContent()).isEqualTo(testContent);
@@ -76,13 +63,13 @@ public class BoardRepositoryTest extends InitializeDBTest {
 
     @Test
     public void findByIdAndMemberId_wrongData() {
-        assertThat(boardRepository.findByIdAndMemberId(99999, testMember.getId())).isEmpty();
+        assertThat(boardRepository.findByIdAndMemberId(99999, initMember.getId())).isEmpty();
         assertThat(boardRepository.findByIdAndMemberId(testBoard.getId(), 99999)).isEmpty();
     }
 
     @Test
     public void findByIdAndMemberEmail() {
-        Board board = boardRepository.findByIdAndMemberEmail(testBoard.getId(), testMember.getEmail()).get();
+        Board board = boardRepository.findByIdAndMemberEmail(testBoard.getId(), initMember.getEmail()).get();
 
         assertThat(board.getTitle()).isEqualTo(testTitle);
         assertThat(board.getContent()).isEqualTo(testContent);
@@ -90,7 +77,7 @@ public class BoardRepositoryTest extends InitializeDBTest {
 
     @Test
     public void findByIdAndMemberEmail_wrongData() {
-        assertThat(boardRepository.findByIdAndMemberEmail(99999, testMember.getEmail())).isEmpty();
+        assertThat(boardRepository.findByIdAndMemberEmail(99999, initMember.getEmail())).isEmpty();
         assertThat(boardRepository.findByIdAndMemberEmail(testBoard.getId(), "")).isEmpty();
     }
 
@@ -100,20 +87,20 @@ public class BoardRepositoryTest extends InitializeDBTest {
         String updateTitle = "updateTitle";
         String updateContent = "updateContent";
 
-        Board board = boardRepository.findByIdAndMemberId(testBoard.getId(), testMember.getId()).get();
+        Board board = boardRepository.findByIdAndMemberId(testBoard.getId(), initMember.getId()).get();
 
         assertThat(board.getTitle()).isEqualTo(testTitle);
         assertThat(board.getContent()).isEqualTo(testContent);
         assertThat(board.getCreateDate()).isEqualTo(board.getUpdateDate());
 
-        boardRepository.findByIdAndMemberId(testBoard.getId(), testMember.getId()).map(b -> {
+        boardRepository.findByIdAndMemberId(testBoard.getId(), initMember.getId()).map(b -> {
             b.setTitle(updateTitle);
             b.setContent(updateContent);
 
             return b;
         });
 
-        board = boardRepository.findByIdAndMemberId(testBoard.getId(), testMember.getId()).get();
+        board = boardRepository.findByIdAndMemberId(testBoard.getId(), initMember.getId()).get();
 
         assertThat(board.getTitle()).isEqualTo(updateTitle);
         assertThat(board.getContent()).isEqualTo(updateContent);

@@ -2,13 +2,8 @@ package com.example.Board.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -16,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-import com.example.Board.InitializeDBTest;
 import com.example.Board.configs.jwt.JwtToken;
 import com.example.Board.domains.Member;
 import com.example.Board.domains.MemberStatus;
@@ -24,38 +18,13 @@ import com.example.Board.modal.requests.members.MemberToEmailRequest;
 import com.example.Board.modal.requests.members.SignUpRequest;
 import com.example.Board.modal.responses.MemberResponse;
 import com.example.Board.modal.responses.SignInResponse;
-import com.example.Board.repositories.MemberRepository;
-import com.example.Board.services.MemberService;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class MemberControllerTest extends InitializeDBTest {
-
-    @Autowired
-    MemberService memberService;
-    @Autowired
-    MemberRepository memberRepository;
-    @Autowired
-    TestRestTemplate testRestTemplate;
-    @LocalServerPort
-    int serverPort;
-
-    private String token;
-    private String password = "password";
-    private Member member = new Member("name", "email@abc.com", password);
-
-    @BeforeEach
-    void beforeEach() {
-        token = memberService.signUp(member).map(r -> r.getToken()).get();
-    }
-
-    @AfterEach
-    void afterEach() {
-        databaseCleanUp.truncateAllEntity();
-    }
+class MemberControllerTest extends InitializeControllerTest {
 
     @Test
     public void signIn() {
-        MemberToEmailRequest memberReq = new MemberToEmailRequest(member.getEmail(), password);
+        MemberToEmailRequest memberReq = new MemberToEmailRequest(initMember.getEmail(), password);
         String url = String.format("http://localhost:%d/sign-in", serverPort);
 
         ResponseEntity<SignInResponse> responseEntity = testRestTemplate.postForEntity(url, memberReq,
@@ -66,24 +35,24 @@ class MemberControllerTest extends InitializeDBTest {
 
     @Test
     public void signIn_whenLeaveMember() {
-        Member mem = memberRepository.findByEmail(member.getEmail()).get();
+        Member mem = memberRepository.findByEmail(initMember.getEmail()).get();
         mem.setStatus(MemberStatus.LEAVE);
 
         memberRepository.save(mem);
 
-        MemberToEmailRequest memberReq = new MemberToEmailRequest(member.getEmail(), password);
+        MemberToEmailRequest memberReq = new MemberToEmailRequest(initMember.getEmail(), password);
         String url = String.format("http://localhost:%d/sign-in", serverPort);
 
         ResponseEntity<SignInResponse> responseEntity = testRestTemplate.postForEntity(url, memberReq,
                 SignInResponse.class);
 
-        assertThat(memberRepository.findByEmail(member.getEmail()).get().getStatus()).isEqualTo(MemberStatus.LEAVE);
+        assertThat(memberRepository.findByEmail(initMember.getEmail()).get().getStatus()).isEqualTo(MemberStatus.LEAVE);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
     public void signIn_whenWrongPassword() {
-        MemberToEmailRequest memberReq = new MemberToEmailRequest(member.getEmail(), "wrongPassword");
+        MemberToEmailRequest memberReq = new MemberToEmailRequest(initMember.getEmail(), "wrongPassword");
         String url = String.format("http://localhost:%d/sign-in", serverPort);
 
         ResponseEntity<SignInResponse> responseEntity = testRestTemplate.postForEntity(url, memberReq,
@@ -170,9 +139,9 @@ class MemberControllerTest extends InitializeDBTest {
 
     @Test
     public void findMember() {
-        memberService.signIn(member.getEmail(), password);
+        memberService.signIn(initMember.getEmail(), password);
 
-        String url = String.format("http://localhost:%d/mem/%d", serverPort, member.getId());
+        String url = String.format("http://localhost:%d/mem/%d", serverPort, initMember.getId());
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
@@ -188,7 +157,7 @@ class MemberControllerTest extends InitializeDBTest {
 
     @Test
     public void findMember_whenWrongId() {
-        JwtToken jwtToken = memberService.signIn(member.getEmail(), password);
+        JwtToken jwtToken = memberService.signIn(initMember.getEmail(), password);
 
         String url = String.format("http://localhost:%d/mem/%d", serverPort, 0);
 
@@ -204,7 +173,7 @@ class MemberControllerTest extends InitializeDBTest {
 
     @Test
     public void verifyIdentity() {
-        memberService.signIn(member.getEmail(), password);
+        memberService.signIn(initMember.getEmail(), password);
 
         String url = String.format("http://localhost:%d/my/check", serverPort);
 
@@ -221,7 +190,7 @@ class MemberControllerTest extends InitializeDBTest {
 
     @Test
     public void verifyIdentity_whenWrongPassword() {
-        memberService.signIn(member.getEmail(), password);
+        memberService.signIn(initMember.getEmail(), password);
 
         String url = String.format("http://localhost:%d/my/check", serverPort);
 

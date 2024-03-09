@@ -5,47 +5,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.example.Board.InitializeDBTest;
 import com.example.Board.domains.Member;
 import com.example.Board.domains.MemberStatus;
-import com.example.Board.repositories.MemberRepository;
 
 @SpringBootTest
-public class MemberServiceTest extends InitializeDBTest {
-
-    @Autowired
-    MemberRepository memberRepository;
-    @Autowired
-    MemberService memberService;
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
-    private String name = "name";
-    private String password = "password";
-    private Member member;
-
-    @BeforeEach
-    void beforeEach() {
-        member = memberRepository.save(new Member(name, "email@abc.com", passwordEncoder.encode(password)));
-    }
-
-    @AfterEach
-    void afterEach() {
-        databaseCleanUp.truncateAllEntity();
-    }
+public class MemberServiceTest extends InitializeServiceTest {
 
     @Test
     public void signUp() {
         String newName = "newName";
         String newEmail = "newEmail@test.com";
-        Member newMember = new Member(newName, newEmail, password);
+        Member newMember = new Member(newName, newEmail, initPassword);
 
         assertThat(memberRepository.findAll().size()).isEqualTo(1);
 
@@ -63,25 +36,25 @@ public class MemberServiceTest extends InitializeDBTest {
 
     @Test
     public void checkPassword() {
-        assertThat(memberService.checkPassword(member.getEmail(), password)).isTrue();
+        assertThat(memberService.checkPassword(initMember.getEmail(), initPassword)).isTrue();
     }
 
     @Test
     public void checkPasswordWrongData() {
-        assertThat(memberService.checkPassword(member.getEmail(), "wrongPwd")).isFalse();
-        assertThat(memberService.checkPassword("", password)).isFalse();
+        assertThat(memberService.checkPassword(initMember.getEmail(), "wrongPwd")).isFalse();
+        assertThat(memberService.checkPassword("", initPassword)).isFalse();
     }
 
     @Test
     public void updateMember() {
         String updatedName = "updated name";
-        Member testMember = memberRepository.findById(member.getId()).get();
+        Member testMember = memberRepository.findById(initMember.getId()).get();
         LocalDateTime beforeUpdateTime = testMember.getUpdateDate();
 
-        assertThat(testMember.getName()).as(name);
+        assertThat(testMember.getName()).as(initName);
 
-        boolean isSuccessful = memberService.updateMember(member.getEmail(), updatedName);
-        testMember = memberRepository.findById(member.getId()).get();
+        boolean isSuccessful = memberService.updateMember(initMember.getEmail(), updatedName);
+        testMember = memberRepository.findById(initMember.getId()).get();
         LocalDateTime afterUpdateTime = testMember.getUpdateDate();
 
         assertThat(isSuccessful).isTrue();
@@ -91,30 +64,30 @@ public class MemberServiceTest extends InitializeDBTest {
 
     @Test
     public void leave() {
-        Member mem = memberRepository.findById(member.getId()).get();
+        Member mem = memberRepository.findById(initMember.getId()).get();
 
         assertThat(mem.getStatus()).isEqualTo(MemberStatus.ACTIVE);
-        assertThat(memberService.leave(member.getEmail(), password)).isTrue();
+        assertThat(memberService.leave(initMember.getEmail(), initPassword)).isTrue();
 
-        mem = memberRepository.findById(member.getId()).get();
+        mem = memberRepository.findById(initMember.getId()).get();
 
         assertThat(mem.getStatus()).isEqualTo(MemberStatus.LEAVE);
     }
 
     @Test
     public void leaveWrongPassword() {
-        assertThat(memberService.leave(member.getEmail(), "wrongPwd")).isFalse();
+        assertThat(memberService.leave(initMember.getEmail(), "wrongPwd")).isFalse();
 
-        Member mem = memberRepository.findById(member.getId()).get();
+        Member mem = memberRepository.findById(initMember.getId()).get();
 
         assertThat(mem.getStatus()).isEqualTo(MemberStatus.ACTIVE);
     }
 
     @Test
     public void leaveWrongId() {
-        assertThat(memberService.leave("", password)).isFalse();
+        assertThat(memberService.leave("", initPassword)).isFalse();
 
-        Member mem = memberRepository.findById(member.getId()).get();
+        Member mem = memberRepository.findById(initMember.getId()).get();
 
         assertThat(mem.getStatus()).isEqualTo(MemberStatus.ACTIVE);
     }

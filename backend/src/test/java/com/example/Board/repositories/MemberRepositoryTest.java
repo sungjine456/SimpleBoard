@@ -6,38 +6,16 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.example.Board.InitializeDBTest;
 import com.example.Board.domains.Member;
 import com.example.Board.domains.MemberStatus;
 
 import jakarta.transaction.Transactional;
 
 @SpringBootTest
-public class MemberRepositoryTest extends InitializeDBTest {
-
-    @Autowired
-    MemberRepository memberRepository;
-
-    private String initName = "name";
-    private String initPassword = "password";
-    private String initEmail = "email@test.com";
-    private Member member = new Member(initName, initEmail, initPassword);
-
-    @BeforeEach
-    void beforeEach() {
-        memberRepository.save(member);
-    }
-
-    @AfterEach
-    void afterEach() {
-        databaseCleanUp.truncateAllEntity();
-    }
+public class MemberRepositoryTest extends InitializeRepositoryTest {
 
     @Test
     public void save() {

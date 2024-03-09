@@ -10,20 +10,24 @@ const mock = new MockAdapter(axios);
 const navigate = jest.fn();
 window.alert = jest.fn();
 
+let title: HTMLInputElement;
+let content: HTMLTextAreaElement;
+let button: HTMLButtonElement;
+
 beforeEach(() => {
   jest.spyOn(router, "useNavigate").mockImplementation(() => navigate);
+
+  render(<BoardPageComponent />);
+
+  title = screen.getByPlaceholderText("제목을 입력하세요.");
+  content = screen.getByPlaceholderText("내용을 입력하세요.");
+  button = screen.getByRole("button", {
+    name: "저장",
+  });
 });
 
 test("성공", async () => {
   mock.onPost("http://localhost:8080/board").reply(200, true);
-
-  render(<BoardPageComponent />);
-
-  const title = screen.getByPlaceholderText("제목을 입력하세요.");
-  const content = screen.getByPlaceholderText("내용을 입력하세요.");
-  const button = screen.getByRole("button", {
-    name: "저장",
-  });
 
   userEvent.type(title, "title");
   userEvent.type(content, "content");
@@ -39,14 +43,6 @@ test("성공", async () => {
 
 describe("실패", () => {
   test("제목이 없을 때", async () => {
-    render(<BoardPageComponent />);
-
-    const title = screen.getByPlaceholderText("제목을 입력하세요.");
-    const content = screen.getByPlaceholderText("내용을 입력하세요.");
-    const button = screen.getByRole("button", {
-      name: "저장",
-    });
-
     userEvent.clear(title);
     userEvent.type(content, "content");
 
@@ -60,14 +56,6 @@ describe("실패", () => {
   });
 
   test("내용이 없을 때", async () => {
-    render(<BoardPageComponent />);
-
-    const title = screen.getByPlaceholderText("제목을 입력하세요.");
-    const content = screen.getByPlaceholderText("내용을 입력하세요.");
-    const button = screen.getByRole("button", {
-      name: "저장",
-    });
-
     userEvent.type(title, "title");
     userEvent.clear(content);
 

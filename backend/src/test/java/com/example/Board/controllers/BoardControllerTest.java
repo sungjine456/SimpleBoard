@@ -2,13 +2,10 @@ package com.example.Board.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -16,45 +13,30 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-import com.example.Board.InitializeDBTest;
 import com.example.Board.domains.Board;
-import com.example.Board.domains.Member;
 import com.example.Board.modal.requests.boards.BoardRequest;
 import com.example.Board.modal.responses.BoardResponse;
 import com.example.Board.repositories.BoardRepository;
 import com.example.Board.services.BoardService;
-import com.example.Board.services.MemberService;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class BoardControllerTest extends InitializeDBTest {
+class BoardControllerTest extends InitializeControllerTest {
 
     @Autowired
     BoardService boardService;
     @Autowired
     BoardRepository boardRepository;
-    @Autowired
-    MemberService memberService;
-    @Autowired
-    TestRestTemplate testRestTemplate;
-    @LocalServerPort
-    int serverPort;
-
-    private String token;
-    private Member testMember = new Member("name", "email@abc.com", "password");
 
     private String testTitle = "title";
     private String testContent = "content";
     private Board testBoard;
 
     @BeforeEach
-    void beforeEach() {
-        token = memberService.signUp(testMember).map(r -> r.getToken()).get();
-        testBoard = boardRepository.save(new Board(testTitle, testContent, testMember));
-    }
+    @Override
+    protected void beforeEach() {
+        super.beforeEach();
 
-    @AfterEach
-    void afterEach() {
-        databaseCleanUp.truncateAllEntity();
+        testBoard = boardRepository.save(new Board(testTitle, testContent, initMember));
     }
 
     @Test

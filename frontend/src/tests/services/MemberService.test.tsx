@@ -60,6 +60,7 @@ describe("useSignIn", () => {
     mock
       .onPost("http://localhost:8080/sign-in")
       .reply(403, { message: "실패" });
+
     const { result } = renderHook(() => useSignIn());
 
     expect(await result.current(req)).toBe(false);
@@ -118,14 +119,14 @@ describe("useSignUp", () => {
 
 describe("useFindMember", () => {
   const id = 1;
-  const data = {
-    id: id,
-    name: testName,
-    email: testEmail,
-    message: "msg",
-  };
 
   test("성공했을 때", async () => {
+    const data = {
+      name: testName,
+      email: testEmail,
+      message: "msg",
+    };
+
     mock.onGet(`http://localhost:8080/mem/${id}`).reply(200, data);
 
     const { result } = renderHook(() => useFindMember());
