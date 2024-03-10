@@ -8,12 +8,13 @@ import "./styles/components/Form.scss";
 import "./styles/components/Icons.scss";
 import "./styles/components/Table.scss";
 import "./styles/pages/App.scss";
+import storage from "./utils/Storage";
 
 function App() {
   const { setToken } = useContext(AuthContext);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = storage.get("token");
 
     if (!token) return;
 

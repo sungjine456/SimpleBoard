@@ -12,6 +12,7 @@ import {
   useSignUp,
   useVerifyIdentity,
 } from "../../services/MemberService";
+import storage from "../../utils/Storage";
 
 const mock = new MockAdapter(axios, { delayResponse: 200 });
 
@@ -31,27 +32,32 @@ describe("useSignIn", () => {
   };
 
   test("성공했을 때", async () => {
+    const testToken = "accessToken";
+
     mock.onPost("http://localhost:8080/sign-in").reply(200, {
       name: testName,
       email: testEmail,
-      token: "accessToken",
+      token: testToken,
     });
 
-    const Wrapper = ({ children }: { children: React.ReactNode }) => {
+    const wrapper = ({ children }: { children: React.ReactNode }) => {
       return <AuthProvider>{children}</AuthProvider>;
     };
 
+    expect(storage.get("token")).toBeNull();
+
     const { result } = renderHook(() => useSignIn(), {
-      wrapper: Wrapper,
+      wrapper: wrapper,
     });
 
     await waitFor(() => {
       expect(result.current(req)).resolves.toBe(true);
+      expect(storage.get("token")).toBe(testToken);
       expect(axios.defaults.headers.common["Authorization"]).toBe(
-        "Bearer accessToken"
+        `Bearer ${testToken}`
       );
     });
-    // TODO: storage, context의 데이터 테스트 추가
+    // TODO: context의 데이터 테스트 추가
   });
 
   test("실패했을 때", async () => {
@@ -63,7 +69,10 @@ describe("useSignIn", () => {
 
     const { result } = renderHook(() => useSignIn());
 
-    expect(await result.current(req)).toBe(false);
+    await waitFor(() => {
+      expect(result.current(req)).resolves.toBe(false);
+      expect(storage.get("token")).toBeNull();
+    });
   });
 });
 
@@ -83,17 +92,20 @@ describe("useSignUp", () => {
       return <AuthProvider>{children}</AuthProvider>;
     };
 
+    expect(storage.get("token")).toBeNull();
+
     const { result } = renderHook(() => useSignUp(), {
       wrapper: Wrapper,
     });
 
     await waitFor(() => {
       expect(result.current(req)).resolves.toBeUndefined();
+      expect(storage.get("token")).not.toBeNull();
       expect(axios.defaults.headers.common["Authorization"]).toBe(
         "Bearer accessToken"
       );
     });
-    // TODO: storage, context의 데이터 테스트 추가
+    // TODO: context의 데이터 테스트 추가
   });
 
   test("중복됐을 때", async () => {
@@ -103,7 +115,10 @@ describe("useSignUp", () => {
 
     const { result } = renderHook(() => useSignUp());
 
-    expect(await result.current(req)).toBe("중복");
+    await waitFor(() => {
+      expect(result.current(req)).resolves.toBe("중복");
+      expect(storage.get("token")).toBeNull();
+    });
   });
 
   test("실패했을 때", async () => {
@@ -113,7 +128,10 @@ describe("useSignUp", () => {
 
     const { result } = renderHook(() => useSignUp());
 
-    expect(await result.current(req)).toBe("실패");
+    await waitFor(() => {
+      expect(result.current(req)).resolves.toBe("실패");
+      expect(storage.get("token")).toBeNull();
+    });
   });
 });
 
@@ -139,11 +157,11 @@ describe("useFindMember", () => {
 
     const { result } = renderHook(() => useFindMember());
 
-    const d = await result.current(id);
+    const member = await result.current(id);
 
-    expect(d.name).toBe("-");
-    expect(d.email).toBe("-");
-    expect(d.message).toBe("");
+    expect(member.name).toBe("-");
+    expect(member.email).toBe("-");
+    expect(member.message).toBe("");
   });
 });
 
