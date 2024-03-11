@@ -7,11 +7,15 @@ import java.time.temporal.ChronoUnit;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
 import com.example.Board.domains.Member;
 import com.example.Board.domains.MemberStatus;
 
 @SpringBootTest
+@ActiveProfiles("test")
+@TestPropertySource("classpath:application-test.yml")
 public class MemberServiceTest extends InitializeServiceTest {
 
     @Test

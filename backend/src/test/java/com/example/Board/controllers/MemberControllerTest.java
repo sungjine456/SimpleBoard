@@ -10,6 +10,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
 import com.example.Board.configs.jwt.JwtToken;
 import com.example.Board.domains.Member;
@@ -20,6 +22,8 @@ import com.example.Board.modal.responses.MemberResponse;
 import com.example.Board.modal.responses.SignInResponse;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
+@TestPropertySource("classpath:application-test.yml")
 class MemberControllerTest extends InitializeControllerTest {
 
     @Test

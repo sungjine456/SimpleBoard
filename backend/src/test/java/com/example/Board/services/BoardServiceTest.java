@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
 import com.example.Board.domains.Board;
 import com.example.Board.repositories.BoardRepository;
@@ -15,6 +17,8 @@ import com.example.Board.repositories.BoardRepository;
 import jakarta.transaction.Transactional;
 
 @SpringBootTest
+@ActiveProfiles("test")
+@TestPropertySource("classpath:application-test.yml")
 public class BoardServiceTest extends InitializeServiceTest {
 
     @Autowired

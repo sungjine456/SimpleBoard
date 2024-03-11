@@ -12,6 +12,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
 import com.example.Board.domains.Board;
 import com.example.Board.modal.requests.boards.BoardRequest;
@@ -20,6 +22,8 @@ import com.example.Board.repositories.BoardRepository;
 import com.example.Board.services.BoardService;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
+@TestPropertySource("classpath:application-test.yml")
 class BoardControllerTest extends InitializeControllerTest {
 
     @Autowired

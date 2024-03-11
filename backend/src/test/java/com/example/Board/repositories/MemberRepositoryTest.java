@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 
 import com.example.Board.domains.Member;
 import com.example.Board.domains.MemberStatus;
@@ -15,6 +17,8 @@ import com.example.Board.domains.MemberStatus;
 import jakarta.transaction.Transactional;
 
 @SpringBootTest
+@ActiveProfiles("test")
+@TestPropertySource("classpath:application-test.yml")
 public class MemberRepositoryTest extends InitializeRepositoryTest {
 
     @Test
