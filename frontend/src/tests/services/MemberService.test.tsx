@@ -99,7 +99,7 @@ describe("useSignUp", () => {
     });
 
     await waitFor(() => {
-      expect(result.current(req)).resolves.toBeUndefined();
+      expect(result.current(req)).resolves.toBe("");
       expect(storage.get("token")).not.toBeNull();
       expect(axios.defaults.headers.common["Authorization"]).toBe(
         "Bearer accessToken"
@@ -142,7 +142,7 @@ describe("useFindMember", () => {
     const data = {
       name: testName,
       email: testEmail,
-      message: "msg",
+      message: "성공",
     };
 
     mock.onGet(`http://localhost:8080/mem/${id}`).reply(200, data);
