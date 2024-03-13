@@ -50,7 +50,7 @@ public class BoardController {
         Optional<Board> board = boardRepository.findById(id);
 
         if (board.isPresent()) {
-            return ResponseEntity.ok(new BoardResponse(id, board.get().getTitle(), board.get().getContent()));
+            return ResponseEntity.ok(new BoardResponse(board.get()));
         } else {
             return ResponseEntity.badRequest().body(null);
         }

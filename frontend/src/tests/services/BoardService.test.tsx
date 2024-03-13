@@ -40,8 +40,10 @@ describe("useFindBoard", () => {
   const id = 1;
   const data = {
     id: id,
+    memberId: 1,
     title: testTitle,
     content: testContent,
+    memberName: "memberName",
   };
 
   test("성공했을 때", async () => {
