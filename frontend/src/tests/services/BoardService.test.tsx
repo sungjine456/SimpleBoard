@@ -1,12 +1,40 @@
 import { renderHook } from "@testing-library/react";
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
-import { useFindBoard } from "../../services/BoardService";
+import { useFindBoard, useWrite } from "../../services/BoardService";
 
 const mock = new MockAdapter(axios, { delayResponse: 200 });
 
 const testTitle = "title";
 const testContent = "content";
+
+describe("useWrite", () => {
+  const req = { title: "title", content: "content" };
+
+  test("성공했을 때", async () => {
+    mock.onPost("http://localhost:8080/board").reply(200, true);
+
+    const { result } = renderHook(() => useWrite());
+
+    expect(await result.current(req)).toBeTruthy();
+  });
+
+  test("실패했을 때", async () => {
+    mock.onPost("http://localhost:8080/board").reply(200, false);
+
+    const { result } = renderHook(() => useWrite());
+
+    expect(await result.current(req)).toBeFalsy();
+  });
+
+  test("서버에서 에러가 발생했을 때", async () => {
+    mock.onPost("http://localhost:8080/board").reply(500);
+
+    const { result } = renderHook(() => useWrite());
+
+    expect(await result.current(req)).toBeFalsy();
+  });
+});
 
 describe("useFindBoard", () => {
   const id = 1;

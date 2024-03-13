@@ -33,14 +33,14 @@ const wrapper = async <T>(axiosData: AxiosData): Promise<T | ServerError> => {
     if (axios.isAxiosError(e)) {
       const error = e as AxiosError<{ message: string }>;
 
-      if (error && error.response?.data) {
+      if (error && error.response?.data?.message) {
         return {
-          errorMessage: error.response?.data.message,
+          errorMessage: error.response.data.message,
         };
       }
     }
 
-    return { errorMessage: "" };
+    return { errorMessage: "서버 에러 발생" };
   }
 };
 
