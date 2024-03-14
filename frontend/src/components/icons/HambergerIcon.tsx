@@ -37,7 +37,7 @@ function HambergerIcon() {
         <span></span>
         <span></span>
       </label>
-      <div id="items">
+      <div id="ham-items">
         <ul>
           <li>
             <p onClick={() => clickHandler("/my")}>내 계정</p>

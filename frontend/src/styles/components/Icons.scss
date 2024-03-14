@@ -2,7 +2,7 @@
   display: none;
 }
 
-#items {
+#ham-items {
   position: fixed;
   width: 300px;
   height: 100%;
@@ -68,7 +68,7 @@ label[for="i-ham"] {
   }
 }
 
-#i-ham:checked + label + #items {
+#i-ham:checked + label + #ham-items {
   right: 0px;
   & > ul > li > a {
     color: white;

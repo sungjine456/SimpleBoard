@@ -24,7 +24,9 @@ function BoardsComponent() {
   }
 
   return (
-    <div className="d-flex-column">
+    <div
+      className={boards.length === 0 ? `m-auto ${styles.main}` : styles.main}
+    >
       {boards.length !== 0 ? (
         <div className={styles.items}>
           {boards.map((b) => (

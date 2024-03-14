@@ -24,7 +24,7 @@ function App() {
   return (
     <div className="app">
       <Header />
-      <main>
+      <main className="w-100 d-flex">
         <Routes />
       </main>
     </div>

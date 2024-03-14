@@ -18,16 +18,22 @@ header {
   align-items: center;
   top: 0;
   font-size: 20px;
-}
+  padding: 10px;
 
-.logo-img {
-  height: 40px;
-  margin-left: 30px;
-  cursor: pointer;
+  a {
+    display: contents;
+
+    .logo-img {
+      height: 40px;
+      margin-left: 30px;
+      cursor: pointer;
+    }
+  }
 }
 
 main {
-  padding-top: 40px;
+  padding-top: 60px;
+  padding-bottom: 30px;
 }
 
 h3 {
@@ -36,4 +42,21 @@ h3 {
 
 textarea {
   resize: none;
+}
+
+@media (max-width: 768px) {
+  header {
+    padding: 3px;
+
+    a {
+      .logo-img {
+        height: 35px;
+      }
+    }
+  }
+
+  main {
+    padding-top: 47px;
+    padding-bottom: 20px;
+  }
 }
