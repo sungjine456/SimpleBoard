@@ -1,0 +1,33 @@
+.items {
+  .item {
+    width: 800px;
+    border-top: 1px solid rgb(229, 231, 235);
+
+    .header {
+      font-size: 20px;
+      margin-top: 5px;
+
+      .name {
+        margin: 0 10px 0 20px;
+      }
+    }
+
+    .title {
+      font-size: 46px;
+      margin: 0 20px 5px 20px;
+    }
+
+    a {
+      color: white;
+      text-decoration: none;
+
+      &:hover {
+        color: #0090f9;
+      }
+    }
+
+    &:last-child {
+      border-bottom: 1px solid rgb(229, 231, 235);
+    }
+  }
+}

@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import BoardResponse from "../../models/responses/BoardResponse";
 import { useFindBoards } from "../../services/BoardService";
+import styles from "../../styles/pages/Boards.module.scss";
 
 function BoardsComponent() {
+  const navigate = useNavigate();
   const findBoards = useFindBoards();
   const [boards, setBoards] = useState<BoardResponse[]>([]);
   const [didLoad, setDidLoad] = useState<boolean>(false);
@@ -16,23 +19,38 @@ function BoardsComponent() {
     }
   }, [findBoards, didLoad]);
 
+  function setDate(date: Date) {
+    return new Date(date).toLocaleDateString("ko-KR");
+  }
+
   return (
-    <div>
+    <div className="d-flex-column">
       {boards.length !== 0 ? (
-        <table>
-          <tbody>
-            {boards.map((b) => (
-              <tr key={b.id}>
-                <td>{b.id}</td>
-                <td>{b.title}</td>
-                <td>{b.content}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className={styles.items}>
+          {boards.map((b) => (
+            <div className={styles.item} key={b.id}>
+              <div className={`d-flex ${styles.header}`}>
+                <div className={styles.name}>
+                  <Link to={`/mem/${b.memberId}`}>{b.memberName}</Link>
+                </div>
+                <div>{setDate(b.date)}</div>
+              </div>
+              <div className={styles.title}>
+                <Link to={`/board/${b.id}`}>{b.title}</Link>
+              </div>
+            </div>
+          ))}
+        </div>
       ) : (
         <div>현재 작성된 글이 없습니다.</div>
       )}
+      <button
+        className="align-self-end btn-md"
+        type="button"
+        onClick={() => navigate("/board")}
+      >
+        글쓰기
+      </button>
     </div>
   );
 }
