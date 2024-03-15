@@ -43,8 +43,11 @@ public class JwtTokenProvider {
                 .collect(Collectors.joining(","));
 
         long now = (new Date()).getTime();
+        long hour = 60 * 60 * 1000;
 
-        Date accessTokenExpiresIn = new Date(now + 60 * 60 * 1000);
+        Date accessTokenExpiresIn = new Date(now + hour);
+        Date refreshTokenExpiresIn = new Date(now + hour * 24);
+
         String accessToken = Jwts.builder()
                 .subject(authentication.getName())
                 .claim("auth", authorities)
@@ -53,7 +56,7 @@ public class JwtTokenProvider {
                 .compact();
 
         String refreshToken = Jwts.builder()
-                .expiration(new Date(now + 60 * 60 * 1000))
+                .expiration(refreshTokenExpiresIn)
                 .signWith(key)
                 .compact();
 
@@ -61,6 +64,8 @@ public class JwtTokenProvider {
                 .grantType("Bearer")
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .accessExpired(accessTokenExpiresIn)
+                .refreshExpired(refreshTokenExpiresIn)
                 .build();
     }
 

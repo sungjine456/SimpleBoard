@@ -46,7 +46,7 @@ describe("로그인 후 접근할 수 있는 페이지 랜더링", () => {
             authenticated: true,
             signIn: (_: SignInResponse) => {},
             signOut: () => {},
-            setToken: (_: string) => {},
+            autoSignIn: () => {},
           }}
         >
           <Routes />

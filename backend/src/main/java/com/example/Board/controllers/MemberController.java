@@ -43,14 +43,15 @@ public class MemberController {
 
 		JwtToken jwtToken = memberService.signIn(req.getEmail(), req.getPassword());
 
-		log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(),
-				jwtToken.getRefreshToken());
+		log.info("jwtToken accessToken = {}, refreshToken = {}, accessExpired = {}, refreshExpired = {}",
+				jwtToken.getAccessToken(), jwtToken.getRefreshToken(), jwtToken.getAccessExpired(),
+				jwtToken.getRefreshExpired());
 
 		Optional<Member> member = memberRepository.findByEmail(req.getEmail())
 				.filter(m -> m.getStatus() == MemberStatus.ACTIVE);
 
 		if (member.isPresent()) {
-			return ResponseEntity.ok(new SignInResponse(member.get(), jwtToken.getAccessToken()));
+			return ResponseEntity.ok(new SignInResponse(member.get(), jwtToken));
 		} else {
 			return ResponseEntity.badRequest().body(new SignInResponse("존재하지 않는 사용자입니다."));
 		}

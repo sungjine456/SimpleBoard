@@ -56,7 +56,7 @@ public class MemberService {
             Member saveMember = memberRepository.save(mem);
             JwtToken token = createJWTToken(mem.getUsername(), password);
 
-            return Optional.of(new SignInResponse(saveMember, token.getAccessToken()));
+            return Optional.of(new SignInResponse(saveMember, token));
         } else {
             return Optional.empty();
         }

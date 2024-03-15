@@ -8,7 +8,7 @@ interface IAuthContext {
   authenticated: boolean;
   signIn: (_: SignInResponse) => void;
   signOut: () => void;
-  setToken: (token: string) => void;
+  autoSignIn: () => void;
 }
 
 const initialValue = {
@@ -16,7 +16,7 @@ const initialValue = {
   authenticated: false,
   signIn: (_: SignInResponse) => {},
   signOut: () => {},
-  setToken: (_: string) => {},
+  autoSignIn: () => {},
 };
 
 const AuthContext = createContext<IAuthContext>(initialValue);
@@ -34,25 +34,36 @@ const AuthProvider = ({ children }: { children?: ReactNode }) => {
   }, [authenticated, token]);
 
   const signIn = (res: SignInResponse) => {
-    setAuthenticated(true);
-    setTokenHandler(res.token);
+    storage.set("token", res.token);
+    storage.set("accessExpired", res.accessExpired);
+
+    setAuth(res.token);
   };
 
   const signOut = () => {
     setAuthenticated(false);
-    setTokenHandler("");
+    storage.remove("token");
+    storage.remove("accessExpired");
+    axios.defaults.headers.common["Authorization"] = "";
   };
 
-  const setTokenHandler = (token: string) => {
-    setToken(token);
+  const autoSignIn = () => {
+    const token = storage.get("token");
+    const accessExpired = storage.get("accessExpired");
 
-    if (token) {
-      storage.set("token", token);
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    } else {
-      storage.remove("token");
-      axios.defaults.headers.common["Authorization"] = "";
+    if (!token || new Date(accessExpired).getTime() < Date.now()) {
+      signOut();
+
+      return;
     }
+
+    setAuth(token);
+  };
+
+  const setAuth = (token: string) => {
+    setAuthenticated(true);
+    setToken(token);
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   };
 
   return (
@@ -62,7 +73,7 @@ const AuthProvider = ({ children }: { children?: ReactNode }) => {
         authenticated,
         signIn,
         signOut,
-        setToken: setTokenHandler,
+        autoSignIn,
       }}
     >
       {children}

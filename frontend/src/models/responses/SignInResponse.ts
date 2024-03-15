@@ -3,6 +3,8 @@ interface SignInResponse {
   name: string;
   email: string;
   token: string;
+  accessExpired: Date;
+  refreshExpired: Date;
   message: string;
 }
 
