@@ -1,0 +1,39 @@
+.body {
+  margin-right: 20px;
+  align-self: center;
+}
+
+.toggleSwitch {
+  width: 46px;
+  height: 24px;
+  display: block;
+  position: relative;
+  border-radius: 15px;
+  background-color: white;
+  box-shadow: 0 0 8px 2px rgba(0 0 0 / 15%);
+  cursor: pointer;
+
+  .toggleButton {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 50%;
+    left: 2px;
+    transform: translateY(-50%);
+    border-radius: 50%;
+    background-color: rgb(0 144 249);
+  }
+
+  &.active {
+    background-color: black;
+
+    .toggleButton {
+      left: calc(100% - 22px);
+    }
+  }
+}
+
+.toggleSwitch,
+.toggleButton {
+  transition: all 0.2s ease-in;
+}
