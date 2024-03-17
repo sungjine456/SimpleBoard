@@ -41,6 +41,7 @@ const AuthProvider = ({ children }: { children?: ReactNode }) => {
   };
 
   const signOut = () => {
+    setToken("");
     setAuthenticated(false);
     storage.remove("token");
     storage.remove("accessExpired");
@@ -51,8 +52,13 @@ const AuthProvider = ({ children }: { children?: ReactNode }) => {
     const token = storage.get("token");
     const accessExpired = storage.get("accessExpired");
 
-    if (!token || new Date(accessExpired).getTime() < Date.now()) {
-      signOut();
+    if (
+      !token ||
+      (accessExpired && new Date(accessExpired).getTime() < Date.now())
+    ) {
+      if (authenticated) {
+        signOut();
+      }
 
       return;
     }
