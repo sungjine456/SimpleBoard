@@ -10,6 +10,6 @@
 .title,
 .content {
   &.error::placeholder {
-    color: red;
+    color: var(-error-color);
   }
 }
