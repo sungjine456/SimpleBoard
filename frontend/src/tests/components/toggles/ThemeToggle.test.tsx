@@ -4,53 +4,58 @@ import { ThemeProvider } from "../../../components/contexts/ThemeContext";
 import ThemeToggle from "../../../components/toggles/ThemeToggle";
 import storage from "../../../utils/Storage";
 
-const dark = "#282c34";
-const white = "#e6e6e6";
+let label: HTMLLabelElement;
 
 beforeEach(() => {
   localStorage.clear();
-});
 
-test("light mode", async () => {
   const { container } = render(
     <ThemeProvider>
       <ThemeToggle />
     </ThemeProvider>
   );
 
-  document.documentElement.setAttribute("data-theme", "dark");
+  label = container.querySelector("label")!;
+});
 
-  expect(storage.get("theme")).toBeNull();
-  expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
+describe("테마 변경 테스트", () => {
+  test("테마가 없을 때", async () => {
+    expect(storage.get("theme")).toBeNull();
+    expect(document.documentElement.getAttribute("data-theme")).toBeNull();
 
-  const label = container.querySelector("label");
+    await act(async () => userEvent.click(label));
 
-  if (label) await act(async () => userEvent.click(label));
-
-  waitFor(() => {
-    expect(storage.get("theme")).toBe("light");
-    expect(document.documentElement.getAttribute("data-theme")).toBe("light");
+    waitFor(() => {
+      expect(storage.get("theme")).toBe("light");
+      expect(document.documentElement.getAttribute("data-theme")).toBe("light");
+    });
   });
-});
 
-test("dark mode", async () => {
-  const { container } = render(
-    <ThemeProvider>
-      <ThemeToggle />
-    </ThemeProvider>
-  );
+  test("테마가 dark일 때", async () => {
+    document.documentElement.setAttribute("data-theme", "dark");
 
-  document.documentElement.setAttribute("data-theme", "light");
-
-  expect(storage.get("theme")).toBeNull();
-  expect(document.documentElement.getAttribute("data-theme")).toBe("light");
-
-  const label = container.querySelector("label");
-
-  if (label) await act(async () => userEvent.click(label));
-
-  waitFor(() => {
-    expect(storage.get("theme")).toBe("dark");
+    expect(storage.get("theme")).toBeNull();
     expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
+
+    await act(async () => userEvent.click(label));
+
+    waitFor(() => {
+      expect(storage.get("theme")).toBe("light");
+      expect(document.documentElement.getAttribute("data-theme")).toBe("light");
+    });
+  });
+
+  test("테마가 light일 때", async () => {
+    document.documentElement.setAttribute("data-theme", "light");
+
+    expect(storage.get("theme")).toBeNull();
+    expect(document.documentElement.getAttribute("data-theme")).toBe("light");
+
+    await act(async () => userEvent.click(label));
+
+    waitFor(() => {
+      expect(storage.get("theme")).toBe("dark");
+      expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
+    });
   });
 });
