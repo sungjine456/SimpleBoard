@@ -47,7 +47,7 @@ function PasswordCheckComponent() {
   };
 
   return (
-    <div>
+    <div className="m-auto">
       <h3>비밀번호 재확인</h3>
       <form>
         <div>

@@ -67,7 +67,7 @@ function BoardPageComponent() {
   };
 
   return (
-    <form>
+    <form className="m-auto">
       <div>
         <input
           className={styles.title}

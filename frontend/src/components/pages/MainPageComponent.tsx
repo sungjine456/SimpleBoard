@@ -14,7 +14,7 @@ function MainPageComponent() {
       {authenticated ? (
         <BoardsComponent />
       ) : (
-        <div>
+        <>
           <SignInFormComponent />
 
           <div className="buttons align-self-end">
@@ -26,7 +26,7 @@ function MainPageComponent() {
               가입하기
             </button>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

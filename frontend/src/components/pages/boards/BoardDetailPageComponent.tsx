@@ -20,7 +20,7 @@ function BoardDetailPageComponent() {
   }, [findBoard, id, didLoad]);
 
   return (
-    <div>
+    <div className="m-auto">
       <div>{board?.title}</div>
       <div>{board?.content}</div>
     </div>

@@ -49,7 +49,7 @@ function SignUpFormComponent() {
   };
 
   return (
-    <form>
+    <form className="m-auto">
       <div>
         <label>이름</label>
         <input

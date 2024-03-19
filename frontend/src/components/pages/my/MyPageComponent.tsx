@@ -29,7 +29,7 @@ function MyPageComponent() {
   }, [didLoad, getMember]);
 
   return (
-    <div className={styles.main}>
+    <div className={`m-auto ${styles.main}`}>
       {success ? (
         <UpdateComponent
           member={member}

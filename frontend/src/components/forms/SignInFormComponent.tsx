@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import MemberToEmailRequest from "../../models/requests/MemberToEmailRequest";
 import { useSignIn } from "../../services/MemberService";
+import styles from "../../styles/pages/SignInForm.module.scss";
 
 function SignInFormComponent() {
   const signIn = useSignIn();
@@ -64,9 +65,8 @@ function SignInFormComponent() {
         )}
       </form>
       <button
-        className="btn btn-light"
+        className={`btn-light ${styles["sign-in-btn"]}`}
         type="submit"
-        style={{ marginLeft: "12px" }}
         form="sign-in-form"
         onClick={handleSubmit(onSubmit)}
       >
