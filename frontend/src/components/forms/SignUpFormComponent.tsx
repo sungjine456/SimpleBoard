@@ -132,7 +132,7 @@ function SignUpFormComponent() {
         <small role="alert">{errors.passwordCheck.message}</small>
       )}
       <button
-        className="btn btn-light align-self-end"
+        className="btn btn-light m-r-0 align-self-end"
         type="submit"
         onClick={handleSubmit(onSubmit)}
       >

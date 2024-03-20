@@ -10,7 +10,7 @@ function ThemeToggle() {
     if (theme === Theme.dark) {
       toggleElement.current?.classList.toggle(styles.active);
     }
-  });
+  }, []);
 
   const onClickHandler = () => {
     toggleElement.current?.classList.toggle(styles.active);

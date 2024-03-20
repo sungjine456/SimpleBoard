@@ -19,7 +19,7 @@ function MainPageComponent() {
 
           <div className="buttons align-self-end">
             <button
-              className="btn btn-light"
+              className="btn btn-light m-r-0"
               type="button"
               onClick={() => navigate("/signUp")}
             >
