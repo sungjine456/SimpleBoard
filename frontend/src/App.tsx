@@ -20,6 +20,7 @@ function App() {
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme.toString());
+    // eslint-disable-next-line
   }, []);
 
   return (

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useGetMember } from "../../../services/MemberService";
-import styles from "../../../styles/pages/MyPage.module.scss";
+import styles from "../../../styles/pages/my/MyPage.module.scss";
 import MainComponent from "./MainComponent";
 import UpdateComponent from "./UpdateComponent";
 

@@ -10,6 +10,7 @@ function ThemeToggle() {
     if (theme === Theme.dark) {
       toggleElement.current?.classList.toggle(styles.active);
     }
+    // eslint-disable-next-line
   }, []);
 
   const onClickHandler = () => {

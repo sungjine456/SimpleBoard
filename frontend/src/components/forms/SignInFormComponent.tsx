@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import MemberToEmailRequest from "../../models/requests/MemberToEmailRequest";
 import { useSignIn } from "../../services/MemberService";
-import styles from "../../styles/pages/SignInForm.module.scss";
+import styles from "../../styles/forms/SignInForm.module.scss";
 
 function SignInFormComponent() {
   const signIn = useSignIn();

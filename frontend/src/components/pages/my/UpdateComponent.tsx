@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useUpdateMember } from "../../../services/MemberService";
-import styles from "../../../styles/pages/MyPage.module.scss";
+import styles from "../../../styles/pages/my/MyPage.module.scss";
 
 function UpdateComponent({
   handler,

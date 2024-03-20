@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import styles from "../../../styles/pages/MyPage.module.scss";
+import styles from "../../../styles/pages/my/MyPage.module.scss";
 
 function MainComponent({
   member,
