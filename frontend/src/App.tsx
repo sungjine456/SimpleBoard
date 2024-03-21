@@ -1,4 +1,5 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import { AuthContext } from "./components/contexts/AuthContext";
 import { ThemeContext } from "./components/contexts/ThemeContext";
 import Header from "./components/layouts/Header";
@@ -11,6 +12,8 @@ import "./styles/pages/App.scss";
 import "./styles/Common.scss";
 
 function App() {
+  const appRef = useRef<HTMLDivElement>(null);
+  const location = useLocation();
   const { autoSignIn } = useContext(AuthContext);
   const { theme } = useContext(ThemeContext);
 
@@ -23,8 +26,16 @@ function App() {
     // eslint-disable-next-line
   }, []);
 
+  useEffect(() => {
+    if (!location.pathname.startsWith("/board/")) {
+      if (appRef.current?.classList.contains("justify-content-start")) {
+        appRef.current?.classList.remove("justify-content-start");
+      }
+    }
+  }, [location]);
+
   return (
-    <div className="app">
+    <div className="app" ref={appRef}>
       <Header />
       <main className="w-100 d-flex">
         <Routes />

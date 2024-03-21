@@ -15,6 +15,10 @@
   display: none;
 }
 
+.justify-content-start {
+  justify-content: start;
+}
+
 .align-self-end {
   align-self: end;
 }
@@ -33,4 +37,13 @@
 
 .w-fit-content {
   width: fit-content;
+}
+
+.t-center {
+  text-align: center;
+}
+
+.line {
+  border-top: 1px solid gray;
+  margin: 20px 0;
 }

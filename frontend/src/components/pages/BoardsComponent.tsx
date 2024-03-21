@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import BoardResponse from "../../models/responses/BoardResponse";
 import { useFindBoards } from "../../services/BoardService";
 import styles from "../../styles/pages/Boards.module.scss";
+import { dateToString } from "../../utils/Utils";
 
 function BoardsComponent() {
   const navigate = useNavigate();
@@ -19,10 +20,6 @@ function BoardsComponent() {
     }
   }, [findBoards, didLoad]);
 
-  function setDate(date: Date) {
-    return new Date(date).toLocaleDateString("ko-KR");
-  }
-
   return (
     <div
       className={boards.length === 0 ? `m-auto ${styles.main}` : styles.main}
@@ -35,7 +32,7 @@ function BoardsComponent() {
                 <div className={styles.name}>
                   <Link to={`/mem/${b.memberId}`}>{b.memberName}</Link>
                 </div>
-                <div>{setDate(b.date)}</div>
+                <div>{dateToString(b.date)}</div>
               </div>
               <div className={styles.title}>
                 <Link to={`/board/${b.id}`}>{b.title}</Link>
