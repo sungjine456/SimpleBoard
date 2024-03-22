@@ -1,16 +1,21 @@
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { useWrite } from "../../../services/BoardService";
+import { useNavigate, useParams } from "react-router-dom";
+import { useUpdate } from "../../../services/BoardService";
 import styles from "../../../styles/pages/boards/Board.module.scss";
+import { BoardContext } from "../../contexts/BoardContext";
 
 interface FormData {
   title: string;
   content: string;
 }
 
-function BoardPageComponent() {
-  const write = useWrite();
+function UpdateBoardPageComponent() {
+  const params = useParams();
+  const { board } = useContext(BoardContext);
+  const id = parseInt(params.id ?? "-1");
+
+  const update = useUpdate();
   const navigate = useNavigate();
 
   const submitBtn = useRef<HTMLButtonElement>(null);
@@ -20,8 +25,8 @@ function BoardPageComponent() {
   const { register, handleSubmit, trigger, getFieldState } = useForm<FormData>({
     mode: "onChange",
     defaultValues: {
-      title: "",
-      content: "",
+      title: board.title,
+      content: board.content,
     },
   });
 
@@ -53,7 +58,7 @@ function BoardPageComponent() {
   };
 
   const onSubmit = (data: FormData) => {
-    write({
+    update(id, {
       title: data.title,
       content: data.content,
     }).then((b) => {
@@ -96,7 +101,7 @@ function BoardPageComponent() {
         type="button"
         onClick={() => trigger().then((trigger) => onSaveHandler(trigger))}
       >
-        저장
+        수정
       </button>
       <button
         className="d-none"
@@ -108,4 +113,4 @@ function BoardPageComponent() {
   );
 }
 
-export default BoardPageComponent;
+export default UpdateBoardPageComponent;

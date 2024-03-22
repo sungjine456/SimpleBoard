@@ -42,6 +42,7 @@ describe("로그인 후 접근할 수 있는 페이지 랜더링", () => {
       <MemoryRouter>
         <AuthContext.Provider
           value={{
+            memberId: 1,
             token: "token",
             authenticated: true,
             signIn: (_: SignInResponse) => {},

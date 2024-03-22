@@ -75,7 +75,7 @@ public class BoardServiceTest extends InitializeServiceTest {
         assertThat(board.getMember().getEmail()).isEqualTo(initEmail);
         assertThat(board.getCreateDate()).isEqualTo(board.getUpdateDate());
 
-        boolean succeded = boardService.update(testBoard.getId(), initMember.getEmail(), updateTitle, updateContent);
+        boolean succeded = boardService.update(testBoard.getId(), initEmail, updateTitle, updateContent);
 
         board = boardRepository.findByIdAndMemberId(testBoard.getId(), initMember.getId()).get();
 

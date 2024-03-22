@@ -8,6 +8,15 @@ export function useWrite(): (board: BoardRequest) => Promise<boolean> {
   };
 }
 
+export function useUpdate(): (
+  id: number,
+  board: BoardRequest
+) => Promise<boolean> {
+  return (id: number, board: BoardRequest) => {
+    return postOrElse<boolean>(`/board/${id}`, board, {}, false);
+  };
+}
+
 export function useFindBoard(): (id: number) => Promise<BoardResponse> {
   return (id: number) => {
     return getOrElse<BoardResponse>(

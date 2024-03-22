@@ -8,6 +8,7 @@ import com.example.Board.domains.Board;
 import com.example.Board.repositories.BoardRepository;
 import com.example.Board.repositories.MemberRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -20,7 +21,7 @@ public class BoardService {
     private MemberRepository memberRepository;
 
     public boolean write(String email, String title, String content) {
-        log.info("write : 사용자 이메일 {}, 제목 {}", email, title);
+        log.info("write = 사용자 이메일 : {}, 제목 : {}", email, title);
 
         if (!StringUtils.hasText(title) || !StringUtils.hasText(content)) {
             return false;
@@ -31,8 +32,9 @@ public class BoardService {
         }).isPresent();
     }
 
+    @Transactional
     public boolean update(long boardId, String email, String title, String content) {
-        log.info("update : 글 아이디 {}, 사용자 이메일 {}, 제목 {}", boardId, email, title);
+        log.info("update = 글 아이디 : {}, 사용자 이메일 : {}, 제목 : {}", boardId, email, title);
 
         if (!StringUtils.hasText(title) || !StringUtils.hasText(content)) {
             return false;

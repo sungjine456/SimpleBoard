@@ -6,3 +6,12 @@
 .title {
   font-size: 60px;
 }
+
+.update-btn {
+  cursor: pointer;
+  margin-left: 10px;
+
+  &:hover {
+    color: var(--hover-color);
+  }
+}

@@ -4,6 +4,7 @@ import SignInResponse from "../../models/responses/SignInResponse";
 import storage from "../../utils/Storage";
 
 interface IAuthContext {
+  memberId: number;
   token: string;
   authenticated: boolean;
   signIn: (_: SignInResponse) => void;
@@ -12,6 +13,7 @@ interface IAuthContext {
 }
 
 const initialValue = {
+  memberId: -999,
   token: "",
   authenticated: false,
   signIn: (_: SignInResponse) => {},
@@ -26,6 +28,7 @@ const AuthProvider = ({ children }: { children?: ReactNode }) => {
     initialValue.authenticated
   );
   const [token, setToken] = useState(initialValue.token);
+  const [memberId, setMemberId] = useState(initialValue.memberId);
 
   useEffect(() => {
     if (!authenticated && !!token) {
@@ -36,6 +39,7 @@ const AuthProvider = ({ children }: { children?: ReactNode }) => {
   const signIn = (res: SignInResponse) => {
     storage.set("token", res.token);
     storage.set("accessExpired", res.accessExpired);
+    setMemberId(res.id);
 
     setAuth(res.token);
   };
@@ -75,6 +79,7 @@ const AuthProvider = ({ children }: { children?: ReactNode }) => {
   return (
     <AuthContext.Provider
       value={{
+        memberId,
         token,
         authenticated,
         signIn,

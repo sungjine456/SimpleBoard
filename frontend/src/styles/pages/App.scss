@@ -47,6 +47,10 @@ textarea {
   resize: none;
 }
 
+button {
+  cursor: pointer;
+}
+
 @media (max-width: 768px) {
   header {
     padding: 3px;

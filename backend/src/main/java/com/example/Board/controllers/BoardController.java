@@ -59,7 +59,7 @@ public class BoardController {
     @PostMapping("/board/{id}")
     public ResponseEntity<Boolean> update(@RequestBody BoardRequest req, @PathVariable("id") long id,
             Principal principal) {
-        log.info("update 제목 : {}, 이메일 : {}", req.getTitle(), principal.getName());
+        log.info("update = 제목 : {}, 이메일 : {}", req.getTitle(), principal.getName());
 
         if (!StringUtils.hasText(req.getTitle()) && !StringUtils.hasText(req.getContent())) {
             return ResponseEntity.ok(false);
