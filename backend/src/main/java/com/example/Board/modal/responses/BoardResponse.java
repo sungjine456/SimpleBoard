@@ -19,14 +19,20 @@ public class BoardResponse {
     private String content;
     private String memberName;
     private LocalDateTime date;
+    private boolean admin;
 
     public BoardResponse(Board board) {
+        this(board, false);
+    }
+
+    public BoardResponse(Board board, boolean admin) {
         id = board.getId();
         memberId = board.getMember().getId();
         title = board.getTitle();
         content = board.getContent();
         memberName = board.getMember().getName();
         date = board.getCreateDate();
+        this.admin = admin;
     }
 
     @Override

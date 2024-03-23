@@ -1,5 +1,7 @@
 import BoardRequest from "../models/requests/BoardRequest";
-import BoardResponse from "../models/responses/BoardResponse";
+import BoardResponse, {
+  emptyBoardResponse,
+} from "../models/responses/BoardResponse";
 import { getOrElse, postOrElse } from "./AxiosWrapper";
 
 export function useWrite(): (board: BoardRequest) => Promise<boolean> {
@@ -19,18 +21,7 @@ export function useUpdate(): (
 
 export function useFindBoard(): (id: number) => Promise<BoardResponse> {
   return (id: number) => {
-    return getOrElse<BoardResponse>(
-      `/board/${id}`,
-      {},
-      {
-        id: -1,
-        memberId: -1,
-        title: "",
-        content: "",
-        memberName: "",
-        date: new Date(),
-      }
-    );
+    return getOrElse<BoardResponse>(`/board/${id}`, {}, emptyBoardResponse);
   };
 }
 

@@ -1,27 +1,20 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import BoardResponse from "../../../models/responses/BoardResponse";
+import BoardResponse, {
+  emptyBoardResponse,
+} from "../../../models/responses/BoardResponse";
 import { useFindBoard } from "../../../services/BoardService";
 import styles from "../../../styles/pages/boards/BoardDetailPage.module.scss";
 import { dateToString } from "../../../utils/Utils";
-import { AuthContext } from "../../contexts/AuthContext";
 import { BoardContext } from "../../contexts/BoardContext";
 
 function BoardDetailPageComponent() {
   const params = useParams();
   const navigate = useNavigate();
-  const { memberId } = useContext(AuthContext);
   const { setBoard: setBoardContext } = useContext(BoardContext);
   const findBoard = useFindBoard();
   const id = parseInt(params.id ?? "-1");
-  const [board, setBoard] = useState<BoardResponse>({
-    id: -99999,
-    memberId: -99999,
-    title: "",
-    content: "",
-    memberName: "",
-    date: new Date(),
-  });
+  const [board, setBoard] = useState<BoardResponse>(emptyBoardResponse);
   const [didLoad, setDidLoad] = useState<boolean>(false);
   const [isAdmin, setIsAmin] = useState<boolean>(false);
 
@@ -29,11 +22,11 @@ function BoardDetailPageComponent() {
     if (!didLoad) {
       findBoard(id).then((b) => {
         setBoard(b);
-        setIsAmin(b.memberId === memberId);
+        setIsAmin(b.admin);
         setDidLoad(true);
       });
     }
-  }, [findBoard, id, didLoad, memberId]);
+  }, [findBoard, id, didLoad]);
 
   document
     .getElementsByClassName("app")[0]

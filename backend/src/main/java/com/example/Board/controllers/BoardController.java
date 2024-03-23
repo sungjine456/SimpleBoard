@@ -44,13 +44,14 @@ public class BoardController {
     }
 
     @GetMapping("/board/{id}")
-    public ResponseEntity<BoardResponse> findBoard(@PathVariable("id") long id) {
-        log.info("find id ", id);
+    public ResponseEntity<BoardResponse> findBoard(@PathVariable("id") long id, Principal principal) {
+        log.info("findBoard 글의 아이디 ", id);
 
         Optional<Board> board = boardRepository.findById(id);
 
         if (board.isPresent()) {
-            return ResponseEntity.ok(new BoardResponse(board.get()));
+            return ResponseEntity
+                    .ok(new BoardResponse(board.get(), board.get().getMember().getEmail().equals(principal.getName())));
         } else {
             return ResponseEntity.badRequest().body(null);
         }

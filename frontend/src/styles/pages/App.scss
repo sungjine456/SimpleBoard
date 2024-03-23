@@ -8,6 +8,11 @@
   align-items: center;
   justify-content: center;
   color: var(--color);
+
+  // App.tsx에서 import 자동 정렬 시 Common.scss의 클래스가 적용되지 않는 문제 개선하기 위한 코드
+  &.justify-content-start {
+    justify-content: start;
+  }
 }
 
 header {
