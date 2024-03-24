@@ -1,10 +1,12 @@
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import MemberToEmailRequest from "../../models/requests/MemberToEmailRequest";
 import { useSignIn } from "../../services/MemberService";
 import styles from "../../styles/forms/SignInForm.module.scss";
 
 function SignInFormComponent() {
   const signIn = useSignIn();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -19,6 +21,7 @@ function SignInFormComponent() {
 
   const onSubmit = (data: MemberToEmailRequest) => {
     signIn(data);
+    navigate("/");
   };
 
   return (

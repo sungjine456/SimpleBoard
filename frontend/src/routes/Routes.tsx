@@ -11,11 +11,12 @@ import BoardDetailPageComponent from "../components/pages/boards/BoardDetailPage
 import BoardPageComponent from "../components/pages/boards/BoardPageComponent";
 import UpdateBoardPageComponent from "../components/pages/boards/UpdateBoardPageComponent";
 import MyPageComponent from "../components/pages/my/MyPageComponent";
+import SignInPageComponent from "../components/pages/SignInPageComponent";
 
 const PrivateRoutes = () => {
   const { token, authenticated } = useContext(AuthContext);
 
-  if (!authenticated || !token) return <Navigate to="/" replace />;
+  if (!authenticated || !token) return <Navigate to="/signIn" replace />;
 
   return <Outlet />;
 };
@@ -24,18 +25,19 @@ const Routes = () => {
   return (
     <Router>
       <Route path="/" element={<MainPageComponent />} />
+      <Route path="/signIn" element={<SignInPageComponent />} />
       <Route path="/signUp" element={<SignUpFormComponent />} />
+      <Route path="/boards" element={<BoardsComponent />} />
+      <Route path="/board/:id" element={<BoardDetailPageComponent />} />
       <Route element={<PrivateRoutes />}>
         <Route path="/mem/:userId" element={<MemberDetailPageComponent />} />
         <Route path="/my" element={<MyPageComponent />} />
         <Route path="/my/check" element={<PasswordCheckComponent />} />
         <Route path="/board" element={<BoardPageComponent />} />
-        <Route path="/board/:id" element={<BoardDetailPageComponent />} />
         <Route
           path="/board/:id/update"
           element={<UpdateBoardPageComponent />}
         />
-        <Route path="/boards" element={<BoardsComponent />} />
       </Route>
       <Route path="*" element={<NotFoundPageComponent />} />
     </Router>

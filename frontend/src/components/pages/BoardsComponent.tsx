@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import BoardResponse from "../../models/responses/BoardResponse";
 import { useFindBoards } from "../../services/BoardService";
 import styles from "../../styles/pages/Boards.module.scss";
 import { dateToString } from "../../utils/Utils";
+import { AuthContext } from "../contexts/AuthContext";
 
 function BoardsComponent() {
+  const { authenticated } = useContext(AuthContext);
   const navigate = useNavigate();
   const findBoards = useFindBoards();
   const [boards, setBoards] = useState<BoardResponse[]>([]);
@@ -43,13 +45,15 @@ function BoardsComponent() {
       ) : (
         <div>현재 작성된 글이 없습니다.</div>
       )}
-      <button
-        className="align-self-end btn-md"
-        type="button"
-        onClick={() => navigate("/board")}
-      >
-        글쓰기
-      </button>
+      {authenticated && (
+        <button
+          className="align-self-end btn-md"
+          type="button"
+          onClick={() => navigate("/board")}
+        >
+          글쓰기
+        </button>
+      )}
     </div>
   );
 }

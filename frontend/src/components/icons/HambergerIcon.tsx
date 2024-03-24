@@ -39,16 +39,21 @@ function HambergerIcon() {
       </label>
       <div id="ham-items">
         <ul>
-          <li>
-            <p onClick={() => clickHandler("/my")}>내 계정</p>
-          </li>
+          {!authenticated && (
+            <li>
+              <p onClick={() => clickHandler("/signIn")}>로그인</p>
+            </li>
+          )}
           {authenticated && (
             <>
+              <li>
+                <p onClick={() => clickHandler("/my")}>내 계정</p>
+              </li>
               <li>
                 <p onClick={() => clickHandler("/board")}>글쓰기</p>
               </li>
               <li>
-                <p onClick={() => signOutHandler("/")}>로그아웃</p>
+                <p onClick={() => signOutHandler("/signIn")}>로그아웃</p>
               </li>
             </>
           )}

@@ -54,7 +54,7 @@ describe("로그인 후 접근할 수 있는 페이지 랜더링", () => {
       </MemoryRouter>
     );
 
-    expect(screen.queryByText("로그인")).toBeNull();
+    expect(screen.queryByText("글쓰기")).toBeInTheDocument();
     expect(screen.getByText("현재 작성된 글이 없습니다.")).toBeInTheDocument();
   });
 
@@ -65,7 +65,7 @@ describe("로그인 후 접근할 수 있는 페이지 랜더링", () => {
       </MemoryRouter>
     );
 
-    expect(screen.queryByText("로그아웃")).toBeNull();
-    expect(screen.getByText("로그인")).toBeInTheDocument();
+    expect(screen.queryByText("글쓰기")).toBeNull();
+    expect(screen.getByText("현재 작성된 글이 없습니다.")).toBeInTheDocument();
   });
 });

@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -31,9 +32,10 @@ public class SecurityConfig {
 				.csrf(c -> c.disable())
 				.sessionManagement(m -> m.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(req -> req
-						.requestMatchers("/sign-in", "/sign-up", "checkEmail").permitAll()
-						.requestMatchers("/mem/**", "/my", "/my/check", "/board", "/board/**", "/boards")
-						.hasRole("USER")
+						.requestMatchers("/sign-in", "/sign-up", "checkEmail", "/boards").permitAll()
+						.requestMatchers(HttpMethod.GET, "/board/**").permitAll()
+						.requestMatchers("/mem/**", "/my", "/my/check", "/board").hasRole("USER")
+						.requestMatchers(HttpMethod.POST, "/board/**").hasRole("USER")
 						.anyRequest()
 						.authenticated())
 				.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
