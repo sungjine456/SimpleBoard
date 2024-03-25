@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { Navigate, Outlet, Route, Routes as Router } from "react-router-dom";
 import { AuthContext } from "../components/contexts/AuthContext";
-import SignUpFormComponent from "../components/forms/SignUpFormComponent";
+import SignUpPageComponent from "../components/pages/SignUpPageComponent";
 import BoardsComponent from "../components/pages/BoardsComponent";
 import MainPageComponent from "../components/pages/MainPageComponent";
 import MemberDetailPageComponent from "../components/pages/MemberDetailPageComponent";
@@ -26,7 +26,7 @@ const Routes = () => {
     <Router>
       <Route path="/" element={<MainPageComponent />} />
       <Route path="/signIn" element={<SignInPageComponent />} />
-      <Route path="/signUp" element={<SignUpFormComponent />} />
+      <Route path="/signUp" element={<SignUpPageComponent />} />
       <Route path="/boards" element={<BoardsComponent />} />
       <Route path="/board/:id" element={<BoardDetailPageComponent />} />
       <Route element={<PrivateRoutes />}>

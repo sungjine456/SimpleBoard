@@ -5,7 +5,7 @@ import MockAdapter from "axios-mock-adapter";
 import { act } from "react-dom/test-utils";
 import * as router from "react-router";
 import { AuthProvider } from "../../../components/contexts/AuthContext";
-import SignInFormComponent from "../../../components/forms/SignInFormComponent";
+import SignInPageComponent from "../../../components/pages/SignInPageComponent";
 
 const mock = new MockAdapter(axios);
 const navigate = jest.fn();
@@ -19,7 +19,7 @@ beforeEach(() => {
 
   render(
     <AuthProvider>
-      <SignInFormComponent />
+      <SignInPageComponent />
     </AuthProvider>
   );
 
@@ -28,23 +28,23 @@ beforeEach(() => {
   button = screen.getByRole("button", { name: "로그인" });
 });
 
-describe("SignInFormComponent", () => {
-  test("성공했을 때", async () => {
-    mock
-      .onPost("http://localhost:8080/sign-in")
-      .reply(200, { token: "accessToken" });
+test("로그인에 성공했을 때", async () => {
+  mock
+    .onPost("http://localhost:8080/sign-in")
+    .reply(200, { token: "accessToken" });
 
-    userEvent.type(email, "test@abc.com");
-    userEvent.type(password, "Test1234");
+  userEvent.type(email, "test@abc.com");
+  userEvent.type(password, "Test1234");
 
-    await act(async () => userEvent.click(button));
+  await act(async () => userEvent.click(button));
 
-    expect(screen.queryAllByRole("alert")).toHaveLength(0);
-    expect(axios.defaults.headers.common["Authorization"]).toBe(
-      "Bearer accessToken"
-    );
-  });
+  expect(screen.queryAllByRole("alert")).toHaveLength(0);
+  expect(axios.defaults.headers.common["Authorization"]).toBe(
+    "Bearer accessToken"
+  );
+});
 
+describe("로그인에 실패", () => {
   test("이메일을 적지 않았을 때", async () => {
     userEvent.clear(email);
     userEvent.type(password, "Test1234");

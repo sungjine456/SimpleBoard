@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { BrowserRouter, MemoryRouter } from "react-router-dom";
 import App from "../../App";
 import { AuthContext } from "../../components/contexts/AuthContext";
-import SignUpFormComponent from "../../components/forms/SignUpFormComponent";
+import SignUpPageComponent from "../../components/pages/SignUpPageComponent";
 import SignInResponse from "../../models/responses/SignInResponse";
 import Routes from "../../routes/Routes";
 
@@ -29,7 +29,7 @@ test("회원가입 페이지 랜더링", () => {
 
   render(
     <MemoryRouter initialEntries={[route]}>
-      <SignUpFormComponent />
+      <SignUpPageComponent />
     </MemoryRouter>
   );
 

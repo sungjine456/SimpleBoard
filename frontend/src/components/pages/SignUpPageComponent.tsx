@@ -9,7 +9,7 @@ interface SignUpForm {
   passwordCheck: string;
 }
 
-function SignUpFormComponent() {
+function SignUpPageComponent() {
   const navigate = useNavigate();
   const checkEmail = useCheckEmail();
   const signUp = useSignUp();
@@ -40,10 +40,8 @@ function SignUpFormComponent() {
           type: "manual",
           message: "이미 존재하는 아이디입니다.",
         });
-      } else if (res === "실패") {
-        alert("가입에 실패했습니다. 다시 시도해주세요.");
       } else {
-        navigate("/");
+        alert("가입에 실패했습니다. 다시 시도해주세요.");
       }
     });
   };
@@ -142,4 +140,4 @@ function SignUpFormComponent() {
   );
 }
 
-export default SignUpFormComponent;
+export default SignUpPageComponent;
