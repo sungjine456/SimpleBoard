@@ -2,7 +2,9 @@ import { useContext } from "react";
 import { AuthContext } from "../components/contexts/AuthContext";
 import MemberToEmailRequest from "../models/requests/MemberToEmailRequest";
 import SignUpRequest from "../models/requests/SignUpRequest";
-import MemberResponse from "../models/responses/MemberResponse";
+import MemberResponse, {
+  emptyMemberResponse,
+} from "../models/responses/MemberResponse";
 import SignInResponse from "../models/responses/SignInResponse";
 import { getOrElse, isError, post, postOrElse } from "./AxiosWrapper";
 
@@ -47,15 +49,7 @@ export function useSignUp(): (member: SignUpRequest) => Promise<string> {
 
 export function useFindMember(): (id: number) => Promise<MemberResponse> {
   return (id: number) => {
-    return getOrElse<MemberResponse>(
-      `/mem/${id}`,
-      {},
-      {
-        name: "-",
-        email: "-",
-        message: "",
-      }
-    );
+    return getOrElse<MemberResponse>(`/mem/${id}`, {}, emptyMemberResponse);
   };
 }
 
@@ -73,15 +67,7 @@ export function useVerifyIdentity(): (psasword: string) => Promise<boolean> {
 
 export function useGetMember(): () => Promise<MemberResponse> {
   return () => {
-    return getOrElse<MemberResponse>(
-      "/my",
-      {},
-      {
-        name: "-",
-        email: "-",
-        message: "",
-      }
-    );
+    return getOrElse<MemberResponse>("/my", {}, emptyMemberResponse);
   };
 }
 

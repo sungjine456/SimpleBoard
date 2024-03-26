@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import { useCheckEmail, useSignUp } from "../../services/MemberService";
 
 interface SignUpForm {
@@ -10,7 +9,6 @@ interface SignUpForm {
 }
 
 function SignUpPageComponent() {
-  const navigate = useNavigate();
   const checkEmail = useCheckEmail();
   const signUp = useSignUp();
 

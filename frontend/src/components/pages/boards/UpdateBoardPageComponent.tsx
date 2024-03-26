@@ -12,12 +12,12 @@ interface FormData {
 
 function UpdateBoardPageComponent() {
   const params = useParams();
-  const { board } = useContext(BoardContext);
-  const id = parseInt(params.id ?? "-1");
-
   const update = useUpdate();
   const navigate = useNavigate();
 
+  const { board } = useContext(BoardContext);
+
+  const id = parseInt(params.id ?? "-1");
   const submitBtn = useRef<HTMLButtonElement>(null);
   const titleElement = useRef<HTMLInputElement | null>(null);
   const contentElement = useRef<HTMLTextAreaElement | null>(null);

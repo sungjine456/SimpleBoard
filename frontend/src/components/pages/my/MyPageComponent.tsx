@@ -7,7 +7,9 @@ import UpdateComponent from "./UpdateComponent";
 
 function MyPageComponent() {
   const getMember = useGetMember();
+
   const { state } = useLocation();
+
   const [success, setSuccess] = useState(false);
   const [didLoad, setDidLoad] = useState<boolean>(false);
   const [member, setMember] = useState<{ name: string; email: string }>({

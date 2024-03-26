@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 
 function HambergerIcon() {
-  const [checked, setChecked] = useState(false);
   const navigate = useNavigate();
+
   const { authenticated, signOut } = useContext(AuthContext);
+
+  const [checked, setChecked] = useState(false);
 
   const icon = useRef<HTMLInputElement>(null);
 

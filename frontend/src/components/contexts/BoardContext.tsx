@@ -1,9 +1,5 @@
 import { ReactNode, createContext, useState } from "react";
-
-interface Board {
-  title: string;
-  content: string;
-}
+import Board, { emptyBoard } from "../../models/domains/Board";
 
 interface IBoardContext {
   board: Board;
@@ -11,12 +7,12 @@ interface IBoardContext {
 }
 
 const BoardContext = createContext<IBoardContext>({
-  board: { title: "", content: "" },
+  board: emptyBoard,
   setBoard: (_: Board) => {},
 });
 
 const BoardContextProvider = ({ children }: { children?: ReactNode }) => {
-  const [board, setBoard] = useState<Board>({ title: "", content: "" });
+  const [board, setBoard] = useState<Board>(emptyBoard);
 
   return (
     <BoardContext.Provider value={{ board, setBoard }}>

@@ -2,8 +2,8 @@ import { ReactNode, createContext } from "react";
 import storage from "../../utils/Storage";
 
 enum Theme {
-  light = "light",
-  dark = "dark",
+  LIGHT = "light",
+  DARK = "dark",
 }
 
 interface IThemeContext {
@@ -13,7 +13,7 @@ interface IThemeContext {
 
 const localTheme = storage.get("theme");
 
-let theme = localTheme ? localTheme : Theme.light;
+let theme = localTheme ? localTheme : Theme.LIGHT;
 
 const toggle = () => {
   theme = theme === "light" ? "dark" : "light";

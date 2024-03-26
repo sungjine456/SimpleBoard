@@ -11,9 +11,10 @@ function UpdateComponent({
   member: { name: string; email: string };
   handler: (b: boolean) => void;
 }) {
-  const { pathname } = useLocation();
   const updateMember = useUpdateMember();
   const navigate = useNavigate();
+
+  const { pathname } = useLocation();
 
   const {
     register,

@@ -7,9 +7,11 @@ import { dateToString } from "../../utils/Utils";
 import { AuthContext } from "../contexts/AuthContext";
 
 function BoardsComponent() {
-  const { authenticated } = useContext(AuthContext);
   const navigate = useNavigate();
   const findBoards = useFindBoards();
+
+  const { authenticated } = useContext(AuthContext);
+
   const [boards, setBoards] = useState<BoardResponse[]>([]);
   const [didLoad, setDidLoad] = useState<boolean>(false);
 

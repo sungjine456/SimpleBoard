@@ -12,12 +12,12 @@ interface CheckForm {
 }
 
 function PasswordCheckComponent() {
-  const { state } = useLocation();
   const navigate = useNavigate();
   const verifyIdentity = useVerifyIdentity();
   const leaveMember = useLeaveMember();
+
+  const { state } = useLocation();
   const { signOut } = useContext(AuthContext);
-  const url = state.url;
 
   const {
     register,
@@ -32,9 +32,9 @@ function PasswordCheckComponent() {
   const onSubmit = (data: CheckForm) => {
     verifyIdentity(data.password).then((b) => {
       if (b) {
-        if (url === "update") {
+        if (state.url === "update") {
           navigate("/my", { state: { success: true } });
-        } else if (url === "leave") {
+        } else if (state.url === "leave") {
           leaveMember(data.password).then((b) => {
             if (b) {
               alert("탈퇴되었습니다.");

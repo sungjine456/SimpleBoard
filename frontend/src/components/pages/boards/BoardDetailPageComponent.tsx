@@ -11,12 +11,15 @@ import { BoardContext } from "../../contexts/BoardContext";
 function BoardDetailPageComponent() {
   const params = useParams();
   const navigate = useNavigate();
-  const { setBoard: setBoardContext } = useContext(BoardContext);
   const findBoard = useFindBoard();
-  const id = parseInt(params.id ?? "-1");
+
+  const { setBoard: setBoardContext } = useContext(BoardContext);
+
   const [board, setBoard] = useState<BoardResponse>(emptyBoardResponse);
   const [didLoad, setDidLoad] = useState<boolean>(false);
   const [isAdmin, setIsAmin] = useState<boolean>(false);
+
+  const id = parseInt(params.id ?? "-1");
 
   useEffect(() => {
     if (!didLoad) {

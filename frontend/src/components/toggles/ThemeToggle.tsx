@@ -4,10 +4,11 @@ import { Theme, ThemeContext } from "../contexts/ThemeContext";
 
 function ThemeToggle() {
   const { theme, toggle } = useContext(ThemeContext);
+
   const toggleElement = useRef<HTMLLabelElement>(null);
 
   useEffect(() => {
-    if (theme === Theme.dark) {
+    if (theme === Theme.DARK) {
       toggleElement.current?.classList.toggle(styles.active);
     }
     // eslint-disable-next-line
