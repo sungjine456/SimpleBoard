@@ -5,17 +5,20 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Board.domains.Board;
 import com.example.Board.modal.requests.boards.BoardRequest;
 import com.example.Board.modal.responses.BoardResponse;
+import com.example.Board.modal.responses.PagingResponse;
 import com.example.Board.repositories.BoardRepository;
 import com.example.Board.services.BoardService;
 
@@ -77,13 +80,15 @@ public class BoardController {
     }
 
     @GetMapping("/boards")
-    public ResponseEntity<List<BoardResponse>> findBoards() {
-        log.info("boards");
+    public ResponseEntity<PagingResponse> findBoards(@RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "count", defaultValue = "10") int count) {
+        log.info("findBoards = 페이지 : {}, 갯수 : {}", page, count);
 
-        List<BoardResponse> boards = boardRepository.findAll().stream().map(b -> {
+        Page<Board> paging = boardService.findBoards(page, count);
+        List<BoardResponse> boards = paging.getContent().stream().map(b -> {
             return new BoardResponse(b);
         }).toList();
 
-        return ResponseEntity.ok(boards);
+        return ResponseEntity.ok(new PagingResponse(boards, paging.getTotalPages()));
     }
 }

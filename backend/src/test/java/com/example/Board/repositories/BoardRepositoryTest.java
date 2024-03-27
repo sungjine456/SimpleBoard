@@ -8,6 +8,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
@@ -33,13 +36,24 @@ public class BoardRepositoryTest extends InitializeRepositoryTest {
         super.beforeEach();
 
         testBoard = boardRepository.save(new Board(testTitle, testContent, initMember));
+        boardRepository.save(new Board(testTitle, testContent, initMember));
+        boardRepository.save(new Board(testTitle, testContent, initMember));
+        boardRepository.save(new Board(testTitle, testContent, initMember));
+        boardRepository.save(new Board(testTitle, testContent, initMember));
+        boardRepository.save(new Board(testTitle, testContent, initMember));
+        boardRepository.save(new Board(testTitle, testContent, initMember));
+        boardRepository.save(new Board(testTitle, testContent, initMember));
+        boardRepository.save(new Board(testTitle, testContent, initMember));
+        boardRepository.save(new Board(testTitle, testContent, initMember));
+        boardRepository.save(new Board(testTitle, testContent, initMember));
+        boardRepository.save(new Board(testTitle, testContent, initMember));
     }
 
     @Test
     @Transactional
     public void save() {
         List<Board> boards = boardRepository.findAll();
-        assertThat(boards.size()).isOne();
+        assertThat(boards.size()).isEqualTo(12);
 
         String title = "title";
         String content = "content";
@@ -48,9 +62,9 @@ public class BoardRepositoryTest extends InitializeRepositoryTest {
         boardRepository.save(board);
 
         boards = boardRepository.findAll();
-        assertThat(boards.size()).isEqualTo(2);
+        assertThat(boards.size()).isEqualTo(13);
 
-        Board findBoard = boards.get(1);
+        Board findBoard = boards.get(12);
         assertThat(findBoard.getTitle()).isEqualTo(title);
         assertThat(findBoard.getContent()).isEqualTo(content);
         assertThat(findBoard.getCreateDate()).isEqualTo(findBoard.getUpdateDate());
@@ -109,5 +123,18 @@ public class BoardRepositoryTest extends InitializeRepositoryTest {
         assertThat(board.getTitle()).isEqualTo(updateTitle);
         assertThat(board.getContent()).isEqualTo(updateContent);
         assertThat(board.getCreateDate()).isNotEqualTo(board.getUpdateDate());
+    }
+
+    @Test
+    public void findAll() {
+        Pageable pageable = PageRequest.of(0, 10);
+
+        List<Board> list = boardRepository.findAll();
+        Page<Board> paging = boardRepository.findAll(pageable);
+
+        assertThat(list.size()).isEqualTo(12);
+        assertThat(paging.getSize()).isEqualTo(10);
+        assertThat(paging.getTotalPages()).isEqualTo(2);
+        assertThat(paging.getTotalElements()).isEqualTo(12);
     }
 }

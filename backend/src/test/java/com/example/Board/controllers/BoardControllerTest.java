@@ -18,6 +18,7 @@ import org.springframework.test.context.TestPropertySource;
 import com.example.Board.domains.Board;
 import com.example.Board.modal.requests.boards.BoardRequest;
 import com.example.Board.modal.responses.BoardResponse;
+import com.example.Board.modal.responses.PagingResponse;
 import com.example.Board.repositories.BoardRepository;
 import com.example.Board.services.BoardService;
 
@@ -134,13 +135,14 @@ class BoardControllerTest extends InitializeControllerTest {
         headers.setBearerAuth(token);
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        ResponseEntity<BoardResponse[]> responseEntity = testRestTemplate.exchange(url, HttpMethod.GET,
-                new HttpEntity<Object>(headers), BoardResponse[].class);
+        ResponseEntity<PagingResponse> responseEntity = testRestTemplate.exchange(url, HttpMethod.GET,
+                new HttpEntity<Object>(headers), PagingResponse.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody().length).isOne();
-        assertThat(responseEntity.getBody()[0].getId()).isEqualTo(testBoard.getId());
-        assertThat(responseEntity.getBody()[0].getTitle()).isEqualTo(testTitle);
-        assertThat(responseEntity.getBody()[0].getContent()).isEqualTo(testContent);
+        assertThat(responseEntity.getBody().getBoards().size()).isOne();
+        assertThat(responseEntity.getBody().getBoards().get(0).getId()).isEqualTo(testBoard.getId());
+        assertThat(responseEntity.getBody().getBoards().get(0).getTitle()).isEqualTo(testTitle);
+        assertThat(responseEntity.getBody().getBoards().get(0).getContent()).isEqualTo(testContent);
+        assertThat(responseEntity.getBody().getTotalPage()).isEqualTo(1);
     }
 }

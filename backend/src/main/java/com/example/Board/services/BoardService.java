@@ -1,6 +1,12 @@
 package com.example.Board.services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -46,5 +52,12 @@ public class BoardService {
 
             return board;
         }).isPresent();
+    }
+
+    public Page<Board> findBoards(int page, int count) {
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("createDate"));
+
+        return boardRepository.findAll(PageRequest.of(page, count, Sort.by(sorts)));
     }
 }
