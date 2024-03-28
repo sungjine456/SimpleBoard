@@ -145,4 +145,19 @@ class BoardControllerTest extends InitializeControllerTest {
         assertThat(responseEntity.getBody().getBoards().get(0).getContent()).isEqualTo(testContent);
         assertThat(responseEntity.getBody().getTotalPage()).isEqualTo(1);
     }
+
+    @Test
+    public void findBoards_whenWrongPage() {
+        String url = String.format("http://localhost:%d/boards?page=0", serverPort, 99999);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ResponseEntity<PagingResponse> responseEntity = testRestTemplate.exchange(url, HttpMethod.GET,
+                new HttpEntity<Object>(headers), PagingResponse.class);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(responseEntity.getBody()).isNull();
+    }
 }
