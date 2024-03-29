@@ -2,6 +2,9 @@ import BoardRequest from "../models/requests/BoardRequest";
 import BoardResponse, {
   emptyBoardResponse,
 } from "../models/responses/BoardResponse";
+import PagingResponse, {
+  emptyPagingResponse,
+} from "../models/responses/PagingResponse";
 import { getOrElse, postOrElse } from "./AxiosWrapper";
 
 export function useWrite(): (board: BoardRequest) => Promise<boolean> {
@@ -25,8 +28,12 @@ export function useFindBoard(): (id: number) => Promise<BoardResponse> {
   };
 }
 
-export function useFindBoards(): () => Promise<BoardResponse[]> {
-  return () => {
-    return getOrElse<BoardResponse[]>("/boards", {}, []);
+export function useFindBoards(): (page: number) => Promise<PagingResponse> {
+  return (page: number) => {
+    return getOrElse<PagingResponse>(
+      "/boards",
+      { params: { page: page } },
+      emptyPagingResponse
+    );
   };
 }

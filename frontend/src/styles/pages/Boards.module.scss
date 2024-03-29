@@ -37,6 +37,23 @@
       }
     }
   }
+
+  .paging {
+    display: flex;
+    justify-content: center;
+    border-bottom: 1px solid var(--border);
+
+    span {
+      cursor: pointer;
+      padding: 5px;
+      font-size: 20px;
+
+      &.selected {
+        color: #00d9ff;
+        cursor: default;
+      }
+    }
+  }
 }
 
 @media (max-width: 768px) {

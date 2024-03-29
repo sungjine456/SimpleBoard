@@ -80,10 +80,8 @@ public class BoardController {
     }
 
     @GetMapping("/boards")
-    public ResponseEntity<PagingResponse> findBoards(@RequestParam(value = "page", defaultValue = "1") int page,
+    public ResponseEntity<PagingResponse> findBoards(@RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "count", defaultValue = "10") int count) {
-        page -= 1;
-
         log.info("findBoards = 페이지 : {}, 갯수 : {}", page, count);
 
         if (page < 0) {

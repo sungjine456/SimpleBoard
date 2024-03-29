@@ -148,7 +148,7 @@ class BoardControllerTest extends InitializeControllerTest {
 
     @Test
     public void findBoards_whenWrongPage() {
-        String url = String.format("http://localhost:%d/boards?page=0", serverPort, 99999);
+        String url = String.format("http://localhost:%d/boards?page=-1", serverPort, 99999);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
