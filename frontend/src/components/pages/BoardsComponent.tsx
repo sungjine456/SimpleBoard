@@ -23,7 +23,8 @@ function BoardsComponent() {
     if (!didLoad) {
       setInBoards(page);
     }
-  }, [setInBoards, page, didLoad]);
+    // eslint-disable-next-line
+  }, [page, didLoad]);
 
   function onClickHandler(p: number) {
     setPage(p - 1);
