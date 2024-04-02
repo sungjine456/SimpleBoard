@@ -2,6 +2,16 @@
   display: flex;
   flex-direction: column;
 
+  .select {
+    display: flex;
+    flex-direction: column;
+
+    select {
+      align-self: end;
+      margin: 20px;
+    }
+  }
+
   .items {
     width: auto;
 

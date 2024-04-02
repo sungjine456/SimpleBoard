@@ -18,21 +18,22 @@ function BoardsComponent() {
   const [maxPage, setMaxPage] = useState<number>(0);
   const [totalPage, setTotalPage] = useState<number>(0);
   const [pages, setPages] = useState<number[]>([]);
+  const [count, setCount] = useState<number>(10);
 
   useEffect(() => {
     if (!didLoad) {
-      setInBoards(page);
+      setInBoards(page, count);
     }
     // eslint-disable-next-line
   }, [page, didLoad]);
 
   function onClickHandler(p: number) {
     setPage(p - 1);
-    setInBoards(p - 1);
+    setInBoards(p - 1, count);
   }
 
-  function setInBoards(p: number) {
-    findBoards(p).then((d) => {
+  function setInBoards(p: number, c: number) {
+    findBoards(p, c).then((d) => {
       setBoards(d.boards);
       setDidLoad(true);
       setTotalPage(d.totalPage);
@@ -46,12 +47,31 @@ function BoardsComponent() {
     });
   }
 
+  function countChangeHandler(e: React.ChangeEvent<HTMLSelectElement>) {
+    const c = Number(e.target.value);
+
+    setCount(c);
+    setInBoards(page, c);
+  }
+
   return (
     <div
       className={boards.length === 0 ? `m-auto ${styles.main}` : styles.main}
     >
       {boards.length !== 0 ? (
         <>
+          <div className={styles.select}>
+            <select
+              defaultValue={count}
+              name="language"
+              onChange={countChangeHandler}
+            >
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="30">30</option>
+              <option value="50">50</option>
+            </select>
+          </div>
           <div className={styles.items}>
             {boards.map((b) => (
               <div className={styles.item} key={b.id}>

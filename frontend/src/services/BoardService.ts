@@ -28,11 +28,14 @@ export function useFindBoard(): (id: number) => Promise<BoardResponse> {
   };
 }
 
-export function useFindBoards(): (page: number) => Promise<PagingResponse> {
-  return (page: number) => {
+export function useFindBoards(): (
+  page: number,
+  count: number
+) => Promise<PagingResponse> {
+  return (page: number, count: number) => {
     return getOrElse<PagingResponse>(
       "/boards",
-      { params: { page: page } },
+      { params: { page: page, count: count } },
       emptyPagingResponse
     );
   };
